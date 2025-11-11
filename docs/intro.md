@@ -1,47 +1,22 @@
 ---
+slug: /
 sidebar_position: 1
+id: intro
+title: Welcome to Direkt documentation
+sidebar_label: "Introduction"
 ---
+Direkt is an asset management service designed to store and deliver static content at your direction. With a simple, 
+expressive API and robust configuration options, you control your content however you see fit.
 
-# Tutorial Intro
+Direkt uses PostgreSQL to manage metadata and is designed to work with image assets today, with planned support for 
+other file types, such as PDFs. The platform's modular design may support other relational database systems in the future.
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Direkt is built for maximum flexibility, working seamlessly with any S3-compatible object store (including local 
+options like MiniIO). You maintain control over asset manipulation, and expensive transformations are generated on your 
+own hardware, exactly when and how you specify. This frees you from vendor lock-in and external API subscription costs.
 
-## Getting Started
-
-Get started by **creating a new site**.
-
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
-
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Direkt offers robust and growing image transformation options, leveraging the speed of libvips. Vips and Direkt work 
+together to stream content, avoiding the need to buffer the entire asset into memory. This allows large assets to be 
+handled easily and efficiently. Image variants can be generated on-demand or eagerly upon asset storage, and the 
+platform includes powerful caching capabilities for commonly-used variants such as well known viewports, image formats,
+or thumbnails.
