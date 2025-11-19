@@ -1,0 +1,115 @@
+---
+sidebar_position: 2
+id: concepts-variants
+title: Asset Variants
+sidebar_label: "Variants"
+---
+# Overview
+A Variant represents a specific, transformed version of the asset's content. It is generated using the
+transformation options available within Direkt (e.g., resizing, cropping, format change).
+
+A variant is composed of:
+1.  **Attributes**: Properties of the variant, such as its `height`, `width`, and `mimeType`.
+2.  **Transformation**: The specific operations applied to the **Original Variant** to create *this* variant
+    (e.g., `rotate: 90`, `blur: 2`).
+
+## Original Variant
+The Original Variant is the physical representation of the asset content supplied during the Store Assets request.
+**All other variants for this asset are transformed *from* the Original Variant.**
+
+Only pre-processing defined in your configuration (e.g., applying a global `max-width` limit or file format conversion)
+can transform the supplied content into the Original Variant. If no pre-processing is configured or applied, the
+Original Variant is the exact representation of the supplied content.
+
+# Variant Types
+Variants can be generated in 3 different ways:
+- Pre-processing the supplied asset content
+- Eager variant generation
+- On-demand variant generation
+
+## Pre-processing
+When an asset is stored, the asset content can be pre-processed before it is stored as the Original Variant. The result 
+of pre-processing is the original variant but remember, any subsequent variants are generated **from** the original variant. 
+
+Generally speaking, you would not want to downscale your image to 20x20 if you plan to generate large variants on-demand.
+
+### Configuration
+Pre-processing is defined in your path configuration. The following configuration will convert the supplied asset content
+to an AVIF image format and set the width to 1024.
+```hocon
+path-configuration = [
+  {
+    path = "/users/**"
+    image {
+      preprocessing {
+        format = "image/avif"
+        w = 1024
+      }
+    }
+  }
+]
+```
+
+## Eager Variant Generation
+You may know which variants you need at the time you store the asset. Eager variants are generated at the time of upload,
+however, the generation is asynchronous and best-effort. The Store Asset API will return before eager variants are
+generated, however, a background process to generate them is kicked off at the time of upload.
+
+**Important**: Eager variants **must** be defined using variant profiles. 
+
+### Best-effort 
+Eager variants are generated on a best-effort basis. If your Direkt instance is killed or the variant fails to generate
+for any reason, it will not be rescheduled. When you request the variant, it will instead be generated on-demand.
+
+### Configuration
+Eager variants are defined in your path configuration. The following configuration will generate two different variants.
+```hocon
+variant-profiles = [
+  {
+    name = small
+    h = 50
+    w = 50
+    fit = cover
+    mimeType = "image/png"
+  },
+  {
+    name = medium
+    h = 100
+    w = 100
+    fit = cover
+    mimeType = "image/png"
+  }
+]
+
+path-configuration = [
+  {
+    path = "/users/**"
+    eager-variants = [
+      small,
+      medium
+    ]
+  }
+]
+```
+
+## On-demand Variant Generation
+Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc), a variant
+is generated from the Original Variant on-demand. The variant is also cached in your configured object store.
+
+# Variant Caching
+When variants are generated eagerly or on-demand, they are cached in your object store. If a cached variant matching
+your request exists, it is returned. If not, the variant is generated and persisted in your object store.
+
+Sometimes, the different parameters result in the same variant. For example, these two requests generate the same variant:
+```http
+GET /assets/users/123/profile-picture?f=h&r=180
+```
+and
+```http
+GET /assets/users/123/profile-picture?f=v
+```
+The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that 
+is vertically-flipped. Direkt is intelligent enough to know the resulting variant is the same.
+
+# Deleting your Asset
+Deleting your asset results in all variants belonging to the asset also being deleted.
