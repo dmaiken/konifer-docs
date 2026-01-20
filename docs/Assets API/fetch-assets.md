@@ -39,7 +39,9 @@ GET /assets/users/123/profile-picture/-/metadata
 
 ## Return format
 You can return your asset in one of five different return formats:
-1. `link` (**default**): Returns a link to the asset in your object store. If you have any LQIPs enabled, these are returned as well.
+
+### `link` (default) 
+Returns a link to the asset in your object store. If you have any LQIPs enabled, these are returned as well.
 ```http
 GET /assets/users/123/profile-picture/-/link
 OR
@@ -55,13 +57,14 @@ Returns:
   }
 }
 ```
-### Asset Link Response
+#### Asset Link Response
 | Field Name        | Type            | Description                                                                                        |
 |-------------------|-----------------|----------------------------------------------------------------------------------------------------|
 | `url`             | String          | The S3 URL of the requested variant - can be path or virtual-host style depending on configuration |
 | `lqip`            | LQIP            | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration                       |
 
-2. `content`: This is typically used when you want Direkt to apply transformations (e.g., resizing) and stream the result without 
+### `content`
+Typically used when you want Direkt to apply transformations (e.g., resizing) and stream the result without 
 exposing the underlying S3 URL.
 ```http
 GET /assets/users/123/profile-picture/-/content
@@ -72,8 +75,9 @@ HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
 ```
-3. `download`: similar to `content` but sets the `Content-Disposition` header so that the asset triggers a "Save As"
-   dialog in a browser.
+
+### `download`
+Similar to `content` but sets the `Content-Disposition` header so that the asset triggers a "Save As" dialog in a browser.
 ```http
 GET /assets/users/123/profile-picture/-/download
 ```
@@ -86,7 +90,8 @@ Content-Disposition: attachment; filename="profile-picture.jpeg"
 ```
 > Note: the `filename` in the `Content-Dipsosition` headers will be the `alt` if supplied, or else the path.
 
-4. `redirect`: a redirect (307) to the object store URL
+### `redirect`
+A redirect (307) to the object store URL
 ```http
 GET /assets/users/123/profile-picture/-/redirect
 ```
@@ -95,7 +100,9 @@ Returns a **`Temporary Redirect 307`**:
 Code: 307
 Location: https://assets.s3.us-east-2.amazonaws.com/d905170f-defd-47e4-b606-d01993ba7b42
 ```
-5. `metadata`: a json response of the image and it's properties, cached variants, and image attributes.
+
+### `metadata`
+A json response of the image and it's properties, cached variants, and image attributes.
 ```http
 GET /assets/users/123/profile-picture/-/metadata
 ```
@@ -130,7 +137,8 @@ Returns:
   "createdAt": "2025-11-12T01:20:55" // ISO 8601
 }
 ```
-### Asset Metadata Response
+
+#### Asset Metadata Response
 | Field Name  | Type         | Description                                                          |
 |-------------|--------------|----------------------------------------------------------------------|
 | `class`     | String       | The type of the asset, currently always `IMAGE`                      |
