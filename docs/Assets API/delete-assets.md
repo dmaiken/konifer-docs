@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 id: asset-deleting
 title: Deleting Assets
 sidebar_label: "Delete"

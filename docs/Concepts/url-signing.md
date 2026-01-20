@@ -38,3 +38,14 @@ GET /assets/users/123/profile?h=300&blur=20&format=webp&s=f7bc83f430538424b13298
 ```
 
 If URL-signing is enabled, then all requests missing a signature will return a 403. Invalid signatures will also return a 403.
+
+## S3 Presigned URLs
+To enable S3 Presigned URLs at the global level for storage providers that support it, configure `presign` within your `direkt.conf` file.
+```hocon
+s3 {
+  presign {
+    enabled = true # Default is false
+    ttl = 1h # Duration format. Default is 30 minutes (30m)
+  }
+}
+```
