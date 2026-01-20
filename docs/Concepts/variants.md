@@ -55,7 +55,7 @@ You may know which variants you need at the time you store the asset. Eager vari
 however, the generation is asynchronous and best-effort. The Store Asset API will return before eager variants are
 generated, however, a background process to generate them is kicked off at the time of upload.
 
-**Important**: Eager variants **must** be defined using variant profiles. 
+**Important**: Eager variants _must_ be defined using variant profiles. 
 
 ### Best-effort 
 Eager variants are generated on a best-effort basis. If your Direkt instance is killed or the variant fails to generate

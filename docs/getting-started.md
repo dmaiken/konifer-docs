@@ -9,10 +9,10 @@ Direkt is deployed **exclusively via Docker**. Due to the precise configuration 
 
 # Requirements
 Direkt requires the following to start:
-1. **Container Runtime:** A functional installation of **Docker** or any **OCI-compatible runtime**
-2. **Database:** A running database instance, such as **PostgreSQL** (required for production use or depending on the specified configuration).
-3. **Object Store:** Access to an **S3 API-compatible object store** (e.g., AWS S3, Cloudflare R2, MinIO, etc.).
-4. **Configuration:** A configuration file named `direkt.conf` using **HOCON** syntax.
+1. **Container Runtime:** A functional installation of Docker or any OCI-compatible runtime
+2. **Database:** A running database instance, such as PostgreSQL (required for production use or depending on the specified configuration).
+3. **Object Store:** Access to an S3 API-compatible object store (e.g., AWS S3, Cloudflare R2, MinIO, etc.). The filesystem is also a supported option.
+4. **Configuration:** A configuration file named `direkt.conf` using HOCON syntax.
 
 # Development mode
 Direkt can start up using an in-memory object store and/or metadata store for development use. In-memory configuration

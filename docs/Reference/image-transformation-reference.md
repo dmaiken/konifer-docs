@@ -5,7 +5,7 @@ title: Image Transformation
 sidebar_label: "Image Transformations"
 ---
 
-# 🛠️ Image Transformations
+# Image Transformations
 
 Direkt offers a robust suite of transformation options to create variants from your image assets. The parameters below can be used to:
 - Query a variant on-demand using the Fetch Asset API
@@ -31,7 +31,7 @@ Direkt offers a robust suite of transformation options to create variants from y
 | `bg`        | Background | The background color (used with `pad` or transparent images).             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)             | Transparent / White (Format dependent) |
 
 
-## 📐 Image Resizing
+## Image Resizing
 
 Image resizing behavior is controlled by the interaction between Height (`h`), Width (`w`), and Fit (`fit`).
 
@@ -72,7 +72,7 @@ Currently, 3 gravity options are supported:
 
 ---
 
-## 🖼️ Image Formats & Quality
+## Image Formats & Quality
 
 Direkt supports the following modern image formats:
 * **JPEG**
@@ -97,7 +97,7 @@ Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) l
 
 ---
 
-## 🔄 Geometry & Effects
+## Geometry & Effects
 
 ### Rotate (`r`)
 The `r` parameter rotates the image clockwise in 90-degree increments.
@@ -125,7 +125,7 @@ Applies a Gaussian blur. The value represents the sigma of the blur.
 
 ---
 
-## 🎨 Borders & Padding
+## Borders & Padding
 
 You can add a border or padding to an image using the `pad` parameter, which specifies the size (in pixels) to extend the image canvas.
 

@@ -5,7 +5,7 @@ title: Image Processing Architecture
 sidebar_label: "Image Processing"
 ---
 
-# ⚙️ Image Processing Architecture
+# Image Processing Architecture
 
 Direkt leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a 
 demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does 
@@ -14,7 +14,7 @@ not load the entire image into memory. Instead, it streams the image in small ch
 This architecture allows Direkt to handle large assets (e.g., 100MB+ images) with a very small memory footprint and 
 extremely low latency.
 
-## 🧠 Memory Management
+## Memory Management
 
 Because Direkt is a Kotlin application running on the JVM, but libvips is a native C library, memory is managed in two 
 distinct zones:
@@ -28,7 +28,7 @@ distinct zones:
 > Libvips allocates memory **off-heap**. If you observe the container running out of memory (OOM), you must increase 
 > the total container memory limit, not the JVM heap.
 
-## 🧵 Variant Workers
+## Variant Workers
 
 Direkt utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being 
 overwhelmed by a sudden spike in complex transformation requests.

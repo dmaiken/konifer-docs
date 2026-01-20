@@ -11,7 +11,7 @@ query modifiers.
 # Query Modifiers
 Query modifiers are positional values specified after the path-separator, `/-/`. For the Fetch Asset API, the positional ordering is:
 ```http
-GET /assets/{path}/-/{return_format}/{ordering}/{limit}
+GET /assets/{path}/-/{return_format}/{order}/{limit}
 ```
 
 ## Defaults
