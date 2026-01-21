@@ -4,19 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="image processing, transformation reference, storage">
-      <change afterPath="$PROJECT_DIR$/docs/Concepts/asset-metadata.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="URL signing and HTTP caching">
+      <change afterPath="$PROJECT_DIR$/docs/Assets API/update-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/store-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/variant-profiles.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/variants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/variants.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/variant-storage.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/variant-storage.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/getting-started.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting-started.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/url-signing.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +103,7 @@
       <workItem from="1764035406887" duration="24000" />
       <workItem from="1764109271732" duration="7000" />
       <workItem from="1764378311637" duration="46000" />
-      <workItem from="1768861248269" duration="6870000" />
+      <workItem from="1768861248269" duration="9546000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -137,7 +129,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763605539898</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="More work">
+      <option name="closed" value="true" />
+      <created>1768870234359</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1768870234360</updated>
+    </task>
+    <task id="LOCAL-00005" summary="URL signing and HTTP caching">
+      <option name="closed" value="true" />
+      <created>1768872576163</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768872576163</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -149,6 +157,8 @@
     <MESSAGE value="More documentation" />
     <MESSAGE value="Good start on the image transformation reference" />
     <MESSAGE value="image processing, transformation reference, storage" />
-    <option name="LAST_COMMIT_MESSAGE" value="image processing, transformation reference, storage" />
+    <MESSAGE value="More work" />
+    <MESSAGE value="URL signing and HTTP caching" />
+    <option name="LAST_COMMIT_MESSAGE" value="URL signing and HTTP caching" />
   </component>
 </project>

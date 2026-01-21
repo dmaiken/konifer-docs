@@ -6,7 +6,7 @@ sidebar_label: "HTTP Caching"
 ---
 
 # Overview
-Direkt exposes highly-customizable `Cache-Control` headers. Due to the relative nature of the API, no assumptions are made
+Konifer exposes highly-customizable `Cache-Control` headers. Due to the relative nature of the API, no assumptions are made
 regarding the appropriate `Cache-Control` header to apply to an asset. 
 
 ## Cache-Control Configuration
@@ -23,7 +23,7 @@ The `Cache-Control` header can be configured per-path. The following options are
 | `stale-if-error `         | Set the `stale-if-error` descriptor                   | Integer `> 0`                                     |         |
 | `immutable`               | Whether to set the `immutable` descriptor             | Boolean                                           | `false` |
 
-Direkt does not validate proper semantic `Cache-Control` configurations.
+Konifer does not validate proper semantic `Cache-Control` configurations.
 
 ### Usage
 To configure, specify properties within the `cache-control` block of your path configuration. You can explore more about the proper

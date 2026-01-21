@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Direkt',
+  title: 'Konifer',
   tagline: 'The microservice you need',
   favicon: 'img/favicon.ico',
 
@@ -23,7 +23,7 @@ const config: Config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'dmaiken13',
-  projectName: 'direkt',
+  projectName: 'Konifer',
 
   onBrokenLinks: 'throw',
 
@@ -54,9 +54,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Direkt',
+      title: 'Konifer',
       logo: {
-        alt: 'Direkt Logo',
+        alt: 'Konifer Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -67,7 +67,7 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          href: 'https://github.com/dmaiken/direkt',
+          href: 'https://github.com/dmaiken/Konifer',
           label: 'GitHub',
           position: 'right',
         },

@@ -12,7 +12,7 @@ An asset can have the following metadata supplied when creating or updating an a
 
 ## Alt
 An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It will be returned as asset metadata but
-will also be returned in the `Direkt-Alt` response header when requesting asset `content` or `link`. To comply with 
+will also be returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with 
 general limits set by screen readers, the maximum length of an `alt` is 125 characters.
 
 ## Labels

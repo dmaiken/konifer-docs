@@ -6,20 +6,20 @@ sidebar_label: "Storing Assets"
 ---
 # Storage Architecture
 
-Direkt leverages a dual-store architecture to manage assets efficiently.
+Konifer leverages a dual-store architecture to manage assets efficiently.
 
-1. **Object Store:** Persists the physical variant content (the binaries). Direkt supports AWS S3 and any S3-compatible provider.
+1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3 and any S3-compatible provider.
 2. **Metadata Store:** Persists relational data, path hierarchies, tags, and labels. Currently, PostgreSQL is the supported engine.
 
 ## Object Store Configuration
 
-Direkt supports three object store implementations:
+Konifer supports three object store implementations:
 1. in-memory
 2. S3 (including S3-compatible providers)
 3. Filesystem
 
 ### In-memory (Default)
-For local development, unit testing, or trying out Direkt without infrastructure dependencies, you can enable in-memory storage implementations.
+For local development, unit testing, or trying out Konifer without infrastructure dependencies, you can enable in-memory storage implementations.
 
 > ⚠️ Warning: Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
 > Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
@@ -38,7 +38,7 @@ database {
 
 ### AWS S3
 
-By default, Direkt looks for AWS credentials using the standard [AWS Default Credential Provider Chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html#credentialProviderChain). 
+By default, Konifer looks for AWS credentials using the standard [AWS Default Credential Provider Chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html#credentialProviderChain). 
 This enables seamless authentication when running on EC2 instances with IAM roles or locally with `~/.aws/credentials`.
 
 ⛔ **Requirement**:
@@ -77,7 +77,7 @@ object-store {
 
 ### Filesystem
 
-Direkt can store files to a specified filesystem location. This filesystem path must be configured and has no default property.
+Konifer can store files to a specified filesystem location. This filesystem path must be configured and has no default property.
 ```hocon
 object-store {
   filesystem {
@@ -88,11 +88,11 @@ object-store {
 `mount-path` must exist and must be the path referencing the mounted Docker volume. For example, given this Docker volume mount:
 ```bash
 docker run -d \
-  --name direkt \
+  --name Konifer \
   -p 8080:8080 \
-  -v /path/to/your/direkt.conf:/direkt.conf \
+  -v /path/to/your/Konifer.conf:/Konifer.conf \
   -v /object-store:/mnt/nas1/assets
-  your-registry/direkt:latest
+  your-registry/Konifer:latest
 ```
 The `mount-path` should be `/object-store` and not `/mnt/nas1/assets`.
 
@@ -102,7 +102,7 @@ does not exist when storing an asset, the directory will be created. Similar to 
 the filename.
 
 #### URL resolution
-Direkt is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This will be used
+Konifer is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This will be used
 to prefix the `bucket/key` path. An `http-path` must be specified and has no default. HTTP and HTTPS protcols may be used. 
 A port may optionally be supplied in the URL.
 ```hocon
@@ -121,18 +121,18 @@ https://your-public-site.com/bucket/key
 ### Path-style URL Configuration
 TODO
 
-> 💡 **Note**: If endpoint-url is omitted, Direkt defaults to the standard AWS S3 endpoints.
+> 💡 **Note**: If endpoint-url is omitted, Konifer defaults to the standard AWS S3 endpoints.
 
 ## Metadata Store (PostgreSQL)
-Direkt uses PostgreSQL for robust transactional support and hierarchical path queries.
+Konifer uses PostgreSQL for robust transactional support and hierarchical path queries.
 
 > ⛔ **Requirement**: ltree Extension The ltree extension must be enabled on your PostgreSQL database before 
-> Direkt starts. Run the following SQL command as a superuser:
+> Konifer starts. Run the following SQL command as a superuser:
 > ```sql
 > CREATE EXTENSION IF NOT EXISTS ltree;
 > ```
 
-Define your database connection details in the postgres block of direkt.conf.
+Define your database connection details in the postgres block of Konifer.conf.
 
 ```hocon
 postgres {

@@ -7,16 +7,16 @@ sidebar_label: "Image Processing"
 
 # Image Processing Architecture
 
-Direkt leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a 
+Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a 
 demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does 
 not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
 
-This architecture allows Direkt to handle large assets (e.g., 100MB+ images) with a very small memory footprint and 
+This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a very small memory footprint and 
 extremely low latency.
 
 ## Memory Management
 
-Because Direkt is a Kotlin application running on the JVM, but libvips is a native C library, memory is managed in two 
+Because Konifer is a Kotlin application running on the JVM, but libvips is a native C library, memory is managed in two 
 distinct zones:
 
 1.  **JVM Heap:** Manages the application logic, HTTP layer, and request metadata.
@@ -30,18 +30,18 @@ distinct zones:
 
 ## Variant Workers
 
-Direkt utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being 
+Konifer utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being 
 overwhelmed by a sudden spike in complex transformation requests.
 
 ### Concurrency Limit
-By default, Direkt calculates the worker pool size using the formula: `Available CPU Cores * 2`.
+By default, Konifer calculates the worker pool size using the formula: `Available CPU Cores * 2`.
 
-**Example:** On a 4-core system, Direkt initializes **8 Variant Workers**. This 2x over-provisioning is efficient 
+**Example:** On a 4-core system, Konifer initializes **8 Variant Workers**. This 2x over-provisioning is efficient 
 because image processing is often I/O bound (reading/writing to the object store), allowing the CPU to switch contexts 
 while waiting for data.
 
 ### Configuration
-You can manually override the worker count in `direkt.conf`:
+You can manually override the worker count in `Konifer.conf`:
 
 ```hocon
 variant-generation {
@@ -66,7 +66,7 @@ waiting until processing completes.
     - Eager variants
 
 > 💡 Fallback Mechanism: If a client requests an Eager Variant that hasn't been processed yet (e.g., due to a long queue)
-> or failed to be processed (e.g., the server shutdown with a full queue), Direkt immediately schedules an On-Demand 
+> or failed to be processed (e.g., the server shutdown with a full queue), Konifer immediately schedules an On-Demand 
 > variant task and the respective Eager Variant task is discarded.
 
 ### Configuring Weights

@@ -6,7 +6,7 @@ sidebar_label: "Variants"
 ---
 # Overview
 A Variant represents a specific, transformed version of the asset's content. It is generated using the
-transformation options available within Direkt (e.g., resizing, cropping, format change).
+transformation options available within Konifer (e.g., resizing, cropping, format change).
 
 A variant is composed of:
 1.  **Attributes**: Properties of the variant, such as its `height`, `width`, and `mimeType`.
@@ -58,7 +58,7 @@ generated, however, a background process to generate them is kicked off at the t
 **Important**: Eager variants _must_ be defined using variant profiles. 
 
 ### Best-effort 
-Eager variants are generated on a best-effort basis. If your Direkt instance is killed or the variant fails to generate
+Eager variants are generated on a best-effort basis. If your Konifer instance is killed or the variant fails to generate
 for any reason, it will not be rescheduled. When you request the variant, it will instead be generated on-demand.
 
 ### Configuration
@@ -109,7 +109,7 @@ and
 GET /assets/users/123/profile-picture?f=v
 ```
 The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that 
-is vertically-flipped. Direkt is intelligent enough to know the resulting variant is the same.
+is vertically-flipped. Konifer is intelligent enough to know the resulting variant is the same.
 
 # Deleting your Asset
 Deleting your asset results in all variants belonging to the asset also being deleted.

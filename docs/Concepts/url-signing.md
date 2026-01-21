@@ -6,7 +6,7 @@ sidebar_label: "URL Signing"
 ---
 # Overview
 URL Signing is a method of ensuring that a request cannot be tampered with. It is _highly_ recommended to require signed URLs
-if exposing Direkt publicly to prevent denial-of-service attacks.
+if exposing Konifer publicly to prevent denial-of-service attacks.
 
 Currently URL signing is only utilized when fetching assets. URL signatures cannot be used for storing, deleting, or updating an asset.
 
@@ -17,7 +17,7 @@ Currently URL signing is only utilized when fetching assets. URL signatures cann
 - `hmac_sha512`
 
 ## Configuration
-To enable URL signing, configure your secret and your algorithm in `direkt.conf`.
+To enable URL signing, configure your secret and your algorithm in `Konifer.conf`.
 ```hocon
 url-signing {
   enabled = true
@@ -40,7 +40,7 @@ GET /assets/users/123/profile?h=300&blur=20&format=webp&s=f7bc83f430538424b13298
 If URL-signing is enabled, then all requests missing a signature will return a 403. Invalid signatures will also return a 403.
 
 ## S3 Presigned URLs
-To enable S3 Presigned URLs at the global level for storage providers that support it, configure `presign` within your `direkt.conf` file.
+To enable S3 Presigned URLs at the global level for storage providers that support it, configure `presign` within your `konifer.conf` file.
 ```hocon
 s3 {
   presign {

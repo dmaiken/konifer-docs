@@ -7,7 +7,7 @@ sidebar_label: "Image Transformations"
 
 # Image Transformations
 
-Direkt offers a robust suite of transformation options to create variants from your image assets. The parameters below can be used to:
+Konifer offers a robust suite of transformation options to create variants from your image assets. The parameters below can be used to:
 - Query a variant on-demand using the Fetch Asset API
 - Define a Variant Profile
 - Configure Pre-processing rules
@@ -74,7 +74,7 @@ Currently, 3 gravity options are supported:
 
 ## Image Formats & Quality
 
-Direkt supports the following modern image formats:
+Konifer supports the following modern image formats:
 * **JPEG**
 * **PNG**
 * **WEBP**
@@ -102,7 +102,7 @@ Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) l
 ### Rotate (`r`)
 The `r` parameter rotates the image clockwise in 90-degree increments.
 
-If `auto` is supplied, Direkt reads the EXIF `Orientation` metadata from the Original Variant and rotates the image 
+If `auto` is supplied, Konifer reads the EXIF `Orientation` metadata from the Original Variant and rotates the image 
 accordingly. The resulting transformed variant will have the EXIF `Orientation` tag stripped to prevent double-rotation
 by displays.
 

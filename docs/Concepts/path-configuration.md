@@ -5,13 +5,13 @@ title: Path Configuration
 sidebar_label: "Path Configuration"
 ---
 # Overview
-Path Configuration is one of the most powerful features in Direkt. It gives you fine-grained control over how your 
+Path Configuration is one of the most powerful features in Konifer. It gives you fine-grained control over how your 
 assets are processed, stored, and delivered, all based on the API path you use to store them.
 
 This system allows you to treat different categories of assets (like public avatars, private documents, or marketing 
-materials) in completely different ways, all from a single, unified configuration file (`direkt.conf`).
+materials) in completely different ways, all from a single, unified configuration file (`Konifer.conf`).
 
-Path Configuration is defined in the `path-configuration` array in `direkt.conf`. Each object in the array must have 
+Path Configuration is defined in the `path-configuration` array in `Konifer.conf`. Each object in the array must have 
 a `path` attribute that specifies the path pattern it applies to.
 
 ## Example Configuration
@@ -46,8 +46,8 @@ path-configuration = [
 ```
 
 # Wildcard Matching
-You don't have to define rules for every exact path. Direkt allows you to apply rules to entire categories of assets 
-using wildcards in your `direkt.conf` file.
+You don't have to define rules for every exact path. Konifer allows you to apply rules to entire categories of assets 
+using wildcards in your `Konifer.conf` file.
 
 There are two types of wildcards:
 ## Single Segment (`*`)
@@ -84,7 +84,7 @@ path-configuration = [
 ]
 ```
 ## Shallow Inheritance
-Direkt's inheritance is **shallow**. Nested configuration values within objects or lists are not merged.
+Konifer's inheritance is **shallow**. Nested configuration values within objects or lists are not merged.
 
 If a child path defines a list or object property (like `allowed-content-types`), the child's property completely 
 overwrites the parent's property.
@@ -137,7 +137,7 @@ root of the inheritance tree. All other paths will inherit from this base config
 
 ## System Defaults
 
-For any value not defined in the `/**` path or any of its children, Direkt uses a hardcoded system default. 
+For any value not defined in the `/**` path or any of its children, Konifer uses a hardcoded system default. 
 Consult the Path Configuration Reference (TODO) to determine the system default for each property.
 
 ## Example

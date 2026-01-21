@@ -5,7 +5,7 @@ title: Deleting Assets
 sidebar_label: "Delete"
 ---
 # Overview
-Direkt takes a simple approach to deleting assets. When the asset is deleted, the metadata is deleted synchronously. All variant content is
+Konifer takes a simple approach to deleting assets. When the asset is deleted, the metadata is deleted synchronously. All variant content is
 removed from the object store asynchronously, however the variant metadata is deleted synchronously. There is **no recovery of an asset** after it is deleted.
 
 # Delete Modifiers
