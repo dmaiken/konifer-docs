@@ -21,7 +21,7 @@ Konifer supports three object store implementations:
 ### In-memory (Default)
 To enable development mode, set the following flags in your configuration:
 
-```hocon
+```json5
 object-store {
   in-memory = true
 }
@@ -39,7 +39,7 @@ This enables seamless authentication when running on EC2 instances with IAM role
 Even when using implicit credentials, you **must** specify the `region`. This is required to correctly generate public 
 URLs for your assets.
 
-```hocon
+```json5
 object-store {
   s3 {
     # Required for URL generation
@@ -53,7 +53,7 @@ object-store {
 For non-AWS object stores (e.g., Cloudflare R2, MinIO, DigitalOcean Spaces, Oracle Cloud), you must explicitly provide 
 the endpoint and credentials.
 
-```hocon
+```json5
 object-store {
   s3 {
     # The full URL to your provider's API
@@ -72,7 +72,7 @@ object-store {
 ### Filesystem
 
 Konifer can store files to a specified filesystem location. This filesystem path must be configured and has no default property.
-```hocon
+```json5
 object-store {
   filesystem {
     mount-path = "/path/to/filesystem/mount"
@@ -99,7 +99,7 @@ the filename.
 Konifer is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This will be used
 to prefix the `bucket/key` path. An `http-path` must be specified and has no default. HTTP and HTTPS protcols may be used. 
 A port may optionally be supplied in the URL.
-```hocon
+```json5
 object-store {
   filesystem {
     http-path = "https://your-public-site.com"
@@ -108,7 +108,7 @@ object-store {
 }
 ```
 When fetching an asset with `link` or `redirect` return formats, the asset link will be returned as:
-```http request
+```http
 https://your-public-site.com/bucket/key
 ```
 
@@ -128,7 +128,7 @@ Konifer uses PostgreSQL for robust transactional support and hierarchical path q
 
 Define your database connection details in the postgres block of konifer.conf.
 
-```hocon
+```json5
 postgres {
   host = "localhost"
   port = 5432

@@ -16,7 +16,7 @@ be `true` for the variant that represents the original supplied content.
 Binary asset data can be supplied using [HTTP Multipart Form Data](https://www.ietf.org/rfc/rfc2388.txt). More information
 about HTTP Multipart Forms [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/POST). Your request
 should look like this:
-```http request
+```http
 POST /assets/users/123 HTTP/1.1
 Host: your.api.com
 Content-Type: multipart/form-data; boundary=---------------------------974767299852498929531610575
@@ -44,7 +44,7 @@ Only one image and one form multipart can be supplied.
 ## URL upload
 If you wish to supply a URL referencing your asset, you must allow the subdomain in your configuration. By default,
 Konifer does not permit any HTTP subdomains. To allow Konifer to connect to an HTTP subdomain, supply them in your HOCON.
-```hocon
+```json5
 source {
   url {
     allowed-domains = [
@@ -84,7 +84,7 @@ Keep this in mind when defining any ingest transformations. For example shrinkin
 your ability to create sharp, resized variants larger than 50x50.
 
 The following configuration will convert the supplied asset content to an AVIF image format and set the width to 1024.
-```hocon
+```json5
 path-configuration = [
   {
     path = "/users/**"

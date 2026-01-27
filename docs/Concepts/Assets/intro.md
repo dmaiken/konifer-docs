@@ -15,14 +15,14 @@ asset's content is considered immutable.
 An asset is created by calling `POST:/assets/{your/defined/path}`. This way, _you_ define the domain structure
 of the platform. For example, if your assets are primarily user-generated content, you may want to organize your API around
 your users.
-```http request 
+```http 
 POST /assets/users/123/profile-picture
 ```
-```http request
+```http
 POST /assets/users/234/background
 ```
 If they were blog-oriented:
-```http request 
+```http 
 POST /assets/blog/123/post/5
 ```
 
@@ -68,38 +68,38 @@ To specify them when storing or updating an asset, use the `labels` field in the
 
 ### Querying
 Labels can be used to query for assets. They are supplied as query parameters.
-```http request 
+```http 
 GET /assets/users/123?label-key=label-value&phone=Android
 ```
 Labels can also be combined with other query modifiers to further filter your results. For example, this returns the metadata of the 5 most-recently
 created assets containing the label of `phone=iphone`:
-```http request 
+```http 
 GET /assets/users/123/-/metadata/created/5?phone=iphone
 ```
 
 ### Deleting
 Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5 most-recently
 created assets containing the label of `phone=iphone`:
-```http request 
+```http 
 DELETE /assets/users/123/-/created/5?phone=iphone
 ```
 
 #### Delete all with label(s)
 To delete all assets at a particular path, set your `limit` to `all` and supply the labels.
-```http request 
+```http 
 DELETE /assets/users/123/-/all?phone=iphone
 ```
 
 #### Recursive delete
 Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s) and the `recursive` modifier.
-```http request 
+```http 
 DELETE /assets/users/123/-/recursive?phone=iphone
 ```
 
 ### Reserved words
 Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with the key `w`, prefix the key with
 `label:`.
-```http request
+```http
 GET /assets/users/123/-/metadata/created/5?label:w=wValue
 ```
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.

@@ -39,7 +39,7 @@ for any reason, it will not be rescheduled. When you request the variant, it wil
 
 ### Configuration
 Eager variants are defined in your path configuration. The following configuration will generate two different variants.
-```hocon
+```json5
 variant-profiles = [
   {
     name = small
@@ -77,11 +77,11 @@ When variants are generated eagerly or on-demand, they are cached in your object
 your request exists, it is returned. If not, the variant is generated and persisted in your object store.
 
 Sometimes, the different parameters result in the same variant. For example, these two requests generate the same variant:
-```http request
+```http
 GET /assets/users/123/profile-picture?f=h&r=180
 ```
 and
-```http request
+```http
 GET /assets/users/123/profile-picture?f=v
 ```
 The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that 

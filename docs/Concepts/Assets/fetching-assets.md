@@ -18,19 +18,19 @@ The following are the default values and can be omitted as modifiers:
 - ordering: `created`
 
 So this:
-```http request
+```http
 GET /assets/users/123/profile-picture
 ```
 Is the same as:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/link/created/
 ```
 Any default can be omitted for brevity
-```http request
+```http
 GET /assets/users/123/profile-picture/-/metadata/created
 ```
 is the same as:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/metadata
 ```
 
@@ -39,7 +39,7 @@ You can return your asset in one of five different return formats:
 
 ### `link` (default)
 Returns a link to the asset in your object store. If you have any LQIPs enabled, these are returned as well.
-```http request
+```http
 GET /assets/users/123/profile-picture/-/link
 ```
 Returns:
@@ -63,11 +63,11 @@ Returns:
 ### `content`
 Typically used when you want Konifer to apply transformations (e.g., resizing) and stream the result without
 exposing the underlying S3 URL.
-```http request
+```http
 GET /assets/users/123/profile-picture/-/content
 ```
 Returns:
-```http request
+```http
 HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
@@ -76,11 +76,11 @@ K-Alt: "Your defined alt, if any"
 
 ### `download`
 Similar to `content` but sets the `Content-Disposition` header so that the asset triggers a "Save As" dialog in a browser.
-```http request
+```http
 GET /assets/users/123/profile-picture/-/download
 ```
 Returns:
-```http request
+```http
 HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
@@ -90,18 +90,18 @@ Content-Disposition: attachment; filename="profile-picture.jpeg"
 
 ### `redirect`
 A redirect (307) to the object store URL
-```http request
+```http
 GET /assets/users/123/profile-picture/-/redirect
 ```
 Returns a **`Temporary Redirect 307`**:
-```http request
+```http
 Code: 307
 Location: https://assets.s3.us-east-2.amazonaws.com/d905170f-defd-47e4-b606-d01993ba7b42
 ```
 
 ### `metadata`
 A json response of the image and it's properties, cached variants, and image attributes.
-```http request
+```http
 GET /assets/users/123/profile-picture/-/metadata
 ```
 Returns:
@@ -156,11 +156,11 @@ meaning the asset(s) are returned in the order of creation, **descending (newest
 path operates like a stack where the newest image is returned first.
 
 To specify an ordering place it after the return format option:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/redirect/created
 ```
 This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/created
 ```
 TODO: support `!created` and `modified`.
@@ -168,7 +168,7 @@ TODO: support `!created` and `modified`.
 ## Limit
 For `metadata` return formats, you can return more than one.  To return the 3 most-recent assets, specify the `limit` query 
 parameter, or `-1` for all assets within the path:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/link/created?limit=3
 ```
 
@@ -178,11 +178,11 @@ within your path. It is guaranteed to be unique relative to the path. Assets can
 using the `entry` Query Modifier.
 
 To fetch a specific asset (`entryId` of 42) using the default `link` return format:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/entry/42
 ```
 Additionally, you can specify the return format along with the `entryId`:
-```http request
+```http
 GET /assets/users/123/profile-picture/-/entry/42/redirect
 ```
 Ordering query selectors **cannot** be used with the `entry` modifier.

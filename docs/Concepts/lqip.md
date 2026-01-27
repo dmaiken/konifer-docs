@@ -22,7 +22,7 @@ an LQIP will not be regenerated, saving compute resources.
 # Usage
 LQIPs are disabled by default. LQIP implementations are enabled within Path Configuration. To enable both implementations, 
 define your Path Configuration to be:
-```hocon
+```json5
 path-configuration = [
   {
     path = "/users"
@@ -34,7 +34,7 @@ path-configuration = [
 ]
 ```
 If LQIPs are enabled in a parent path and you wish to disable in a specific child path, set `lqip` to an empty array:
-```hocon
+```json5
 path-configuration = [
   {
     path = "/**"

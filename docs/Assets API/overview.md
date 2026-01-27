@@ -16,11 +16,11 @@ how many assets to retrieve, and ordering.
 
 For example, let's say you wish to store an image for a customer's user profile:
 ## To store
-```http request
+```http
 POST /assets/users/123/profile-picture
 ```
 ## To query
-```http request
+```http
 GET /assets/users/123/profile-picture
 ```
 

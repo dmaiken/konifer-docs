@@ -11,7 +11,7 @@ There are two ways to store an asset:
 2. **URL Source:** Use this when the asset content must be downloaded by Konifer from an external URL.
 
 The URL structure for both is:
-```http request
+```http
 POST /assets/{your/defined/path}
 ```
 And the difference is how the content will be supplied. Both methods cannot be used at the same time.

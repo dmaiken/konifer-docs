@@ -28,7 +28,7 @@ Konifer does not validate proper semantic `Cache-Control` configurations.
 ### Usage
 To configure, specify properties within the `cache-control` block of your path configuration. You can explore more about the proper
 usage of `Cache-Control` header directives [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control).
-```hocon
+```json5
 {
   path-configuration = [
     {
