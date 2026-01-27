@@ -1,8 +1,8 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 id: concepts-variants
-title: Asset Variants
-sidebar_label: "Variants"
+title: Introduction
+sidebar_label: "Introduction"
 ---
 # Overview
 A Variant represents a specific, transformed version of the asset's content. It is generated using the
@@ -22,33 +22,9 @@ can transform the supplied content into the Original Variant. If no pre-processi
 Original Variant is the exact representation of the supplied content.
 
 # Variant Types
-Variants can be generated in 3 different ways:
-- Pre-processing the supplied asset content
+Variants can be generated in 2 different ways (in addition to Ingest Transformations):
 - Eager variant generation
 - On-demand variant generation
-
-## Pre-processing
-When an asset is stored, the asset content can be pre-processed before it is stored as the Original Variant. The result 
-of pre-processing is the original variant but remember, any subsequent variants are generated **from** the original variant. 
-
-Generally speaking, you would not want to downscale your image to 20x20 if you plan to generate large variants on-demand.
-
-### Configuration
-Pre-processing is defined in your path configuration. The following configuration will convert the supplied asset content
-to an AVIF image format and set the width to 1024.
-```hocon
-path-configuration = [
-  {
-    path = "/users/**"
-    image {
-      preprocessing {
-        format = "image/avif"
-        w = 1024
-      }
-    }
-  }
-]
-```
 
 ## Eager Variant Generation
 You may know which variants you need at the time you store the asset. Eager variants are generated at the time of upload,
@@ -101,11 +77,11 @@ When variants are generated eagerly or on-demand, they are cached in your object
 your request exists, it is returned. If not, the variant is generated and persisted in your object store.
 
 Sometimes, the different parameters result in the same variant. For example, these two requests generate the same variant:
-```http
+```http request
 GET /assets/users/123/profile-picture?f=h&r=180
 ```
 and
-```http
+```http request
 GET /assets/users/123/profile-picture?f=v
 ```
 The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that 

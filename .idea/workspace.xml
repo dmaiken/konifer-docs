@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="URL signing and HTTP caching">
-      <change afterPath="$PROJECT_DIR$/docs/Assets API/update-assets.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Rename to Konifer">
+      <change afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/Concepts/architecture.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/url-signing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/overview.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/store-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/asset-metadata.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/url-signing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/variants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/variant-storage.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/getting-started.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting-started.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/intro.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,29 +52,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/daniel/direkt-docs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.start.executor": "Run",
-    "ts.external.directory.path": "/home/daniel/direkt-docs/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/daniel/direkt-docs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/daniel/direkt-docs/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs/Concepts/Variants" />
+      <recent name="$PROJECT_DIR$/docs/Concepts/Assets" />
+      <recent name="$PROJECT_DIR$/docs/Reference" />
       <recent name="$PROJECT_DIR$/docs/Concepts" />
       <recent name="$PROJECT_DIR$/docs/References" />
-      <recent name="$PROJECT_DIR$/docs/Assets API" />
-      <recent name="$PROJECT_DIR$/docs/api" />
     </key>
   </component>
   <component name="RunManager">
@@ -83,8 +101,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
       </set>
     </attachedChunks>
   </component>
@@ -103,7 +121,9 @@
       <workItem from="1764035406887" duration="24000" />
       <workItem from="1764109271732" duration="7000" />
       <workItem from="1764378311637" duration="46000" />
-      <workItem from="1768861248269" duration="9546000" />
+      <workItem from="1768861248269" duration="14363000" />
+      <workItem from="1769288303022" duration="20000" />
+      <workItem from="1769292395711" duration="6681000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -145,7 +165,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768872576163</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="AWS Presigning and create update Assets reference file">
+      <option name="closed" value="true" />
+      <created>1768872919882</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1768872919882</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Rename to Konifer">
+      <option name="closed" value="true" />
+      <created>1768954983084</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1768954983084</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,6 +195,8 @@
     <MESSAGE value="image processing, transformation reference, storage" />
     <MESSAGE value="More work" />
     <MESSAGE value="URL signing and HTTP caching" />
-    <option name="LAST_COMMIT_MESSAGE" value="URL signing and HTTP caching" />
+    <MESSAGE value="AWS Presigning and create update Assets reference file" />
+    <MESSAGE value="Rename to Konifer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rename to Konifer" />
   </component>
 </project>

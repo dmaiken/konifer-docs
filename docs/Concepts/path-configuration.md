@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 id: concepts-path-configuration
 title: Path Configuration
 sidebar_label: "Path Configuration"
@@ -9,9 +9,9 @@ Path Configuration is one of the most powerful features in Konifer. It gives you
 assets are processed, stored, and delivered, all based on the API path you use to store them.
 
 This system allows you to treat different categories of assets (like public avatars, private documents, or marketing 
-materials) in completely different ways, all from a single, unified configuration file (`Konifer.conf`).
+materials) in completely different ways, all from a single, unified configuration file (`konifer.conf`).
 
-Path Configuration is defined in the `path-configuration` array in `Konifer.conf`. Each object in the array must have 
+Path Configuration is defined in the `path-configuration` array in `konifer.conf`. Each object in the array must have 
 a `path` attribute that specifies the path pattern it applies to.
 
 ## Example Configuration
@@ -47,7 +47,7 @@ path-configuration = [
 
 # Wildcard Matching
 You don't have to define rules for every exact path. Konifer allows you to apply rules to entire categories of assets 
-using wildcards in your `Konifer.conf` file.
+using wildcards in your `konifer.conf` file.
 
 There are two types of wildcards:
 ## Single Segment (`*`)

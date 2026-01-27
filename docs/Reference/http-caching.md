@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 5
 id: http-caching
 title: HTTP Caching
 sidebar_label: "HTTP Caching"

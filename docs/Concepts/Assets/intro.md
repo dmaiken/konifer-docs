@@ -1,10 +1,48 @@
 ---
-sidebar_position: 4
-id: concepts-asset-metadata
-title: Asset Metadata
-sidebar_label: "Asset Metadata"
+sidebar_position: 1
+id: concepts-assets
+title: Introduction
+sidebar_label: "Introduction"
 ---
 # Overview
+An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, metadata and content.
+Metadata is stored in Postgres and content is stored in the configured object store (S3, filesystem, or in-memory).
+
+Assets can be created, fetched, and their metadata updated. Content is not updatable since, for caching purposes, an
+asset's content is considered immutable.
+
+## API
+An asset is created by calling `POST:/assets/{your/defined/path}`. This way, _you_ define the domain structure
+of the platform. For example, if your assets are primarily user-generated content, you may want to organize your API around
+your users.
+```http request 
+POST /assets/users/123/profile-picture
+```
+```http request
+POST /assets/users/234/background
+```
+If they were blog-oriented:
+```http request 
+POST /assets/blog/123/post/5
+```
+
+Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By default,
+fetching an asset at a given path will return the most-recently created asset, however, that can be changed using Query Selectors.
+
+## Content
+The following content types are currently supported by Konifer:
+
+| Name    | Content-Type | Format | Animated Format Supported |
+|---------|--------------|--------|---------------------------|
+| JPEG    | `image/jpeg` | `jpg`  | N/A                       |
+| PNG     | `image/png`  | `png`  | No (`apng`)               |
+| WEBP    | `image/webp` | `webp` | Yes                       |
+| AVIF    | `image/avif` | `avif` | No                        |
+| JPEG_XL | `image/jxl`  | `jxl`  | N/A                       |
+| HEIC    | `image/heic` | `heic` | N/A                       |
+| GIF     | `image/gif`  | `gif`  | Yes                       |
+
+## Metadata
 An asset can have the following metadata supplied when creating or updating an asset:
 - alt
 - labels
@@ -12,7 +50,7 @@ An asset can have the following metadata supplied when creating or updating an a
 
 ## Alt
 An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It will be returned as asset metadata but
-will also be returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with 
+will also be returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
 general limits set by screen readers, the maximum length of an `alt` is 125 characters.
 
 ## Labels
@@ -30,43 +68,43 @@ To specify them when storing or updating an asset, use the `labels` field in the
 
 ### Querying
 Labels can be used to query for assets. They are supplied as query parameters.
-```http 
+```http request 
 GET /assets/users/123?label-key=label-value&phone=Android
 ```
 Labels can also be combined with other query modifiers to further filter your results. For example, this returns the metadata of the 5 most-recently
 created assets containing the label of `phone=iphone`:
-```http 
+```http request 
 GET /assets/users/123/-/metadata/created/5?phone=iphone
 ```
 
 ### Deleting
 Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5 most-recently
 created assets containing the label of `phone=iphone`:
-```http 
+```http request 
 DELETE /assets/users/123/-/created/5?phone=iphone
 ```
 
-#### Delete All With Label(s)
+#### Delete all with label(s)
 To delete all assets at a particular path, set your `limit` to `all` and supply the labels.
-```http 
+```http request 
 DELETE /assets/users/123/-/all?phone=iphone
 ```
 
-#### Recursive Delete
+#### Recursive delete
 Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s) and the `recursive` modifier.
-```http 
+```http request 
 DELETE /assets/users/123/-/recursive?phone=iphone
 ```
 
 ### Reserved words
-Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with the key `w`, prefix the key with 
+Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with the key `w`, prefix the key with
 `label:`.
-```http
+```http request
 GET /assets/users/123/-/metadata/created/5?label:w=wValue
 ```
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
 
-### Limits
+### Rules
 - Maximum amount of labels: 50
 - Maximum label key length: 128 characters
 - Maximum label value length: 256 characters
@@ -83,6 +121,6 @@ To specify tags when storing or updating an asset, use the `tags` field in the r
 }
 ```
 
-### Limits
+### Rules
 - Maximum amount of tags: 50
 - Maximum tag value length: 256

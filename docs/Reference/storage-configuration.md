@@ -19,12 +19,6 @@ Konifer supports three object store implementations:
 3. Filesystem
 
 ### In-memory (Default)
-For local development, unit testing, or trying out Konifer without infrastructure dependencies, you can enable in-memory storage implementations.
-
-> ⚠️ Warning: Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
-> Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
-> `OutOfMemoryError` crashes.
-
 To enable development mode, set the following flags in your configuration:
 
 ```hocon
@@ -90,7 +84,7 @@ object-store {
 docker run -d \
   --name Konifer \
   -p 8080:8080 \
-  -v /path/to/your/Konifer.conf:/Konifer.conf \
+  -v /path/to/your/konifer.conf:/konifer.conf \
   -v /object-store:/mnt/nas1/assets
   your-registry/Konifer:latest
 ```
@@ -114,7 +108,7 @@ object-store {
 }
 ```
 When fetching an asset with `link` or `redirect` return formats, the asset link will be returned as:
-```http
+```http request
 https://your-public-site.com/bucket/key
 ```
 
@@ -132,7 +126,7 @@ Konifer uses PostgreSQL for robust transactional support and hierarchical path q
 > CREATE EXTENSION IF NOT EXISTS ltree;
 > ```
 
-Define your database connection details in the postgres block of Konifer.conf.
+Define your database connection details in the postgres block of konifer.conf.
 
 ```hocon
 postgres {

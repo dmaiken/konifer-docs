@@ -41,7 +41,7 @@ because image processing is often I/O bound (reading/writing to the object store
 while waiting for data.
 
 ### Configuration
-You can manually override the worker count in `Konifer.conf`:
+You can manually override the worker count in `konifer.conf`:
 
 ```hocon
 variant-generation {

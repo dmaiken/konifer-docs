@@ -10,7 +10,7 @@ removed from the object store asynchronously, however the variant metadata is de
 
 # Delete Modifiers
 Delete modifiers are positional values specified after the path-separator, `/-/`. For the Delete Assets API, the positional ordering is:
-```http
+```http request
 DELETE /assets/{path}/-/{order}/{limit}
 ```
 
@@ -20,11 +20,11 @@ The following are the default values and can be omitted as modifiers:
 - limit: 1
 
 So this:
-```http
+```http request
 DELETE /assets/users/123/profile-picture
 ```
 Is the same as:
-```http
+```http request
 DELETE /assets/users/123/profile-picture/-/created/1
 ```
 
@@ -40,13 +40,13 @@ The `limit` modified functions identically to the `limit` modifier when fetching
 to the supplied `order` will be deleted. 
 
 For example, this will delete the 5 most-recently created assets in the `/users/123/images` path:
-```http 
+```http request 
 DELETE /assets/users/123/images/-/created/5
 ```
 
 # Deleting By `entryId`
 To delete a specific asset by it's `entryId`, supply the `entryId` in the URL:
-```http 
+```http request 
 DELETE /assets/users/123/profile-picture/-/entry/1
 ```
 
@@ -54,13 +54,13 @@ DELETE /assets/users/123/profile-picture/-/entry/1
 To delete all assets at a specific path, set the `limit` to `all`. Any assets defined underneath the supplied with will
 not be deleted.
 
-```http 
+```http request 
 DELETE /assets/users/123/profile-picture/-/all
 ```
 
 # Deleting Assets Recursively
 Let's say we want to delete all assets for user 123. To do so, supply the `recursive` modifier in your request:
-```http 
+```http request 
 DELETE /assets/users/123/-/recursive
 ```
 This will delete all assets with a path that starts with `/users/123`.
