@@ -48,3 +48,10 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Add a line under H2 headers */
+.markdown h2 {
+  border-bottom: 1px solid var(--ifm-hr-background-color);
+  padding-bottom: 0.3rem; /* Space between text and line */
+  margin-bottom: 1rem;    /* Space between line and next paragraph */
+}

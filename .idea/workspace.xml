@@ -4,24 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Break out docs into concepts and reference better">
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/overview.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assets API/store-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Get syntax highlighting working">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/overview.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assets API/update-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/update-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/url-signing.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docusaurus.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/custom.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,9 +70,9 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs/Reference" />
       <recent name="$PROJECT_DIR$/docs/Concepts/Variants" />
       <recent name="$PROJECT_DIR$/docs/Concepts/Assets" />
-      <recent name="$PROJECT_DIR$/docs/Reference" />
       <recent name="$PROJECT_DIR$/docs/Concepts" />
       <recent name="$PROJECT_DIR$/docs/References" />
     </key>
@@ -123,7 +119,7 @@
       <workItem from="1764378311637" duration="46000" />
       <workItem from="1768861248269" duration="14363000" />
       <workItem from="1769288303022" duration="20000" />
-      <workItem from="1769292395711" duration="7614000" />
+      <workItem from="1769292395711" duration="13133000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -189,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769479462303</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Get syntax highlighting working">
+      <option name="closed" value="true" />
+      <created>1769480558778</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1769480558778</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,6 +210,7 @@
     <MESSAGE value="AWS Presigning and create update Assets reference file" />
     <MESSAGE value="Rename to Konifer" />
     <MESSAGE value="Break out docs into concepts and reference better" />
-    <option name="LAST_COMMIT_MESSAGE" value="Break out docs into concepts and reference better" />
+    <MESSAGE value="Get syntax highlighting working" />
+    <option name="LAST_COMMIT_MESSAGE" value="Get syntax highlighting working" />
   </component>
 </project>

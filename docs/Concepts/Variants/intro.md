@@ -57,7 +57,7 @@ variant-profiles = [
   }
 ]
 
-path-configuration = [
+paths = [
   {
     path = "/users/**"
     eager-variants = [

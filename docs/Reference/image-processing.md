@@ -15,7 +15,6 @@ This architecture allows Konifer to handle large assets (e.g., 100MB+ images) wi
 extremely low latency.
 
 ## Memory Management
-
 Because Konifer is a Kotlin application running on the JVM, but libvips is a native C library, memory is managed in two 
 distinct zones:
 
@@ -29,7 +28,6 @@ distinct zones:
 > the total container memory limit, not the JVM heap.
 
 ## Variant Workers
-
 Konifer utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being 
 overwhelmed by a sudden spike in complex transformation requests.
 
@@ -51,12 +49,10 @@ variant-generation {
 ```
 
 ## Scheduling & Priority
-
 Not all transformations are equal. A user waiting for a webpage to load (On-Demand) is more critical than a background 
 thumbnail generation task (Eager).
 
 ### Priority
-
 1. **Synchronous (High Priority)**: These are tasks where a client is actively waiting for a response. The request is 
 waiting until processing completes.
     - On-Demand Variants
@@ -69,8 +65,7 @@ waiting until processing completes.
 > or failed to be processed (e.g., the server shutdown with a full queue), Konifer immediately schedules an On-Demand 
 > variant task and the respective Eager Variant task is discarded.
 
-### Configuring Weights
-
+### Configuring Priority
 The scheduler uses a probabilistic weighting system. By default, it attempts to dedicate 80% of throughput to 
 Synchronous tasks and 20% to Asynchronous tasks.
 

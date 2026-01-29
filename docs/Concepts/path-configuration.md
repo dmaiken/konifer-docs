@@ -5,13 +5,13 @@ title: Path Configuration
 sidebar_label: "Path Configuration"
 ---
 # Overview
-Path Configuration is one of the most powerful features in Konifer. It gives you fine-grained control over how your 
+Path Configuration is one of the most powerful features within Konifer. It gives you fine-grained control over how your 
 assets are processed, stored, and delivered, all based on the API path you use to store them.
 
-This system allows you to treat different categories of assets (like public avatars, private documents, or marketing 
-materials) in completely different ways, all from a single, unified configuration file (`konifer.conf`).
+Path configuration allows you to treat different categories of assets (like public avatars, private documents, or marketing 
+materials) in completely different ways, all from a single, unified configuration file, `konifer.conf`.
 
-Path Configuration is defined in the `path-configuration` array in `konifer.conf`. Each object in the array must have 
+Path Configuration is defined in the `paths` array in `konifer.conf`. Each object in the array must have 
 a `path` attribute that specifies the path pattern it applies to.
 
 ## Example Configuration
@@ -20,7 +20,7 @@ You can configure the path `/public/avatars/**` to:
 - Limit the height and width of a supplied image.
 
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/public/avatars/**"
     eager-variants = [ small, medium, large ]
@@ -34,7 +34,7 @@ While at the same time, configuring the path `/users/*/profile-picture` to:
 - Only accept JPEG images
 
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users/*/profile-picture"
     bucket = "profile-pictures"
@@ -69,7 +69,7 @@ wins**.
 Creating an asset at `/users/123` will use the `users` bucket (inherited from the `/users` path) and will also have 
 restrictions on the allowed content types (defined on the more-specific `/users/123` path).
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users"
     bucket = "users"
@@ -93,7 +93,7 @@ overwrites the parent's property.
 Creating an asset at `/users/123` will not allow `image/png` since list properties are not merged. The `image/png` 
 value from the parent is discarded, not merged.
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users"
     allowed-content-types = [
@@ -113,7 +113,7 @@ path-configuration = [
 Creating an asset at `/users/123` will not allow _any_ content-type. The empty list from the child path overwrites 
 the parent's list.
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users"
     allowed-content-types = [
@@ -144,7 +144,7 @@ Consult the Path Configuration Reference (TODO) to determine the system default 
 Storing at `/users/123/profile-picture` will only allow `image/png` but storing at `/blog/123` would only allow `image/png`.
 
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/**"
     allowed-content-types = [

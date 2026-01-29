@@ -85,7 +85,7 @@ your ability to create sharp, resized variants larger than 50x50.
 
 The following configuration will convert the supplied asset content to an AVIF image format and set the width to 1024.
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users/**"
     image {

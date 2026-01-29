@@ -10,6 +10,7 @@ larger image is downloaded over a network. This can be useful for a variety of r
 implementations:
 - [Blurhash](https://blurha.sh/): By far the most common LQIP implementation
 - [Thumbhash](https://evanw.github.io/thumbhash/): A newer, more compact version of Blurhash
+
 One or both of these can be enabled.
 
 > **Note**: For proper usage and decoding of these LQIP implementations, reference the links above. Correct LQIP 
@@ -23,7 +24,7 @@ an LQIP will not be regenerated, saving compute resources.
 LQIPs are disabled by default. LQIP implementations are enabled within Path Configuration. To enable both implementations, 
 define your Path Configuration to be:
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/users"
     lqip = [ 
@@ -35,7 +36,7 @@ path-configuration = [
 ```
 If LQIPs are enabled in a parent path and you wish to disable in a specific child path, set `lqip` to an empty array:
 ```json5
-path-configuration = [
+paths = [
   {
     path = "/**"
     lqip = [

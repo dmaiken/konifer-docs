@@ -30,7 +30,7 @@ To configure, specify properties within the `cache-control` block of your path c
 usage of `Cache-Control` header directives [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control).
 ```json5
 {
-  path-configuration = [
+  paths = [
     {
       path = "/users"
       cache-control {
