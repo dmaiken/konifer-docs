@@ -8,6 +8,7 @@ const config: Config = {
   title: 'Konifer',
   tagline: 'The microservice you need',
   favicon: 'img/favicon.ico',
+  trailingSlash: false,
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -18,7 +19,7 @@ const config: Config = {
   url: 'https://your-docusaurus-site.example.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/konifer-docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
