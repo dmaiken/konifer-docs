@@ -4,21 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Get syntax highlighting working">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/overview.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Assets API/update-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/update-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Set proper base URL">
+      <change afterPath="$PROJECT_DIR$/docs/Concepts/Assets/updating-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/architecture.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/architecture.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docusaurus.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/custom.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +111,7 @@
       <workItem from="1764378311637" duration="46000" />
       <workItem from="1768861248269" duration="14363000" />
       <workItem from="1769288303022" duration="20000" />
-      <workItem from="1769292395711" duration="13133000" />
+      <workItem from="1769292395711" duration="16128000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -193,11 +185,38 @@
       <option name="project" value="LOCAL" />
       <updated>1769480558778</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="More formatting and get started on github actions deployment">
+      <option name="closed" value="true" />
+      <created>1769646569883</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1769646569883</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Set proper base URL">
+      <option name="closed" value="true" />
+      <created>1769647579871</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1769647579871</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -211,6 +230,8 @@
     <MESSAGE value="Rename to Konifer" />
     <MESSAGE value="Break out docs into concepts and reference better" />
     <MESSAGE value="Get syntax highlighting working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Get syntax highlighting working" />
+    <MESSAGE value="More formatting and get started on github actions deployment" />
+    <MESSAGE value="Set proper base URL" />
+    <option name="LAST_COMMIT_MESSAGE" value="Set proper base URL" />
   </component>
 </project>

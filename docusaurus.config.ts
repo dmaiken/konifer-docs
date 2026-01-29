@@ -69,7 +69,7 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          href: 'https://github.com/dmaiken/Konifer',
+          href: 'https://github.com/dmaiken/konifer',
           label: 'GitHub',
           position: 'right',
         },

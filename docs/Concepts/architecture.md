@@ -24,9 +24,11 @@ Konifer treats the Object Store as a dumb "Key-Value" blob store.
 ### In-memory
 For local development, unit testing, or trying out Konifer without infrastructure dependencies, you can enable in-memory storage implementations.
 
-> ⚠️ Warning: Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
-> Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
-> `OutOfMemoryError` crashes.
+:::warning
+Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
+Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
+`OutOfMemoryError` crashes.
+:::
 
 ### S3
 Konifer supports any S3 provider in addition to Amazon S3. This enables the usage of local storage options like [MiniIO](https://www.min.io/) 
@@ -40,7 +42,9 @@ Konifer uses Postgres to manage asset metadata. This is done because relying on 
 Konifer leverages the [Ltree](https://www.postgresql.org/docs/current/ltree.html) extension and is required to be enabled on the 
 configured Postgres database.
 
-> ⚠️ Warning: The Ltree extension must be enabled within Postgres. Enabling extensions generally requires superuser privileges.
+:::warning
+The Ltree extension must be enabled within Postgres. Enabling extensions generally requires superuser privileges.
+:::
 
 ## Temporary Files
 In order to keep memory pressure low when storing assets and generating variants, temporary files are used extensively.

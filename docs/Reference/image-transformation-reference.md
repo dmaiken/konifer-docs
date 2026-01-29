@@ -56,7 +56,9 @@ and any parts of the image that overflow the bounding box are cropped out.
 
 The image is forced to exactly match the provided height and width.
 
-> ⚠️ **Warning:** This **ignores** the original aspect ratio and will result in a squashed or stretched image.
+:::warning
+This **ignores** the original aspect ratio and will result in a squashed or stretched image.
+:::
 
 ### `crop`
 **Requirements:** Both `h` and `w` are required.

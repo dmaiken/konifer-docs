@@ -21,11 +21,13 @@ distinct zones:
 1.  **JVM Heap:** Manages the application logic, HTTP layer, and request metadata.
 2.  **Native (Off-Heap) Memory:** Manages the actual image buffers and pixel data used by libvips.
 
-> ⚠️ **Operational Warning: Memory Tuning**
-> Increasing the JVM Heap size (via `-Xmx`) **will not** help if you are seeing memory pressure during image processing.
->
-> Libvips allocates memory **off-heap**. If you observe the container running out of memory (OOM), you must increase 
-> the total container memory limit, not the JVM heap.
+:::warning
+**Operational Warning: Memory Tuning**
+Increasing the JVM Heap size (via `-Xmx`) **will not** help if you are seeing memory pressure during image processing.
+
+Libvips allocates memory **off-heap**. If you observe the container running out of memory (OOM), you must increase 
+the total container memory limit, not the JVM heap.
+:::
 
 ## Variant Workers
 Konifer utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being 
@@ -34,7 +36,7 @@ overwhelmed by a sudden spike in complex transformation requests.
 ### Concurrency Limit
 By default, Konifer calculates the worker pool size using the formula: `Available CPU Cores * 2`.
 
-**Example:** On a 4-core system, Konifer initializes **8 Variant Workers**. This 2x over-provisioning is efficient 
+**Example:** On a 4-core system, Konifer initializes 8 Variant Workers. This 2x over-provisioning is efficient 
 because image processing is often I/O bound (reading/writing to the object store), allowing the CPU to switch contexts 
 while waiting for data.
 
