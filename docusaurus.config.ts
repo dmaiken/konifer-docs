@@ -84,8 +84,9 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
       additionalLanguages: [
         'http',
-        'json5',
-        'json'
+        'json',
+        'java',
+        'scala'
       ],
     },
   } satisfies Preset.ThemeConfig,

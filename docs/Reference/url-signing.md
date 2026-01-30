@@ -17,7 +17,7 @@ Currently URL signing is only utilized when fetching assets. URL signatures cann
 
 ## Configuration
 To enable URL signing, configure your secret and your algorithm in `konifer.conf`.
-```json5
+```hocon
 url-signing {
   enabled = true
   secret-key = secret
@@ -40,7 +40,7 @@ If URL-signing is enabled, then all requests missing a signature will return a 4
 
 ## S3 Presigned URLs
 To enable S3 Presigned URLs at the global level for storage providers that support it, configure `presign` within your `konifer.conf` file.
-```json5
+```hocon
 s3 {
   presign {
     enabled = true # Default is false

@@ -38,7 +38,7 @@ for any reason, it will not be rescheduled. When you request the variant, it wil
 
 ### Configuration
 Eager variants are defined in your path configuration. The following configuration will generate two different variants.
-```json5
+```hocon
 variant-profiles = [
   {
     name = small

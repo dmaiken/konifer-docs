@@ -43,7 +43,7 @@ while waiting for data.
 ### Configuration
 You can manually override the worker count in `konifer.conf`:
 
-```json5
+```hocon
 variant-generation {
   # Overrides the auto-detection mechanism
   workers = 10
@@ -77,7 +77,7 @@ This ensures that background work continues to progress (preventing starvation) 
 > pulled from until Synchronous tasks are queued. In other words, the scheduler's algorithm leverages work-stealing. 
 
 To change this weighting:
-```json5
+```hocon
 variant-generation {
   # Sets the target allocation for Synchronous tasks (0-100).
   # Asynchronous allocation is automatically calculated as (100 - synchronous-priority).

@@ -4,27 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Write update-concepts page and use better warning boxes">
-      <change afterPath="$PROJECT_DIR$/docs/Concepts/Assets/deleting-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Delete API concept page">
+      <change afterPath="$PROJECT_DIR$/src/prism/prism.hocon.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/theme/prism-include-languages.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/updating-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/updating-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/architecture.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/architecture.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/url-signing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docusaurus.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -120,7 +124,7 @@
       <workItem from="1764378311637" duration="46000" />
       <workItem from="1768861248269" duration="14363000" />
       <workItem from="1769288303022" duration="20000" />
-      <workItem from="1769292395711" duration="19433000" />
+      <workItem from="1769292395711" duration="20544000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -218,11 +222,24 @@
       <option name="project" value="LOCAL" />
       <updated>1769649575369</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Delete API concept page">
+      <option name="closed" value="true" />
+      <created>1769735583593</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1769735583593</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/src/prism/prism.hocon.js" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -250,6 +267,7 @@
     <MESSAGE value="More formatting and get started on github actions deployment" />
     <MESSAGE value="Set proper base URL" />
     <MESSAGE value="Write update-concepts page and use better warning boxes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Write update-concepts page and use better warning boxes" />
+    <MESSAGE value="Delete API concept page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Delete API concept page" />
   </component>
 </project>

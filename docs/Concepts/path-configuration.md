@@ -18,7 +18,7 @@ You can configure the path `/public/avatars/**` to:
 - Generate three specific thumbnail sizes eagerly upon upload. 
 - Limit the height and width of a supplied image.
 
-```json5
+```hocon
 paths = [
   {
     path = "/public/avatars/**"
@@ -32,7 +32,7 @@ While at the same time, configuring the path `/users/*/profile-picture` to:
 - Use a completely different S3 bucket.
 - Only accept JPEG images
 
-```json5
+```hocon
 paths = [
   {
     path = "/users/*/profile-picture"
@@ -67,7 +67,7 @@ wins**.
 ### Example
 Creating an asset at `/users/123` will use the `users` bucket (inherited from the `/users` path) and will also have 
 restrictions on the allowed content types (defined on the more-specific `/users/123` path).
-```json5
+```hocon
 paths = [
   {
     path = "/users"
@@ -91,7 +91,7 @@ overwrites the parent's property.
 ### Example 1: List Overwrite
 Creating an asset at `/users/123` will not allow `image/png` since list properties are not merged. The `image/png` 
 value from the parent is discarded, not merged.
-```json5
+```hocon
 paths = [
   {
     path = "/users"
@@ -111,7 +111,7 @@ paths = [
 ### Example 2: Empty List Overwrite
 Creating an asset at `/users/123` will not allow _any_ content-type. The empty list from the child path overwrites 
 the parent's list.
-```json5
+```hocon
 paths = [
   {
     path = "/users"
@@ -142,7 +142,7 @@ Consult the Path Configuration Reference (TODO) to determine the system default 
 ## Example
 Storing at `/users/123/profile-picture` will only allow `image/png` but storing at `/blog/123` would only allow `image/png`.
 
-```json5
+```hocon
 paths = [
   {
     path = "/**"

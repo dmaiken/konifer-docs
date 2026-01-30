@@ -13,7 +13,7 @@ Let's define a `thumbnail` variant profile to have:
 - auto-rotation of the image
 
 At the root level of your configuration, define a `variant-profile` array:
-```json5
+```hocon
 variant-profiles = [
   {
     name = thumbnail
