@@ -4,7 +4,6 @@ id: concepts-architecture
 title: Architecture
 sidebar_label: "Architecture"
 ---
-# Overview
 Konifer leverages a dual-store architecture to manage assets efficiently.
 
 1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3 and any S3-compatible provider.

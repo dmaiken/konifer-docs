@@ -4,7 +4,6 @@ id: concepts-storing-assets
 title: Storing Assets
 sidebar_label: "Storing"
 ---
-# Overview
 When storing an asset, the content must be supplied as well as any optional metadata. The content can be supplied as:
 - a multi-part upload if you possess the binary asset content
 - a URL supplied alongside any metadata

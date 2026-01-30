@@ -4,7 +4,6 @@ id: url-signing
 title: URL Signing
 sidebar_label: "URL Signing"
 ---
-# Overview
 URL Signing is a method of ensuring that a request cannot be tampered with. It is _highly_ recommended to require signed URLs
 if exposing Konifer publicly to prevent denial-of-service attacks.
 

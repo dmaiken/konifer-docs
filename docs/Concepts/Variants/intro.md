@@ -4,7 +4,6 @@ id: concepts-variants
 title: Introduction
 sidebar_label: "Introduction"
 ---
-# Overview
 A Variant represents a specific, transformed version of the asset's content. It is generated using the
 transformation options available within Konifer (e.g., resizing, cropping, format change).
 

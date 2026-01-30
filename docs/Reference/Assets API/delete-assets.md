@@ -4,7 +4,6 @@ id: asset-deleting
 title: Deleting Assets
 sidebar_label: "Delete"
 ---
-# Overview
 Konifer takes a simple approach to deleting assets. When the asset is deleted, the metadata is deleted synchronously. All variant content is
 removed from the object store asynchronously, however the variant metadata is deleted synchronously. There is **no recovery of an asset** after it is deleted.
 
@@ -63,4 +62,4 @@ Let's say we want to delete all assets for user 123. To do so, supply the `recur
 ```http 
 DELETE /assets/users/123/-/recursive
 ```
-This will delete all assets with a path that starts with `/users/123`.
+This deletes all assets with a path that starts with `/users/123`.

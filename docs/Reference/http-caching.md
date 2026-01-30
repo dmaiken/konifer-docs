@@ -4,8 +4,6 @@ id: http-caching
 title: HTTP Caching
 sidebar_label: "HTTP Caching"
 ---
-
-# Overview
 Konifer exposes highly-customizable `Cache-Control` headers. Due to the relative nature of the API, no assumptions are made
 regarding the appropriate `Cache-Control` header to apply to an asset. 
 

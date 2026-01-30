@@ -4,7 +4,6 @@ id: concepts-assets
 title: Introduction
 sidebar_label: "Introduction"
 ---
-# Overview
 An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, metadata and content.
 Metadata is stored in Postgres and content is stored in the configured object store (S3, filesystem, or in-memory).
 

@@ -4,7 +4,6 @@ id: concepts-path-configuration
 title: Path Configuration
 sidebar_label: "Path Configuration"
 ---
-# Overview
 Path Configuration is one of the most powerful features within Konifer. It gives you fine-grained control over how your 
 assets are processed, stored, and delivered, all based on the API path you use to store them.
 

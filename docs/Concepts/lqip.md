@@ -4,7 +4,6 @@ id: concepts-lqip
 title: LQIPs (Low Quality Image Previews)
 sidebar_label: "LQIPs"
 ---
-# Overview
 Low quality image previews or LQIPs are small, usually blurry versions of the image you'd like to display while the
 larger image is downloaded over a network. This can be useful for a variety of reasons. Konifer supports two LQIP 
 implementations:

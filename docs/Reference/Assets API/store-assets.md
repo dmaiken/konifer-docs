@@ -4,7 +4,6 @@ id: asset-storing
 title: Storing Assets
 sidebar_label: "Store"
 ---
-# Overview
 When you store an asset, the asset and it's metadata are stored in your object store and database, respectively.
 There are two ways to store an asset:
 1. **Multipart Upload:** Use this when the asset content is available locally.

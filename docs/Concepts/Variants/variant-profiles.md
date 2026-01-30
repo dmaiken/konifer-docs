@@ -4,7 +4,6 @@ id: concepts-variant-profiles
 title: Variant Profiles
 sidebar_label: "Profiles"
 ---
-# Overview
 Variant Profiles are an easy way to name a specific transformation you commonly make against an asset. For example,
 let's say you want to define what a thumbnail is for your application.
 

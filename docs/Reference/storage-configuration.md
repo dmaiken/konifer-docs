@@ -96,7 +96,7 @@ does not exist when storing an asset, the directory will be created. Similar to 
 the filename.
 
 #### URL resolution
-Konifer is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This will be used
+Konifer is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This is used
 to prefix the `bucket/key` path. An `http-path` must be specified and has no default. HTTP and HTTPS protcols may be used. 
 A port may optionally be supplied in the URL.
 ```json5

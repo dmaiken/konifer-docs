@@ -4,7 +4,6 @@ id: concepts-updating-assets
 title: Updating Assets
 sidebar_label: "Updating"
 ---
-# Overview
 Asset content is considered immutable. This is done to simplify HTTP cache semantics. You **cannot** change an asset's
 content at a given `entryId`. Depending on how you use the `entryId`, you have a few options:
 
