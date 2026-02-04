@@ -15,24 +15,23 @@ Konifer offers a robust suite of transformation options to create variants from 
 
 ## Parameter Reference
 
-| Parameter   | Name       | Description                                                               | Allowed Input                                         | Default                                |
-|:------------|:-----------|:--------------------------------------------------------------------------|:------------------------------------------------------|:---------------------------------------|
-| `h`         | Height     | The target height of the image.                                           | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
-| `w`         | Width      | The target width of the image.                                            | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
-| `fit`       | Fit Mode   | Controls how the image fits into the bounding box defined by `h` and `w`. | `fit`, `fill`, `stretch`, `crop`                      | `fit`                                  |
-| `g`         | Gravity    | When cropping occurs, determines which part of the image is retained.     | `center`, `entropy`, `attention`                      | `center`                               |
-| `mimeType`  | Format     | The output format of the image.                                           | `image/jpeg`, `image/png`, `image/webp`, `image/avif` | Original format                        |
-| `r`         | Rotate     | Rotates the image clockwise. `auto` uses EXIF data.                       | `0`, `90`, `180`, `270`, `auto`                       | `0`                                    |
-| `f`         | Flip       | Flips the image along an axis.                                            | `v` (vertical), `h` (horizontal), `none`              | `none`                                 |
-| `filter`    | Filter     | Applies a visual effect.                                                  | `none`, `black_white`, `greyscale`, `sepia`           | `none`                                 |
-| `blur`      | Blur       | Applies a Gaussian blur (value is sigma).                                 | `0` - `150`                                           | `0`                                    |
-| `q`         | Quality    | Compression level for lossy formats.                                      | `1` - `100`                                           | Format dependent (e.g., 80)            |
-| `pad`       | Padding    | Adds padding pixels to the image boundaries.                              | Integer `> 0`                                         | `0`                                    |
-| `bg`        | Background | The background color (used with `pad` or transparent images).             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)             | Transparent / White (Format dependent) |
+| Parameter  | Name           | Description                                                              | Allowed Input                                         | Default                                |
+|:-----------|:---------------|:-------------------------------------------------------------------------|:------------------------------------------------------|:---------------------------------------|
+| `h`        | Height         | The target height of the image                                           | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
+| `w`        | Width          | The target width of the image                                            | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
+| `fit`      | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`                      | `fit`                                  |
+| `g`        | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`                      | `center`                               |
+| `mimeType` | Format         | The output format of the image                                           | `image/jpeg`, `image/png`, `image/webp`, `image/avif` | Original format                        |
+| `r`        | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`                       | `0`                                    |
+| `f`        | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`              | `none`                                 |
+| `filter`   | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia`           | `none`                                 |
+| `blur`     | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                           | `0`                                    |
+| `q`        | Quality        | Compression level for lossy formats                                      | `1` - `100`                                           | Format dependent (e.g., 80)            |
+| `pad`      | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                                         | `0`                                    |
+| `pad-c`    | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)             | Transparent / White (Format dependent) |
 
 
 ## Image Resizing
-
 Image resizing behavior is controlled by the interaction between Height (`h`), Width (`w`), and Fit (`fit`).
 
 ### `fit` (Default)
@@ -79,19 +78,25 @@ Currently, 3 gravity options are supported:
 Konifer supports the following modern image formats:
 * **JPEG**
 * **PNG**
-* **WEBP**
+* **WEBP** (single and multi-page)
 * **AVIF**
+* **JPEG XL**
+* **HEIC**
+* **GIF** (single and multi-page)
 
 ### Quality (`q`)
 
 The `q` parameter controls the compression level for lossy formats. Lower values result in smaller file sizes but reduced visual fidelity.
 
-| Format   | Default Quality   | Notes                                                          |
-|:---------|:------------------|:---------------------------------------------------------------|
-| **JPEG** | 80                | Good balance for photos.                                       |
-| **WEBP** | 80                | generally 30% smaller than JPEG at equivalent quality.         |
-| **AVIF** | 50                | Superior compression, but computationally expensive to encode. |
-| **PNG**  | N/A               | PNG is lossless. The `q` parameter is ignored.                 |
+| Format      | Default Quality | Notes                                                          |
+|:------------|:----------------|:---------------------------------------------------------------|
+| **JPEG**    | 80              | Good balance for photos.                                       |
+| **WEBP**    | 80              | generally 30% smaller than JPEG at equivalent quality.         |
+| **AVIF**    | 50              | Superior compression, but computationally expensive to encode. |
+| **PNG**     | N/A             | PNG is lossless. The `q` parameter is ignored.                 |
+| **JPEG XL** | 90              |                                                                |
+| **HEIC**    | 50              |                                                                |
+| **GIF**     | 100             | Images are generally small due to limited color pallete        |
 
 Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) library recommendations.
 

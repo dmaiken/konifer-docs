@@ -88,15 +88,79 @@ Content-Disposition: attachment; filename="profile-picture.jpeg"
 > Note: the `filename` in the `Content-Dipsosition` headers will be the `alt` if supplied, or else the path.
 
 ### `redirect`
-A redirect (307) to the object store URL
+By default, redirection is disabled and using the redirect selector will return asset content just like the content selector does.
+To enable, a redirect strategy must be defined within your path configuration.
+
+If enabled,
 ```http
 GET /assets/users/123/profile-picture/-/redirect
 ```
 Returns a **`Temporary Redirect 307`**:
 ```http
 Code: 307
-Location: https://assets.s3.us-east-2.amazonaws.com/d905170f-defd-47e4-b606-d01993ba7b42
+Location: https://assets.mydomain.com/d905170f-defd-47e4-b606-d01993ba7b42
 ```
+
+#### Redirect Strategies
+Redirect strategies are defined within path configuration. The default strategy is `none`.
+```hocon
+paths = [
+  {
+    path = "/**"
+    object-store {
+      redirect {
+        strategy = "none|presigned|template"
+      }
+    }
+  }
+]
+```
+
+##### Presigned Redirection
+Setting strategy to `presigned` will cause a presigned URL from your configured object store to be generated and used
+as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible object stores,
+however, you must ensure your S3-compatible object store supports the Presigned API (most do).
+
+This strategy is not available for in-memory or filesystem object stores. If `presigned` is used for these object store implementations,
+no error will be thrown, but redirection will remain disabled.
+
+To set the TTL for the presigned URL, specify it within the `presigned` configuration block.
+```hocon
+paths = [
+  {
+    path = "/**"
+    object-store {
+      redirect {
+        strategy = presigned
+        presigned {
+          ttl = 30m # default value
+        }
+      }
+    }
+  }
+]
+```
+
+##### Template Redirection
+Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Simply define a 
+template string and Konifer will use that to resolve your redirection URL.
+```hocon
+paths = [
+  {
+    path = "/**"
+    object-store {
+      redirect {
+        strategy = template
+        template {
+          string = "https://{bucket}.mydomain.com/{key}"
+        }
+      }
+    }
+  }
+]
+```
+Konifer will use the `{bucket}` and `{key}` variables in your template to populate a URL string. Any protocol is permitted
+except for executable protocols such as `javascript:`, `vbscript:`, and `data:`.
 
 ### `metadata`
 A json response of the image and it's properties, cached variants, and image attributes.

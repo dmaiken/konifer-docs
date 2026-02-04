@@ -4,19 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Delete API concept page">
-      <change afterPath="$PROJECT_DIR$/src/prism/prism.hocon.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/theme/prism-include-languages.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/storage-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/url-signing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docusaurus.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus.config.ts" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Get hocon syntax highlighting to work correctly">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +116,8 @@
       <workItem from="1764378311637" duration="46000" />
       <workItem from="1768861248269" duration="14363000" />
       <workItem from="1769288303022" duration="20000" />
-      <workItem from="1769292395711" duration="20544000" />
+      <workItem from="1769292395711" duration="22093000" />
+      <workItem from="1769972344808" duration="5555000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -230,7 +223,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769735583593</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Get hocon syntax highlighting to work correctly">
+      <option name="closed" value="true" />
+      <created>1769736710841</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1769736710841</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,6 +269,7 @@
     <MESSAGE value="Set proper base URL" />
     <MESSAGE value="Write update-concepts page and use better warning boxes" />
     <MESSAGE value="Delete API concept page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Delete API concept page" />
+    <MESSAGE value="Get hocon syntax highlighting to work correctly" />
+    <option name="LAST_COMMIT_MESSAGE" value="Get hocon syntax highlighting to work correctly" />
   </component>
 </project>
