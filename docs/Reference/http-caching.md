@@ -21,7 +21,9 @@ The `Cache-Control` header can be configured per-path. The following options are
 | `stale-if-error `         | Set the `stale-if-error` descriptor                   | Integer `> 0`                                     |         |
 | `immutable`               | Whether to set the `immutable` descriptor             | Boolean                                           | `false` |
 
-Konifer does not validate proper semantic `Cache-Control` configurations.
+:::caution
+Konifer does **not** validate proper semantic `Cache-Control` configurations.
+:::
 
 ### Usage
 To configure, specify properties within the `cache-control` block of your path configuration. You can explore more about the proper
@@ -45,4 +47,4 @@ usage of `Cache-Control` header directives [here](https://developer.mozilla.org/
 ## Etags
 Etags are always enabled and will be returned regardless of your `cache-control` configuration. `Etags` and conditional 
 validation are only enabled when returning asset in the `content` return format. The usage of `Etags` is outside of the scope
-of this document but can be explored further [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag).
+of this document and can be explored further [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag).

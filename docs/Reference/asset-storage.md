@@ -8,17 +8,17 @@ sidebar_label: "Storing Assets"
 
 Konifer leverages a dual-store architecture to manage assets efficiently.
 
-1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3 and any S3-compatible provider.
-2. **Metadata Store:** Persists relational data, path hierarchies, tags, and labels. Currently, PostgreSQL is the supported engine.
+1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3, S3-compatible, filesystem and in-memory providers.
+2. **Metadata Store:** Persists relational data, path hierarchies, tags, and labels. Currently, in-memory and PostgreSQL are the supported engines.
 
 ## Object Store Configuration
 
 Konifer supports three object store implementations:
-1. in-memory
+1. In-memory
 2. S3 (including S3-compatible providers)
 3. Filesystem
 
-### In-memory (Default)
+### In-memory Configuration
 To enable development mode, set the following flags in your configuration:
 
 ```hocon
@@ -30,14 +30,15 @@ database {
 }
 ```
 
-### AWS S3
+:::warning
+Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
+Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
+`OutOfMemoryError` crashes.
+:::
 
+### AWS S3
 By default, Konifer looks for AWS credentials using the standard [AWS Default Credential Provider Chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html#credentialProviderChain). 
 This enables seamless authentication when running on EC2 instances with IAM roles or locally with `~/.aws/credentials`.
-
-⛔ **Requirement**:
-Even when using implicit credentials, you **must** specify the `region`. This is required to correctly generate public 
-URLs for your assets.
 
 ```hocon
 object-store {
@@ -49,7 +50,6 @@ object-store {
 ```
 
 #### S3-compatible Providers
-
 For non-AWS object stores (e.g., Cloudflare R2, MinIO, DigitalOcean Spaces, Oracle Cloud), you must explicitly provide 
 the endpoint and credentials.
 
@@ -70,7 +70,6 @@ object-store {
 ```
 
 ### Filesystem
-
 Konifer can store files to a specified filesystem location. This filesystem path must be configured and has no default property.
 ```hocon
 object-store {
@@ -91,31 +90,11 @@ docker run -d \
 The `mount-path` should be `/object-store` and not `/mnt/nas1/assets`.
 
 #### Buckets and Keys
-When using the Filesystem implementation, the `bucket` will still be used as the top-level directory for the assets. If it
-does not exist when storing an asset, the directory will be created. Similar to the S3 implementation, the `key` will represent 
-the filename.
+When using the Filesystem implementation, the `bucket` is the top-level directory. The bucket directory is created if it does not exist. 
+Similar to the S3 implementation, the `key` represents the generated filename.
 
-#### URL resolution
-Konifer is designed to serve content over HTTP(S). Therefore, a `http-path` must be specified as well. This is used
-to prefix the `bucket/key` path. An `http-path` must be specified and has no default. HTTP and HTTPS protcols may be used. 
-A port may optionally be supplied in the URL.
-```hocon
-object-store {
-  filesystem {
-    http-path = "https://your-public-site.com"
-    mount-path = "/path/to/filesystem/mount"
-  }
-}
-```
-When fetching an asset with `link` or `redirect` return formats, the asset link will be returned as:
-```http
-https://your-public-site.com/bucket/key
-```
-
-### Path-style URL Configuration
-TODO
-
-> 💡 **Note**: If endpoint-url is omitted, Konifer defaults to the standard AWS S3 endpoints.
+### Redirection
+When using the filesystem or in-memory object store implementations, the `presigned` strategy is not supported.
 
 ## Metadata Store (PostgreSQL)
 Konifer uses PostgreSQL for robust transactional support and hierarchical path queries.
