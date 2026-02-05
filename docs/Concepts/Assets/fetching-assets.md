@@ -53,11 +53,11 @@ Returns:
 }
 ```
 #### Asset Link Response
-| Field Name | Type     | Description                                                                                        |
-|------------|----------|----------------------------------------------------------------------------------------------------|
-| `url`      | String   | The S3 URL of the requested variant - can be path or virtual-host style depending on configuration |
-| `lqip`     | LQIP     | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration                       |
-| `alt`      | String   | The `alt` supplied when storing the asset                                                          |
+| Field Name | Type     | Description                                                                  |
+|------------|----------|------------------------------------------------------------------------------|
+| `url`      | String   | The absolute URL (using `/entry`) to the `content` API                       |
+| `lqip`     | LQIP     | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`      | String   | The `alt` supplied when storing the asset                                    |
 
 ### `content`
 Typically used when you want Konifer to apply transformations (e.g., resizing) and stream the result without

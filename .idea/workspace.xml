@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Get hocon syntax highlighting to work correctly">
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="More updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +117,7 @@
       <workItem from="1768861248269" duration="14363000" />
       <workItem from="1769288303022" duration="20000" />
       <workItem from="1769292395711" duration="22093000" />
-      <workItem from="1769972344808" duration="5555000" />
+      <workItem from="1769972344808" duration="10884000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -231,16 +231,27 @@
       <option name="project" value="LOCAL" />
       <updated>1769736710841</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Get started on config reference">
+      <option name="closed" value="true" />
+      <created>1770170510377</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1770170510377</updated>
+    </task>
+    <task id="LOCAL-00016" summary="More updates">
+      <option name="closed" value="true" />
+      <created>1770253806367</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1770253806367</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-    <option name="exactExcludedFiles">
-      <list>
-        <option value="$PROJECT_DIR$/src/prism/prism.hocon.js" />
-      </list>
-    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -270,6 +281,8 @@
     <MESSAGE value="Write update-concepts page and use better warning boxes" />
     <MESSAGE value="Delete API concept page" />
     <MESSAGE value="Get hocon syntax highlighting to work correctly" />
-    <option name="LAST_COMMIT_MESSAGE" value="Get hocon syntax highlighting to work correctly" />
+    <MESSAGE value="Get started on config reference" />
+    <MESSAGE value="More updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="More updates" />
   </component>
 </project>
