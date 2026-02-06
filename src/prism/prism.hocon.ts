@@ -1,4 +1,5 @@
 export const hoconGrammar = {
+    comment: { pattern: /(\/\/|#).*/, greedy: true },
     property: [
         /(?:[\w\-]|[^:\+. \[\]{}=\"$\s\r\n]+)/,
         /"(?:\\. |[^"\r\n]*)"/
@@ -11,7 +12,6 @@ export const hoconGrammar = {
         { pattern: /"""[\s\S]*?"""/, greedy: true },
         { pattern: /(^|[^\\\\])"(?:\\. |[^"\\\r\n])*"/, lookbehind: true, greedy: true },
     ],
-    comment: { pattern: /(\/\/|#).*/, greedy: true },
     punctuation: /[\${}\[\],]/,
     operator: /[:=]/,
     keyword: {

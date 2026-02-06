@@ -10,7 +10,7 @@ regarding the appropriate `Cache-Control` header to apply to an asset.
 ## Cache-Control Configuration
 The `Cache-Control` header can be configured per-path. The following options are available:
 
-| Parameter                 | Description                                           | Allowed Input                                     | Default |
+| Property                  | Description                                           | Allowed Input                                     | Default |
 |:--------------------------|:------------------------------------------------------|:--------------------------------------------------|:--------|
 | `enabled`                 | Whether the `Cache-Control` header should be returned | Boolean                                           | `false` |
 | `max-age`                 | Set the `max-age` descriptor                          | Integer `> 0`                                     |         |
