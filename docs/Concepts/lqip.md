@@ -19,7 +19,7 @@ LQIP(s) are generated at the same time a variant is generated which could be eag
 to know when an LQIP should be regenerated and when it does not need to be. For example, if you apply a `blur` transformation,
 an LQIP will not be regenerated, saving compute resources.
 
-# Usage
+## Usage
 LQIPs are disabled by default. LQIP implementations are enabled within Path Configuration. To enable both implementations, 
 define your Path Configuration to be:
 ```hocon

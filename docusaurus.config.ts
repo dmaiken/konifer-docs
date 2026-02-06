@@ -59,7 +59,7 @@ const config: Config = {
       title: 'Konifer',
       logo: {
         alt: 'Konifer Logo',
-        src: 'img/logo.svg',
+        src: 'img/konifer-small.png',
       },
       items: [
         {

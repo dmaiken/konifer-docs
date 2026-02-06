@@ -44,23 +44,23 @@ paths = [
 ]
 ```
 
-# Wildcard Matching
+## Wildcard Matching
 You don't have to define rules for every exact path. Konifer allows you to apply rules to entire categories of assets 
 using wildcards in your `konifer.conf` file.
 
 There are two types of wildcards:
-## Single Segment (`*`)
+### Single Segment (`*`)
 Matches any single path segment (the text between two slashes).
 
 **Example**: `users/*` matches `users/123` but not `users/123/profile`.
 
-## Multi-Segment 
+### Multi-Segment (`**`)
 Greedily matches zero or more path segments. This is the most common and powerful wildcard for applying rules 
 to an entire "directory."
 
 **Example**: `users/**` matches `users/`, `users/123`, and `users/123/profile`.
 
-# Inheritance
+## Inheritance
 Paths inherit the configuration of parent paths. For any given configuration value, **the most-specific configuration property
 wins**.
 
@@ -82,13 +82,13 @@ paths = [
   }
 ]
 ```
-## Shallow Inheritance
-Konifer's inheritance is **shallow**. Nested configuration values within objects or lists are not merged.
+### Deep Inheritance
+Konifer's inheritance is **deep**. Nested configuration values within objects are merged, however, list properties are not merged.
 
 If a child path defines a list or object property (like `allowed-content-types`), the child's property completely 
 overwrites the parent's property.
 
-### Example 1: List Overwrite
+#### Example 1: List Overwrite
 Creating an asset at `/users/123` will not allow `image/png` since list properties are not merged. The `image/png` 
 value from the parent is discarded, not merged.
 ```hocon
@@ -108,7 +108,7 @@ paths = [
 ]
 ```
 
-### Example 2: Empty List Overwrite
+#### Example 2: Empty List Overwrite
 Creating an asset at `/users/123` will not allow _any_ content-type. The empty list from the child path overwrites 
 the parent's list.
 ```hocon
@@ -126,20 +126,18 @@ paths = [
 ]
 ```
 
-# Default Path Configuration
+## Default Path Configuration
 You have two types of defaults to be aware of:
 
-## The `/**` Root Path
-
+### The `/**` Root Path
 To specify a default configuration that applies to all paths, set the `path` attribute to `/**`. This serves as the 
 root of the inheritance tree. All other paths will inherit from this base configuration.
 
-## System Defaults
-
+### System Defaults
 For any value not defined in the `/**` path or any of its children, Konifer uses a hardcoded system default. 
 Consult the Path Configuration Reference (TODO) to determine the system default for each property.
 
-## Example
+#### Example
 Storing at `/users/123/profile-picture` will only allow `image/png` but storing at `/blog/123` would only allow `image/png`.
 
 ```hocon
