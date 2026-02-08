@@ -26,7 +26,7 @@ POST /assets/blog/123/post/5
 ```
 
 Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By default,
-fetching an asset at a given path will return the most-recently created asset, however, that can be changed using Query Selectors.
+fetching an asset at a given path returns the most-recently created asset, however, that can be changed using Query Selectors.
 
 ## Content
 The following content types are currently supported by Konifer:
@@ -48,8 +48,8 @@ An asset can have the following metadata supplied when creating or updating an a
 - tags
 
 ## Alt
-An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It will be returned as asset metadata but
-will also be returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
+An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It is returned within asset metadata but
+is also returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
 general limits set by screen readers, the maximum length of an `alt` is 125 characters.
 
 ## Labels

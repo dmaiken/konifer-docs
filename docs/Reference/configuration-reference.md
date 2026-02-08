@@ -28,9 +28,9 @@ http {
   public-url = "http://localhost"
 }
 ```
-| Property      | Description                                                                                                    | Allowed Input                              | Default              |
-|:--------------|:---------------------------------------------------------------------------------------------------------------|:-------------------------------------------|:---------------------|
-| `public-url ` | The URL used to resolve content selector links. This will be the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost`   |
+| Property      | Description                                                                                               | Allowed Input                              | Default              |
+|:--------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:---------------------|
+| `public-url ` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost`   |
 
 
 ## Object Store
@@ -39,7 +39,7 @@ Properties for configuring the datastore.
 ```hocon 
 objectstore {
   provider = filesystem
-  s3 { # No defaults - will override Default Provider Chain if supplied
+  s3 { # No defaults - overrides Default Provider Chain if supplied
     access-key = "[no default]"
     endpoint-url = "[no default]"
     region = "[no default]"
@@ -101,11 +101,11 @@ variant-generation {
   workers = [2 X CPU cores]
 }
 ```
-| Property                                  | Description                                                                                                                         | Allowed Input    | Default       |
-|:------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
-| `variant-generation.queue-size`           | Amount of variant generation requests that can be queued up awaiting processing. Requests over this limit will suspend the request. | Positive integer | 1000          |
-| `variant-generation.synchronous-priority` | Percentage priority to give to synchronous variant generation tasks. The remaining priority is reversed for async tasks.            | 1-99             | 80            |
-| `variant-generation.workers`              | Amount of concurrent image processor workers                                                                                        | Positive integer | 2 x CPU cores |
+| Property                                  | Description                                                                                                                    | Allowed Input    | Default       |
+|:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
+| `variant-generation.queue-size`           | Amount of variant generation requests that can be queued up awaiting processing. Requests over this limit suspend the request. | Positive integer | 1000          |
+| `variant-generation.synchronous-priority` | Percentage priority to give to synchronous variant generation tasks. The remaining priority is reversed for async tasks.       | 1-99             | 80            |
+| `variant-generation.workers`              | Amount of concurrent image processor workers                                                                                   | Positive integer | 2 x CPU cores |
 
 ## URL Signing
 ```hocon
@@ -219,12 +219,12 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   }
 }
 ```
-| Property                                | Description                                                                                                                                                            | Allowed Input                                      | Default            |
-|:----------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
-| `object-store.bucket`                   | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets will not be moved to new bucket. | Valid bucket name                                  | `assets`           |
-| `object-store.redirect.strategy`        | How to serve redirect URLs                                                                                                                                             | `none`, `presigned`, `template`                    | `none`             |
-| `object-store.redirect.template.string` | Template string to use if `strategy` is `template`                                                                                                                     | Valid URL string                                   | `localhost`        |
-| `object-store.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned                                                                                                    | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
+| Property                                | Description                                                                                                                                                        | Allowed Input                                      | Default            |
+|:----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
+| `object-store.bucket`                   | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name                                  | `assets`           |
+| `object-store.redirect.strategy`        | How to serve redirect URLs                                                                                                                                         | `none`, `presigned`, `template`                    | `none`             |
+| `object-store.redirect.template.string` | Template string to use if `strategy` is `template`                                                                                                                 | Valid URL string                                   | `localhost`        |
+| `object-store.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned                                                                                                | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
 
 ### Cache Control
 ```hocon

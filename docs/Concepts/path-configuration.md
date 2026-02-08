@@ -65,7 +65,7 @@ Paths inherit the configuration of parent paths. For any given configuration val
 wins**.
 
 ### Example
-Creating an asset at `/users/123` will use the `users` bucket (inherited from the `/users` path) and will also have 
+Creating an asset at `/users/123` uses the `users` bucket (inherited from the `/users` path) and also has 
 restrictions on the allowed content types (defined on the more-specific `/users/123` path).
 ```hocon
 paths = [
@@ -89,7 +89,7 @@ If a child path defines a list or object property (like `allowed-content-types`)
 overwrites the parent's property.
 
 #### Example 1: List Overwrite
-Creating an asset at `/users/123` will not allow `image/png` since list properties are not merged. The `image/png` 
+Creating an asset at `/users/123` does not allow `image/png` since list properties are not merged. The `image/png` 
 value from the parent is discarded, not merged.
 ```hocon
 paths = [
@@ -109,7 +109,7 @@ paths = [
 ```
 
 #### Example 2: Empty List Overwrite
-Creating an asset at `/users/123` will not allow _any_ content-type. The empty list from the child path overwrites 
+Creating an asset at `/users/123` does not allow _any_ content-type. The empty list from the child path overwrites 
 the parent's list.
 ```hocon
 paths = [
@@ -131,14 +131,14 @@ You have two types of defaults to be aware of:
 
 ### The `/**` Root Path
 To specify a default configuration that applies to all paths, set the `path` attribute to `/**`. This serves as the 
-root of the inheritance tree. All other paths will inherit from this base configuration.
+root of the inheritance tree. All other paths inherits from this base configuration.
 
 ### System Defaults
 For any value not defined in the `/**` path or any of its children, Konifer uses a hardcoded system default. 
 Consult the Path Configuration Reference (TODO) to determine the system default for each property.
 
 #### Example
-Storing at `/users/123/profile-picture` will only allow `image/png` but storing at `/blog/123` would only allow `image/png`.
+Storing at `/users/123/profile-picture` only allows `image/png` but storing at `/blog/123` would only allow `image/png`.
 
 ```hocon
 paths = [

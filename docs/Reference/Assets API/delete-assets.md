@@ -4,62 +4,43 @@ id: asset-deleting
 title: Deleting Assets
 sidebar_label: "Delete"
 ---
-Konifer takes a simple approach to deleting assets. When the asset is deleted, the metadata is deleted synchronously. All variant content is
-removed from the object store asynchronously, however the variant metadata is deleted synchronously. There is **no recovery of an asset** after it is deleted.
+When the asset is deleted, the metadata is deleted synchronously. All variant content is
+removed from the object store asynchronously, however the variant metadata is deleted synchronously and the asset
+is no longer accessible using Konifer APIs.
 
-# Delete Modifiers
-Delete modifiers are positional values specified after the path-separator, `/-/`. For the Delete Assets API, the positional ordering is:
-```http
-DELETE /assets/{path}/-/{order}/{limit}
-```
+:::warning
+Deleting an asset is unrecoverable. There is no way to reverse a delete, and there is no soft-delete mechanism!
+:::
 
-## Defaults
-The following are the default values and can be omitted as modifiers:
-- ordering: `created`
-- limit: 1
+## Request
+Request options are similar to fetching an asset. Order selectors and limits are available.
 
-So this:
-```http
-DELETE /assets/users/123/profile-picture
-```
-Is the same as:
-```http
-DELETE /assets/users/123/profile-picture/-/created/1
-```
-
-## Order
-The `order` modifier functions identically to the `order` modifier when fetching assets. 
-1. `created`: orders by the date the asset was created, descending. The newest asset created at the path will be returned first
-2. `modified`: orders by the date the asset was modified, descending. The most recently-modified asset at the path will be returned first.
-Note that an asset is not modified when a new variant is created. Only when attributes specific to the asset have been updated (labels, tags, alt, etc)
-will the asset have been considered modified.
-
-## Limit
-The `limit` modified functions identically to the `limit` modifier when fetching assets. It limits the amount of assets relative
-to the supplied `order` will be deleted. 
-
-For example, this will delete the 5 most-recently created assets in the `/users/123/images` path:
-```http 
-DELETE /assets/users/123/images/-/created/5
-```
-
-# Deleting By `entryId`
-To delete a specific asset by it's `entryId`, supply the `entryId` in the URL:
-```http 
-DELETE /assets/users/123/profile-picture/-/entry/1
-```
-
-# Deleting By Path
-To delete all assets at a specific path, set the `limit` to `all`. Any assets defined underneath the supplied with will
-not be deleted.
+### Delete Specific Asset
+Delete a specific asset by specifying its entryId. 
 
 ```http 
-DELETE /assets/users/123/profile-picture/-/all
+DELETE /assets/users/123/-/entry/0
 ```
 
-# Deleting Assets Recursively
-Let's say we want to delete all assets for user 123. To do so, supply the `recursive` modifier in your request:
+### Ordering
+Ordering is specified using the `order` [query selector](../../Concepts/Assets/fetching-assets.md#ordering).
+
+| Order      | Description                             | Default if not supplied |
+|------------|-----------------------------------------|-------------------------|
+| `new`      | Order by last-created (stack semantics) | Yes                     |
+| `modified` | Order by last-modified                  |                         |
+
+### Limit
+Multiple assets can be deleting using limits. Specify limit using the `limit` query parameter.
+- **Default**: 1
+- **Delete all at path**: -1
+
+## Deleting Recursively
+By using the `recursive` selector, you can delete all assets in a path as well as all sub-paths.
+
 ```http 
 DELETE /assets/users/123/-/recursive
 ```
-This deletes all assets with a path that starts with `/users/123`.
+
+## Response
+A `204 No Content` is always returned regardless of whether an asset was actually deleted or not.

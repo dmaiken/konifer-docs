@@ -14,7 +14,7 @@ This architecture allows Konifer to handle large assets (e.g., 100MB+ images) wi
 extremely low latency.
 
 :::caution
-Libvips will buffer the entire image if it is progressively-rendered JPEGs (image content is interlaced to provide a progressively-improving
+Libvips buffers the entire image if it is progressively-rendered JPEGs (image content is interlaced to provide a progressively-improving
 display quality as the image is downloaded). Avoid ingestion of these images. 
 :::
 

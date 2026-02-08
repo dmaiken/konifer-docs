@@ -15,21 +15,31 @@ Konifer offers a robust suite of transformation options to create variants from 
 
 ## Parameter Reference
 
-| Parameter  | Name           | Description                                                              | Allowed Input                                         | Default                                |
-|:-----------|:---------------|:-------------------------------------------------------------------------|:------------------------------------------------------|:---------------------------------------|
-| `h`        | Height         | The target height of the image                                           | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
-| `w`        | Width          | The target width of the image                                            | Integer `> 0`                                         | `null` (Preserves aspect ratio)        |
-| `fit`      | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`                      | `fit`                                  |
-| `g`        | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`                      | `center`                               |
-| `mimeType` | Format         | The output format of the image                                           | `image/jpeg`, `image/png`, `image/webp`, `image/avif` | Original format                        |
-| `r`        | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`                       | `0`                                    |
-| `f`        | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`              | `none`                                 |
-| `filter`   | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia`           | `none`                                 |
-| `blur`     | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                           | `0`                                    |
-| `q`        | Quality        | Compression level for lossy formats                                      | `1` - `100`                                           | Format dependent (e.g., 80)            |
-| `pad`      | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                                         | `0`                                    |
-| `pad-c`    | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)             | Transparent / White (Format dependent) |
+| Parameter | Name           | Description                                                              | Allowed Input                               | Default                                |
+|:----------|:---------------|:-------------------------------------------------------------------------|:--------------------------------------------|:---------------------------------------|
+| `h`       | Height         | The target height of the image                                           | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
+| `w`       | Width          | The target width of the image                                            | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
+| `fit`     | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`            | `fit`                                  |
+| `g`       | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`            | `center`                               |
+| `format`  | Format         | The output format of the image                                           | Format                                      | Original format                        |
+| `r`       | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`             | `0`                                    |
+| `f`       | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`    | `none`                                 |
+| `filter`  | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia` | `none`                                 |
+| `blur`    | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                 | `0`                                    |
+| `q`       | Quality        | Compression level for lossy formats                                      | `1` - `100`                                 | Format dependent (e.g., 80)            |
+| `pad`     | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                               | `0`                                    |
+| `pad-c`   | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)   | Transparent / White (Format dependent) |
 
+### Format
+| Format | Name    | File Extension | Content Type |
+|:-------|:--------|:---------------|:-------------|
+| `png`  | PNG     | .png           | image/png    |
+| `jpg`  | JPEG    | .jpeg          | image/jpeg   |
+| `webp` | WEBP    | .webp          | image/webp   |
+| `avif` | AVIF    | .avif          | image/avif   |
+| `jxl`  | JPEG XL | .jxl           | image/jxl    |
+| `heic` | HEIC    | .heic          | image/heic   |
+| `gif`  | GIF     | .gif           | image/gif    |
 
 ## Image Resizing
 Image resizing behavior is controlled by the interaction between Height (`h`), Width (`w`), and Fit (`fit`).
@@ -56,7 +66,7 @@ and any parts of the image that overflow the bounding box are cropped out.
 The image is forced to exactly match the provided height and width.
 
 :::warning
-This **ignores** the original aspect ratio and will result in a squashed or stretched image.
+This **ignores** the original aspect ratio and may result in a squashed or stretched image.
 :::
 
 ### `crop`
@@ -110,7 +120,7 @@ Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) l
 The `r` parameter rotates the image clockwise in 90-degree increments.
 
 If `auto` is supplied, Konifer reads the EXIF `Orientation` metadata from the Original Variant and rotates the image 
-accordingly. The resulting transformed variant will have the EXIF `Orientation` tag stripped to prevent double-rotation
+accordingly. The resulting transformed variant has the EXIF `Orientation` tag stripped to prevent double-rotation
 by displays.
 
 ### Flip (`f`)
@@ -136,12 +146,15 @@ Applies a Gaussian blur. The value represents the sigma of the blur.
 
 You can add a border or padding to an image using the `pad` parameter, which specifies the size (in pixels) to extend the image canvas.
 
-### Background Color (`bg`)
-The `bg` parameter defines the fill color for the padded area. It requires a **Hex String**.
+### Amount (`pad`)
+Specify the amount of padding in pixels. 
 
-* **If `bg` is omitted:** The padding will be transparent (for PNG/WebP/AVIF) or White (for JPEG).
+### Padding Color (`pad-c`)
+The `pad-c` parameter defines the fill color for the padded area. It requires a hex string in CSS-style format.
+
+* **If `pad-c` is omitted:** Padding is transparent (for PNG/WebP/AVIF/Jpeg XL/HEIC) or white (for JPEG/GIF).
 * **Hex Format:** Supports both RGB (Opaque) and RGBA (Transparent) formats.
 
 #### Examples
-* **Solid Red:** `bg=%23FF0000` (URL encoded `#FF0000`)
-* **Translucent Red (50% Opacity):** `bg=%23FF000080` (URL encoded `#FF000080`)
+* **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
+* **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)

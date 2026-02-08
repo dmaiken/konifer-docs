@@ -4,13 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Finish configuration reference">
-      <change afterPath="$PROJECT_DIR$/static/img/konifer-small.png" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Add a logo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/deleting-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/deleting-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/intro.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/updating-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/updating-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/intro.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Variants/variant-profiles.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/lqip.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/lqip.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/path-configuration.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docusaurus.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docusaurus.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/delete-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/fetch-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/overview.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/store-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/Assets API/update-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/Assets API/update-assets.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/http-caching.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/http-caching.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-processing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-processing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/url-signing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/url-signing.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +87,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/img" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/docs/Reference" />
       <recent name="$PROJECT_DIR$/docs/Concepts/Variants" />
@@ -125,7 +142,7 @@
       <workItem from="1769288303022" duration="20000" />
       <workItem from="1769292395711" duration="22093000" />
       <workItem from="1769972344808" duration="10884000" />
-      <workItem from="1770336480648" duration="3716000" />
+      <workItem from="1770336480648" duration="13176000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -263,7 +280,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770339119901</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Add a logo">
+      <option name="closed" value="true" />
+      <created>1770341150284</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1770341150284</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,6 +325,7 @@
     <MESSAGE value="Get started on config reference" />
     <MESSAGE value="More updates" />
     <MESSAGE value="Finish configuration reference" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish configuration reference" />
+    <MESSAGE value="Add a logo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add a logo" />
   </component>
 </project>

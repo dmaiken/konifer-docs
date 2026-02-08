@@ -37,4 +37,4 @@ Include the signature as an `s` query parameter in your payload.
 GET /assets/users/123/profile?h=300&blur=20&format=webp&s=f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8
 ```
 
-If URL-signing is enabled, then all requests missing a signature will return a 403. Invalid signatures will also return a 403.
+If URL-signing is enabled, then all requests missing a signature returns a `403 Forbidden`. Invalid signatures also return a 403.

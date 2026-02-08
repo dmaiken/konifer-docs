@@ -38,5 +38,5 @@ above, let's say you wish to create a larger thumbnail that's 256 pixels wide. S
 ```http 
 GET /assets/users/123/profile-picture?profile=thumbnail&w=256
 ```
-Any individual transformation parameters supplied will override the profile's respective parameter, if it is defined
+Any individual transformation parameters supplied overrides the profile's respective parameter, if defined
 in the profile.

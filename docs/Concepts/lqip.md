@@ -17,7 +17,7 @@ One or both of these can be enabled.
 
 LQIP(s) are generated at the same time a variant is generated which could be eagerly or on-demand. Konifer is smart enough
 to know when an LQIP should be regenerated and when it does not need to be. For example, if you apply a `blur` transformation,
-an LQIP will not be regenerated, saving compute resources.
+an LQIP is not regenerated, saving compute resources.
 
 ## Usage
 LQIPs are disabled by default. LQIP implementations are enabled within Path Configuration. To enable both implementations, 

@@ -18,15 +18,18 @@ Deleting an asset is unrecoverable. There is no way to reverse a delete, and the
 
 ### Idempotency
 The Delete API is idempotent. If you request the deletion of an asset that does not exist (or has already been deleted), 
-the API will still return `204 No Content`. This ensures that a "Delete" workflow always succeeds in ensuring the asset 
-is gone, regardless of its prior state.
+the API returns a `204 No Content`.
 
 ## Deleting a specific asset
 To delete an asset explicitly, use the `entry` selector. This is the safest way to delete an asset since the reference
 is absolute.
 
+```http 
+DELETE /assets/users/123/-/entry/0
+```
+
 ## Selectors
-Similar to fetching, specifying the `order` plus an optional limit (defaulting to 1) will result in the top asset(s)
+Similar to fetching, specifying the `order` plus an optional limit (defaulting to 1) results in the top asset(s)
 in that ordering being deleted.
 
 ```http 
@@ -48,7 +51,7 @@ This deletes the asset at `/users/123/profile` with `entryId` of 0.
 Konifer supports powerful bulk-delete operations for cleaning up entire user directories or projects.
 
 ### Delete all assets in the path
-By setting the limit query parameter to `-1`, all assets will be deleted within the path.
+By setting the limit query parameter to `-1`, all assets are deleted within the path.
 
 ```http 
 DELETE /assets/users/123/profile?limit=-1

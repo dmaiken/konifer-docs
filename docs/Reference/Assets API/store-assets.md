@@ -13,18 +13,18 @@ The URL structure for both is:
 ```http
 POST /assets/{your/defined/path}
 ```
-And the difference is how the content will be supplied. Both methods cannot be used at the same time.
+The difference is how the content is supplied. Only one method is allowed per request.
 
 ## Multipart Upload
 A multipart upload lets you specify the asset content and metadata in the same request.
 
-| Part Name  | Content-Type                         | Purpose                                                          | Required? |
-|------------|--------------------------------------|------------------------------------------------------------------|-----------|
-| `metadata` | `application/json`                   | A JSON body containing custom, user-defined data about the asset | Yes       |
-| `asset`    | Image MIME type (e.g., `image/jpeg`) | The raw binary content of the file being stored.                 | Yes       |
+| Part Name  | Content-Type                         | Purpose                                                          | Required?                  |
+|------------|--------------------------------------|------------------------------------------------------------------|----------------------------|
+| `metadata` | `application/json`                   | A JSON body containing custom, user-defined data about the asset | Yes (but may be empty`{}`) |
+| `asset`    | Image MIME type (e.g., `image/jpeg`) | The raw binary content of the file being stored.                 | Yes                        |
 
 ### Metadata JSON structure
-The structure for the `metadata` part is:
+The structure for the `metadata` part is (no fields are required):
 ```json
 {
   "alt": "The alt text for an image",
@@ -35,10 +35,15 @@ The structure for the `metadata` part is:
   "tags": [ "cold", "verified" ]
 }
 ```
+| Field Name   | Type         | Description                                                          | Required  |
+|--------------|--------------|----------------------------------------------------------------------|-----------|
+| `alt`        | String       | The supplied alt text of your asset                                  | No        |
+| `labels`     | Object       | Supplied key-value pairs associated with the asset                   | No        |
+| `tags`       | Array        | Supplied attributes associated with the asset                        | No        |
 
 ## URL Source
-Instead of supplying the file contents directly, you can specify a URL that Konifer will download the asset content from. 
-The request is identical to the multipart `metadata`, but you will add a `url` to the request:
+Instead of supplying the file contents directly, you can specify a URL that Konifer downloads the asset content from. 
+The request is identical to the multipart `metadata`, but you must add a `url` to the request:
 ```json
 {
   "url": "https://yoururl.com/image.jpeg",
@@ -50,70 +55,94 @@ The request is identical to the multipart `metadata`, but you will add a `url` t
   "tags": [ "cold", "verified" ]
 }
 ```
-Additionally, since there is only JSON in the request, the `Content-Type` is `application/json`.
+| Field Name | Type     | Description                                                                          | Required |
+|------------|----------|--------------------------------------------------------------------------------------|----------|
+| `alt`      | String   | The supplied alt text of your asset                                                  | No       |
+| `labels`   | Object   | Supplied key-value pairs associated with the asset                                   | No       |
+| `tags`     | Array    | Supplied attributes associated with the asset                                        | No       |
+| `url`      | String   | URL source of content. Domain must be allowed within `allowed-domains` configuration | Yes      |
 
-## Request Metadata Fields
-| Field Name | Type   | Description                               | Required?                      |
-|------------|--------|-------------------------------------------|--------------------------------|
-| `url`      | String | The URL source of the asset content       | For URL upload source, **yes** |
-| `alt`      | String | The alt text of your asset                | **No**                         |
-| `labels`   | Object | Key-value pairs associated with the asset | **No**                         |
-| `tags`     | Array  | Attributes associated with the asset      | **No**                         |
+Since there is only JSON in the request, the `Content-Type` is `application/json`.
 
-
-# Store Asset Response
-Regardless of the upload method used, a successful storage request returns a **`201 Created`** status and the following JSON response
+## Store Asset Response
+Regardless of the upload method used, a successful storage request returns a `201 Created` status and the following JSON response
 representing the asset metadata.
-```json
+```http 
+HTTP/1.1 201 CREATED
+Content-Type: application/json
+
 {
-  "class": "IMAGE",
+  "class": "image",
   "alt": "The alt text for an image",
-  "entryId": 42, // Unique identifier scoped to the path
+  "entryId": 42,
   "labels": {
     "label-key": "label-value",
     "phone": "Android"
   },
   "tags": [ "cold", "verified" ],
-  "source": "URL", // or UPLOAD if using multipart upload
+  "source": "url", // or "upload" if using multipart upload
   "sourceUrl": "https://yoururl.com/image.jpeg",
   "variants": [
     {
-      "bucket": "assets", // Defined in configuration
-      "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42", // Generated by Konifer
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
       "attributes": {
         "height": 100,
         "width": 200,
         "format": "jpg"
       },
-      "lqip": { // Empty if LQIPs are disabled
+      "lqip": {
         "blurhash": "BASE64",
         "thumbhash": "BASE64"
       }
     }
   ],
-  "createdAt": "2025-11-12T01:20:55" // ISO 8601
+  "createdAt": "2025-11-12T01:20:55"
 }
 ```
-Additionally, a `Location` header is returned containing a URL to the asset's link return format.
+Additionally, a `Location` header is returned containing an absolute URL to the asset's link return format.
 > Note: the entryId query modifier is supplied so the URL is absolute and can be used for subsequent GET and PUT operations.
 
-## Asset Metadata Response
-| Field Name  | Type         | Description                                                          |
-|-------------|--------------|----------------------------------------------------------------------|
-| `class`     | String       | The type of the asset, currently always `IMAGE`                      |
-| `alt`       | String       | The supplied alt text of your asset                                  |
-| `entryId`   | Long         | System-generated unique identifier of asset within path              |
-| `labels`    | Object       | Supplied key-value pairs associated with the asset                   |
-| `tags`      | Array        | Supplied attributes associated with the asset                        |
-| `source`    | String       | Either `URL` or `UPLOAD` depending on how you provided asset content |
-| `sourceUrl` | String       | If URL source was used, then this is the supplied URL                |
-| `variants`  | AssetVariant | Will only contain the original variant - the one supplied            |
-| `createdAt` | ISO 8601     | Date asset was stored                                                |
+| Field Name   | Type         | Description                                                          |
+|--------------|--------------|----------------------------------------------------------------------|
+| `class`      | String       | The type of the asset, currently always `image`                      |
+| `alt`        | String       | The supplied alt text of your asset                                  |
+| `entryId`    | Long         | System-generated unique identifier of asset within path              |
+| `labels`     | Object       | Supplied key-value pairs associated with the asset                   |
+| `tags`       | Array        | Supplied attributes associated with the asset                        |
+| `source`     | String       | Either `url` or `upload` depending on how you provided asset content |
+| `sourceUrl`  | String       | If URL source was used, then this is the supplied URL                |
+| `variants`   | AssetVariant | Will only contain the original variant - the one supplied            |
+| `createdAt`  | ISO 8601     | Date asset was stored                                                |
+| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
 ### AssetVariant
-| Field Name        | Type            | Description                                                                  |
-|-------------------|-----------------|------------------------------------------------------------------------------|
-| `bucket`          | String          | The S3 bucket the asset is stored in - defined in path configuration         |
-| `storeKey`        | String          | The key of the asset in the object store                                     |
-| `imageAttributes` | ImageAttributes | Extracted attributes of the asset.                                           |
-| `lqip`            | LQIP            | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| Field Name          | Type           | Description                                                                          |
+|---------------------|----------------|--------------------------------------------------------------------------------------|
+| `isOriginalVariant` | Boolean        | Whether the variant is the original variant. For store-asset response, this is true. |
+| `storeBucket`       | String         | The S3 bucket the asset is stored in - defined in path configuration                 |
+| `storeKey`          | String         | The key of the asset in the object store                                             |
+| `attributes`        | Attributes     | Extracted attributes of the asset                                                    |
+| `transformation`    | Transformation | Normalized original variant transformation - not returned for original variants      |
+| `lqip`              | LQIP           | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration         |
+
+#### Attributes
+| Field Name  | Type    | Description                                                                                                 |
+|-------------|---------|-------------------------------------------------------------------------------------------------------------|
+| `height`    | Integer | Height of variant                                                                                           |
+| `width`     | Integer | Width of variant                                                                                            |
+| `format`    | Format  | Format of variant                                                                                           |
+| `pageCount` | Integer | Number of pages in image (1 unless image is animated)                                                       |
+| `loop`      | Integer | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0; -1 is continuous looping |
+
+#### Format
+| Format | Name    | File Extension | Content Type |
+|:-------|:--------|:---------------|:-------------|
+| `png`  | PNG     | .png           | image/png    |
+| `jpg`  | JPEG    | .jpeg          | image/jpeg   |
+| `webp` | WEBP    | .webp          | image/webp   |
+| `avif` | AVIF    | .avif          | image/avif   |
+| `jxl`  | JPEG XL | .jxl           | image/jxl    |
+| `heic` | HEIC    | .heic          | image/heic   |
+| `gif`  | GIF     | .gif           | image/gif    |

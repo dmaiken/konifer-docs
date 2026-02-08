@@ -8,8 +8,8 @@ When storing an asset, the content must be supplied as well as any optional meta
 - a multi-part upload if you possess the binary asset content
 - a URL supplied alongside any metadata
 
-When asset content is stored, it is referred to as the `originalVariant`. When fetching asset metadata, `isOriginalVariant` will
-be `true` for the variant that represents the original supplied content.
+When asset content is stored, it is referred to as the `originalVariant`. When fetching asset metadata, `isOriginalVariant` is
+`true` for the variant that represents the original supplied content.
 
 ## Multipart upload
 Binary asset data can be supplied using [HTTP Multipart Form Data](https://www.ietf.org/rfc/rfc2388.txt). More information
@@ -52,7 +52,7 @@ source {
   }
 }
 ```
-If the domain is not allowed when uploading an asset, a 400 will be returned.
+If the domain is not allowed when uploading an asset, a 400 is returned.
 
 A request to store an asset using a URL looks like this (omitting all optional metadata):
 ```json
@@ -62,8 +62,8 @@ A request to store an asset using a URL looks like this (omitting all optional m
 ```
 
 ## Metadata
-Asset metadata is supplied as JSON. All metadata is optional, but fields such as `alt` are useful for accessibility purposes
-and will be returned as headers when fetching asset content.
+Asset metadata is supplied as JSON. All metadata is optional, but fields such as `alt` and LQIP(s) are useful for display purposes
+and are returned as headers when fetching asset content.
 
 ```json
 {
@@ -76,13 +76,13 @@ and will be returned as headers when fetching asset content.
 }
 ```
 
-## Ingest Transformations
-When you store an asset, you can transform the source content. Doing so means the `originalVariant` will become the 
-result of your defined transformation. Any variant generated for this asset will use the transformed content. 
-Keep this in mind when defining any ingest transformations. For example shrinking an image down to 50x50 will limit
+## Asset preprocessing
+When you store an asset, you can transform the source content. Doing so means the original variant becomes the 
+result of your defined transformation. Any variant generated for this asset is generated from the original variant. 
+Keep this in mind when defining any preprocessing. For example preprocessing an image down to 50x50 limits
 your ability to create sharp, resized variants larger than 50x50.
 
-The following configuration will convert the supplied asset content to an AVIF image format and set the width to 1024.
+The following configuration converts the supplied asset content to an AVIF image format and set the width to 1024.
 ```hocon
 paths = [
   {
