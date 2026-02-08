@@ -2,10 +2,10 @@
 sidebar_position: 2
 id: image-transformation-reference
 title: Image Transformation
-sidebar_label: "Image Transformations"
+sidebar_label: "Image Transformation"
 ---
 
-# Image Transformations
+# Image Transformation
 
 Konifer offers a robust suite of transformation options to create variants from your image assets. The parameters below can be used to:
 - Query a variant on-demand using the Fetch Asset API
@@ -81,7 +81,6 @@ Currently, 3 gravity options are supported:
 * **`entropy`**: Detects "busy" areas (high contrast/edges). Best for landscapes, products, or textured objects.
 * **`attention`**: Uses a saliency model to detect faces and human features. Best for profile pictures and social content.
 
----
 
 ## Image Formats & Quality
 
@@ -110,9 +109,9 @@ The `q` parameter controls the compression level for lossy formats. Lower values
 
 Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) library recommendations.
 
-> 💡 **Performance Note:** The tradeoff for higher quality images is increased encoding cost. For formats like AVIF, encoding costs can be significant.
-
----
+:::tip
+**Performance Note:** The tradeoff for higher quality images is increased encoding cost. For formats like AVIF, encoding costs can be significant.
+:::
 
 ## Geometry & Effects
 
@@ -139,8 +138,6 @@ Apply stylistic effects to the image:
 Applies a Gaussian blur. The value represents the sigma of the blur.
 
 **Range:** `0` (no blur) to `150` (heavy blur).
-
----
 
 ## Borders & Padding
 

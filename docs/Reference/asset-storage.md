@@ -99,11 +99,13 @@ When using the filesystem or in-memory object store implementations, the `presig
 ## Metadata Store (PostgreSQL)
 Konifer uses PostgreSQL for robust transactional support and hierarchical path queries.
 
-> ⛔ **Requirement**: ltree Extension The ltree extension must be enabled on your PostgreSQL database before 
-> Konifer starts. Run the following SQL command as a superuser:
-> ```sql
-> CREATE EXTENSION IF NOT EXISTS ltree;
-> ```
+:::warning 
+ltree Extension The ltree extension must be enabled on your PostgreSQL database before 
+Konifer starts. Run the following SQL command as a superuser:
+```sql
+CREATE EXTENSION IF NOT EXISTS ltree;
+```
+:::
 
 Define your database connection details in the postgres block of konifer.conf.
 
