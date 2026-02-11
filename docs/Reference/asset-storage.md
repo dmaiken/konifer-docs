@@ -25,6 +25,7 @@ To enable development mode, set the following flags in your configuration:
 object-store {
   in-memory = true
 }
+
 database {
   in-memory = true
 }
@@ -42,10 +43,7 @@ This enables seamless authentication when running on EC2 instances with IAM role
 
 ```hocon
 object-store {
-  s3 {
-    # Required for URL generation
-    region = "us-east-2"
-  }
+  provider = s3
 }
 ```
 
@@ -55,6 +53,8 @@ the endpoint and credentials.
 
 ```hocon
 object-store {
+  provider = s3
+  
   s3 {
     # The full URL to your provider's API
     endpoint-url = "https://<account-id>.r2.cloudflarestorage.com"
@@ -64,7 +64,7 @@ object-store {
     secret-key = "your-secret-key"
 
     # Some providers require a specific region (often 'auto' or 'us-east-1')
-    region = "auto"
+    region = "us-east-1"
   }
 }
 ```
@@ -73,6 +73,8 @@ object-store {
 Konifer can store files to a specified filesystem location. This filesystem path must be configured and has no default property.
 ```hocon
 object-store {
+  provider = filesystem # This is the default value
+  
   filesystem {
     mount-path = "/path/to/filesystem/mount"
   }
@@ -110,10 +112,15 @@ CREATE EXTENSION IF NOT EXISTS ltree;
 Define your database connection details in the postgres block of konifer.conf.
 
 ```hocon
-postgres {
-  host = "localhost"
-  port = 5432
-  user = "username"
-  password = "password"
+data-store {
+  provider = postgres
+  
+  postgres {
+    host = "localhost"
+    port = 5432
+    user = "username"
+    password = "password"
+  }
 }
+
 ```
