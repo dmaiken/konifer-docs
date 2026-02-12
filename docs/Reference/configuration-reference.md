@@ -117,7 +117,7 @@ url-signing {
 ```
 | Property                 | Description                                    | Allowed Input                               | Default       |
 |:-------------------------|:-----------------------------------------------|:--------------------------------------------|:--------------|
-| `url-signing.enabled`    | Enable url-signing for GET requests or not     | Boolean                                     | false         |
+| `url-signing.enabled`    | Enable url-signing for GET requests or not     | Boolean                                     | `false`       |
 | `url-signing.algorithm`  | HMAC signing algorithm that signatures use     | `hmac_sha256`, `hmac_sha384`, `hmac_sha512` | `hmac_sha256` |
 | `url-signing.secret-key` | HMAC secret key used for validating signatures | String                                      | None          |
 
@@ -132,8 +132,10 @@ paths = [
       lqip = []
     }
     preprocessing {
+      enabled = false
       image {
         # Preprocessing disabled by default
+        # Populate with URL manipulation parameters i.e. w = 100, h = 200, r = 90, etc.
       }
     }
     eager-variants = []
@@ -184,12 +186,17 @@ paths = [
 {
   path = "/**"
   preprocessing {
+    enabled = false
     image {
       # Preprocessing disabled by default
     }
   }
 }
 ```
+| Property                 | Description          | Allowed Input | Default |
+|:-------------------------|:---------------------|:--------------|:--------|
+| `preprocessing.enabled ` | Enable preprocessing | Boolean       | `false` |
+
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the `image` block.
 
 ### Eager Variants

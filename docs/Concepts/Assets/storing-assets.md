@@ -76,7 +76,7 @@ and are returned as headers when fetching asset content.
 }
 ```
 
-## Asset preprocessing
+## Asset Preprocessing
 When you store an asset, you can transform the source content. Doing so means the original variant becomes the 
 result of your defined transformation. Any variant generated for this asset is generated from the original variant. 
 Keep this in mind when defining any preprocessing. For example preprocessing an image down to 50x50 limits
@@ -87,8 +87,9 @@ The following configuration converts the supplied asset content to an AVIF image
 paths = [
   {
     path = "/users/**"
-    image {
-      preprocessing {
+    preprocessing {
+      enabled = true
+      image {
         format = "image/avif"
         w = 1024
       }
@@ -96,3 +97,47 @@ paths = [
   }
 ]
 ```
+
+All [image transformation parameters](../../Reference/image-transformation-reference.md#parameter-reference) can be used within the `image` block.
+
+### Max Width/Height
+In addition to all image transformation parameters, you can also specify `max-height` and `max-width`. If the source content's
+height or width exceeds their respective maximums, they are downscaled.
+
+The following configuration will downscale any image larger than 1024x1024 down to 1024x1024 using a fit mode of `fit`.
+```hocon
+paths = [
+  {
+    path = "/users/**"
+    preprocessing {
+      enabled = true
+      image {
+        max-height = 1024
+        max-width = 1024
+        fit = fit # Optional - defaults to: fit
+      }
+    }
+  }
+]
+```
+
+:::note
+`h` and `w` take precedence over `max-height` and `max-width` respectively. This configuration will result in images being
+scaled to 2048x1024. Avoid mixing height/width and `max-height`/`max-width`.
+
+```hocon
+paths = [
+  {
+    path = "/users/**"
+    preprocessing {
+      enabled = true
+      image {
+        max-height = 1024
+        max-width = 1024
+        w = 2048
+      }
+    }
+  }
+]
+```
+:::
