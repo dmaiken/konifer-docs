@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Finish documentation">
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Remove unused prism languages and clean up some examples">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/asset-storage.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/asset-storage.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/image-transformation-reference.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +126,7 @@
       <workItem from="1769288303022" duration="20000" />
       <workItem from="1769292395711" duration="22093000" />
       <workItem from="1769972344808" duration="10884000" />
-      <workItem from="1770336480648" duration="13488000" />
+      <workItem from="1770336480648" duration="20125000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -278,7 +280,23 @@
       <option name="project" value="LOCAL" />
       <updated>1770591338309</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Some more cleanup">
+      <option name="closed" value="true" />
+      <created>1770591647771</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1770591647771</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Remove unused prism languages and clean up some examples">
+      <option name="closed" value="true" />
+      <created>1770771188231</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1770771188231</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -317,6 +335,8 @@
     <MESSAGE value="Finish configuration reference" />
     <MESSAGE value="Add a logo" />
     <MESSAGE value="Finish documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish documentation" />
+    <MESSAGE value="Some more cleanup" />
+    <MESSAGE value="Remove unused prism languages and clean up some examples" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unused prism languages and clean up some examples" />
   </component>
 </project>

@@ -139,6 +139,8 @@ paths = [
     eager-variants = []
     object-store {
       bucket = assets
+    }
+    return-format {
       redirect {
         strategy = none
         template {
@@ -207,6 +209,18 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   path = "/**"
   object-store {
     bucket = assets
+  }
+}
+```
+| Property                                | Description                                                                                                                                                        | Allowed Input                                      | Default            |
+|:----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
+| `object-store.bucket`                   | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name                                  | `assets`           |
+
+### Return Format
+```hocon
+{
+  path = "/**"
+  return-format {
     redirect {
       strategy = none
       template {
@@ -219,12 +233,11 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   }
 }
 ```
-| Property                                | Description                                                                                                                                                        | Allowed Input                                      | Default            |
-|:----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
-| `object-store.bucket`                   | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name                                  | `assets`           |
-| `object-store.redirect.strategy`        | How to serve redirect URLs                                                                                                                                         | `none`, `presigned`, `template`                    | `none`             |
-| `object-store.redirect.template.string` | Template string to use if `strategy` is `template`                                                                                                                 | Valid URL string                                   | `localhost`        |
-| `object-store.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned                                                                                                | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
+| Property                                 | Description                                                                                                                                                        | Allowed Input                                      | Default            |
+|:-----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
+| `return-format.redirect.strategy`        | How to serve redirect URLs                                                                                                                                         | `none`, `presigned`, `template`                    | `none`             |
+| `return-format.redirect.template.string` | Template string to use if `strategy` is `template`                                                                                                                 | Valid URL string                                   | `localhost`        |
+| `return-format.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned                                                                                                | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
 
 ### Cache Control
 ```hocon

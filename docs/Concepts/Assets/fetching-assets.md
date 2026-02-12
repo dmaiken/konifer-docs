@@ -107,7 +107,7 @@ Redirect strategies are defined within path configuration. The default strategy 
 paths = [
   {
     path = "/**"
-    object-store {
+    return-format {
       redirect {
         strategy = "none|presigned|template"
       }
@@ -129,7 +129,7 @@ To set the TTL for the presigned URL, specify it within the `presigned` configur
 paths = [
   {
     path = "/**"
-    object-store {
+    return-format {
       redirect {
         strategy = presigned
         presigned {
@@ -148,7 +148,7 @@ template string and Konifer uses that to resolve your redirection URL.
 paths = [
   {
     path = "/**"
-    object-store {
+    return-format {
       redirect {
         strategy = template
         template {
