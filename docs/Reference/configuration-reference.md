@@ -11,8 +11,8 @@ Properties for configuring the datastore.
 
 ```hocon 
 datastore {
-  provider = postgres
-  postgres {
+  provider = postgresql
+  postgresql {
     database = konifer
     host = localhost
     port = 5432
@@ -21,6 +21,14 @@ datastore {
   }
 }
 ```
+| Property                        | Description                               | Allowed Input             | Default      |
+|:--------------------------------|:------------------------------------------|:--------------------------|:-------------|
+| `datastore.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |
+| `datastore.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |
+| `datastore.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |
+| `datastore.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |
+| `datastore.postgresql.user`     | Postgresql user                           | String                    | `postgres`   |
+| `datastore.postgresql.password` | Postgresql password                       | String                    | `""`         |
 
 ## HTTP
 ```hocon
@@ -28,9 +36,9 @@ http {
   public-url = "http://localhost"
 }
 ```
-| Property      | Description                                                                                               | Allowed Input                              | Default              |
-|:--------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:---------------------|
-| `public-url ` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost`   |
+| Property          | Description                                                                                               | Allowed Input                              | Default              |
+|:------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:---------------------|
+| `http.public-url` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost`   |
 
 
 ## Object Store
@@ -50,14 +58,14 @@ objectstore {
   }
 }
 ```
-| Property                | Description                                                       | Allowed Input                       | Default      |
-|:------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|
-| `provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` |
-| `s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | Any string                          | None         |
-| `s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | Any string                          | None         |
-| `s3.region`             | The region of your object store                                   | Any string                          | None         |
-| `s3.secret-key`         | The secret key of your object store                               | Any string                          | None         |
-| `filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |
+| Property                            | Description                                                       | Allowed Input                       | Default      |
+|:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|
+| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` |
+| `objectstore.s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | String                              | None         |
+| `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |
+| `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |
+| `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         |
+| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |
 
 ## Source
 ```hocon 
@@ -75,7 +83,7 @@ source {
 |:-----------------------------|:------------------------------------------------------------------------------------------------------------|:-------------------------------------|:----------|
 | `source.url.allowed-domains` | Domains that Konifer is permitted to access when storing assets from a URL source                           | Any valid domain                     | `[]`      |
 | `source.url.max-bytes`       | Maximum size of supplied asset content downloaded from URL. Will reject assets larger than this.            | Positive integer representing bytes  | 1048576   |
-| `s3.endpoint-url`            | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes  | 1048576   |
+| `source.multipart.max-bytes` | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes  | 1048576   |
 
 ## Variant Profiles
 ```hocon

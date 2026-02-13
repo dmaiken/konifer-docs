@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Remove unused prism languages and clean up some examples">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/fetching-assets.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Reference/asset-storage.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/asset-storage.md" afterDir="false" />
+    <list default="true" id="9e343c33-271b-4e2e-b8c6-ab188c79e36f" name="Changes" comment="Update redirect property location">
+      <change beforePath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Concepts/Assets/storing-assets.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Reference/configuration-reference.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,7 +124,7 @@
       <workItem from="1769288303022" duration="20000" />
       <workItem from="1769292395711" duration="22093000" />
       <workItem from="1769972344808" duration="10884000" />
-      <workItem from="1770336480648" duration="20125000" />
+      <workItem from="1770336480648" duration="22135000" />
     </task>
     <task id="LOCAL-00001" summary="More documentation">
       <option name="closed" value="true" />
@@ -296,7 +294,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770771188231</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Update redirect property location">
+      <option name="closed" value="true" />
+      <created>1770856766222</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1770856766222</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,6 +343,7 @@
     <MESSAGE value="Finish documentation" />
     <MESSAGE value="Some more cleanup" />
     <MESSAGE value="Remove unused prism languages and clean up some examples" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove unused prism languages and clean up some examples" />
+    <MESSAGE value="Update redirect property location" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update redirect property location" />
   </component>
 </project>

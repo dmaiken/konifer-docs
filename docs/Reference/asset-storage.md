@@ -113,9 +113,9 @@ Define your database connection details in the postgres block of konifer.conf.
 
 ```hocon
 data-store {
-  provider = postgres
+  provider = postgresql
   
-  postgres {
+  postgresql {
     host = "localhost"
     port = 5432
     user = "username"
