@@ -65,6 +65,7 @@ objectstore {
 | `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |
 | `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |
 | `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         |
+| `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |
 | `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |
 
 ## Source

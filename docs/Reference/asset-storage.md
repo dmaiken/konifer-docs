@@ -63,8 +63,12 @@ object-store {
     access-key = "your-access-key"
     secret-key = "your-secret-key"
 
-    # Some providers require a specific region (often 'auto' or 'us-east-1')
+    # The S3 SDK requires a region to be populated either through the Provider Chain (AWS)
+    # or manually. Use 'auto' if your provider does not require a region.
     region = "us-east-1"
+
+    # Many non-AWS providers require this to be true (i.e. MiniIO)
+    force-path-style = false
   }
 }
 ```
