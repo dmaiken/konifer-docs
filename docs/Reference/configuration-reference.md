@@ -6,6 +6,15 @@ sidebar_label: "Configuration Properties"
 ---
 Values used in snippets are the default properties.
 
+## Environment Variables
+Properties that have an environment variable specified will still be overridden if the property's value is defined in 
+your conf file. 
+
+The order of configuration precedence is:
+1. Property in `konifer.conf`
+2. Environment variable (for available properties)
+3. Default value (if specified)
+
 ## Datastore
 Properties for configuring the datastore.
 
@@ -21,15 +30,15 @@ data-store {
   }
 }
 ```
-| Property                         | Description                               | Allowed Input             | Default      |
-|:---------------------------------|:------------------------------------------|:--------------------------|:-------------|
-| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |
-| `data-store.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |
-| `data-store.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |
-| `data-store.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |
-| `data-store.postgresql.user`     | Postgresql user                           | String                    | `postgres`   |
-| `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         |
-| `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |
+| Property                         | Description                               | Allowed Input             | Default      | Environment variable |
+|:---------------------------------|:------------------------------------------|:--------------------------|:-------------|:---------------------|
+| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |                      |
+| `data-store.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |                      |
+| `data-store.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |                      |
+| `data-store.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |                      |
+| `data-store.postgresql.user`     | Postgresql user                           | String                    | `postgres`   | PG_USER              |
+| `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         | PG_PASSWORD          |          
+| `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |                      |
 
 ## HTTP
 ```hocon
@@ -59,15 +68,15 @@ objectstore {
   }
 }
 ```
-| Property                            | Description                                                       | Allowed Input                       | Default      |
-|:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|
-| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` |
-| `objectstore.s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | String                              | None         |
-| `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |
-| `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |
-| `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         |
-| `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |
-| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |
+| Property                            | Description                                                       | Allowed Input                       | Default      | Environment variable |
+|:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
+| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` |                      |
+| `objectstore.s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
+| `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |                      |
+| `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |                      |
+| `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         | S3_SECRET_KEY        |
+| `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
+| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |                      |
 
 ## Source
 ```hocon 
@@ -125,11 +134,11 @@ url-signing {
   secret-key = "[no default]"
 }
 ```
-| Property                 | Description                                    | Allowed Input                               | Default       |
-|:-------------------------|:-----------------------------------------------|:--------------------------------------------|:--------------|
-| `url-signing.enabled`    | Enable url-signing for GET requests or not     | Boolean                                     | `false`       |
-| `url-signing.algorithm`  | HMAC signing algorithm that signatures use     | `hmac_sha256`, `hmac_sha384`, `hmac_sha512` | `hmac_sha256` |
-| `url-signing.secret-key` | HMAC secret key used for validating signatures | String                                      | None          |
+| Property                 | Description                                    | Allowed Input                               | Default       | Environment variable   |
+|:-------------------------|:-----------------------------------------------|:--------------------------------------------|:--------------|:-----------------------|
+| `url-signing.enabled`    | Enable url-signing for GET requests or not     | Boolean                                     | `false`       |                        |
+| `url-signing.algorithm`  | HMAC signing algorithm that signatures use     | `hmac_sha256`, `hmac_sha384`, `hmac_sha512` | `hmac_sha256` |                        |
+| `url-signing.secret-key` | HMAC secret key used for validating signatures | String                                      | None          | URL_SIGNING_SECRET_KEY |
 
 ## Path Configuration Reference
 By default, nothing is configured within `paths`. If nothing was configured, this is how your paths would be configured

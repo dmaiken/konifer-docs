@@ -20,8 +20,10 @@ To enable URL signing, configure your secret and your algorithm in `konifer.conf
 ```hocon
 url-signing {
   enabled = true
-  secret-key = secret
   algorithm = hmac_sha512
+
+  # Can also use URL_SIGNING_SECRET_KEY environment variable
+  secret-key = secret
 }
 ```
 

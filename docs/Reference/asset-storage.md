@@ -124,7 +124,9 @@ data-store {
   postgresql {
     host = "localhost"
     port = 5432
+    # can also use PG_USER environment variable
     user = "username"
+    # can also use PG_PASSWORD environment variable
     password = "password"
     database = "konifer"
     ssl-mode = "prefer"
