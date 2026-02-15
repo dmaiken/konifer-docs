@@ -10,7 +10,7 @@ Values used in snippets are the default properties.
 Properties for configuring the datastore.
 
 ```hocon 
-datastore {
+data-store {
   provider = postgresql
   postgresql {
     database = konifer
@@ -21,14 +21,15 @@ datastore {
   }
 }
 ```
-| Property                        | Description                               | Allowed Input             | Default      |
-|:--------------------------------|:------------------------------------------|:--------------------------|:-------------|
-| `datastore.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |
-| `datastore.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |
-| `datastore.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |
-| `datastore.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |
-| `datastore.postgresql.user`     | Postgresql user                           | String                    | `postgres`   |
-| `datastore.postgresql.password` | Postgresql password                       | String                    | `""`         |
+| Property                         | Description                               | Allowed Input             | Default      |
+|:---------------------------------|:------------------------------------------|:--------------------------|:-------------|
+| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |
+| `data-store.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |
+| `data-store.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |
+| `data-store.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |
+| `data-store.postgresql.user`     | Postgresql user                           | String                    | `postgres`   |
+| `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         |
+| `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |
 
 ## HTTP
 ```hocon

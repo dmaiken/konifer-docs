@@ -61,7 +61,9 @@ object-store {
 
     # Static credentials
     access-key = "your-access-key"
-    secret-key = "your-secret-key"
+    
+    # Can also use S3_SECRET_KEY environment variable
+    secret-key = "your-secret-key" 
 
     # The S3 SDK requires a region to be populated either through the Provider Chain (AWS)
     # or manually. Use 'auto' if your provider does not require a region.
@@ -125,7 +127,11 @@ data-store {
     user = "username"
     password = "password"
     database = "konifer"
+    ssl-mode = "prefer"
   }
 }
-
 ```
+
+### SSL Mode
+Konifer allows you to specify the `sslMode` used when connecting to Postgres. The default is `prefer`. More
+information about these modes can be found in the relevant [Postgres documentation](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
