@@ -114,7 +114,7 @@ curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/metadata' \
 ```
 
-### Labels and Tags
+## Labels and Tags
 Update the asset to add labels and tags using PUT.
 
 ```bash 
