@@ -85,6 +85,7 @@ const config: Config = {
       additionalLanguages: [
         'http',
         'json',
+        'bash'
       ],
     },
   } satisfies Preset.ThemeConfig,

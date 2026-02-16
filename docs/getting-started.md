@@ -50,7 +50,7 @@ docker run -d \
 ## Store an Asset
 Use this curl (Insomnia/Bruno examples coming!) to store your first asset.
 
-```curl
+```bash
 curl --request POST \
   --url 'http://localhost:8080/assets/my-images/' \
   --header 'Content-Type: multipart/form-data' \
@@ -60,7 +60,7 @@ curl --request POST \
 
 ## Fetch a Variant
 Use this curl to fetch the content of your asset
-```curl
+```bash
 curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/content' \
 ```
@@ -69,13 +69,13 @@ curl --request GET \
 Requesting a variant will generate and store the variant on-demand if one does not exist already.
 
 #### Sepia Example
-```curl
+```bash
 curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/content?filter=sepia' \
 ```
 
 #### Blur Example
-```curl
+```bash
 curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/content?blur=100' \
 ```
@@ -101,8 +101,7 @@ paths = [
 ```
 
 Now specify the redirect selector:
-```curl
-```curl
+```bash
 curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/redirect?blur=100' \
 ```
@@ -110,8 +109,7 @@ curl --request GET \
 ### Metadata
 View metadata of the asset as well.
 
-```curl
-```curl
+```bash
 curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/metadata' \
 ```
@@ -119,7 +117,7 @@ curl --request GET \
 ### Labels and Tags
 Update the asset to add labels and tags using PUT.
 
-```curl 
+```bash 
 curl --request PUT \
   --url http://localhost:8080/assets/my-images/-/entry/0 \
   --header 'Content-Type: application/json' \
