@@ -6,7 +6,7 @@ sidebar_label: "Fetch"
 ---
 # API Overview
 After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways using
-query modifiers.
+query selectors.
 
 ## Ordering
 Ordering is specified using the `order` [query selector](../../Concepts/Assets/fetching-assets.md#ordering).

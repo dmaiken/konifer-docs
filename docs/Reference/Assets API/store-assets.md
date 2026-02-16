@@ -102,7 +102,7 @@ Content-Type: application/json
 }
 ```
 Additionally, a `Location` header is returned containing an absolute URL to the asset's link return format.
-> Note: the entryId query modifier is supplied so the URL is absolute and can be used for subsequent GET and PUT operations.
+> Note: the entryId query selector is supplied so the URL is absolute and can be used for subsequent GET and PUT operations.
 
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|

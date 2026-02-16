@@ -9,7 +9,7 @@ content at a given `entryId`. Depending on how you use the `entryId`, you have a
 
 1. To truly "replace" the asset, you can delete the asset and then upload a new one
 2. If using the `entryId` as a versioning mechanism, you can simply POST the new asset to the path. Doing so lets you
-fetch the newest asset by default when calling `GET /assets/your/path` since the default ordering modifier is `created`.
+fetch the newest asset by default when calling `GET /assets/your/path` since the default ordering selector is `new`.
 
 Asset metadata _can_ be updated, however. This includes:
 - `alt`

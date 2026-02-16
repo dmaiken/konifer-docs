@@ -28,7 +28,7 @@ url-signing {
 ```
 
 ## Usage
-To sign a request, the entire path, including query modifiers and query parameters must be included in the signature payload.
+To sign a request, the entire path, including query selectors and query parameters must be included in the signature payload.
 
 :::warning
 Query parameters **must** be sorted alphabetically by parameter key in the signature payload.

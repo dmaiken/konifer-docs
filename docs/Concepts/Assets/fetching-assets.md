@@ -5,16 +5,16 @@ title: Fetching Assets
 sidebar_label: "Fetching"
 ---
 After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways using
-query modifiers.
+query selectors.
 
 ## Query Selectors
 Query selectors are positional values specified after the path-separator, `/-/`. They are used to control the format
 and ordering of fetched assets.
 
 ### Defaults
-The following are the default values and can be omitted as modifiers:
+The following are the default values and can be omitted as selectors:
 - return_format: `link`
-- ordering: `created`
+- ordering: `new`
 
 So this:
 ```http
@@ -22,11 +22,11 @@ GET /assets/users/123/profile-picture
 ```
 Is the same as:
 ```http
-GET /assets/users/123/profile-picture/-/link/created/
+GET /assets/users/123/profile-picture/-/link/new/
 ```
 Any default can be omitted for brevity
 ```http
-GET /assets/users/123/profile-picture/-/metadata/created
+GET /assets/users/123/profile-picture/-/metadata/new
 ```
 is the same as:
 ```http
@@ -214,32 +214,32 @@ Returns:
 | `createdAt`  | ISO 8601     | Date asset was stored                                                |
 | `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
-## Ordering
-When fetching a single asset or multiple assets, you can specify an ordering. Currently only **`created`** is supported,
-meaning the asset(s) are returned in the order of creation, **descending (newest first)**. Using `created` means each
-path operates like a stack where the newest image is returned first.
-
-To specify an ordering place it after the return format option:
+## Limit
+For `metadata` return formats, you can return more than one.  To return the 3 most-recent assets, specify the `limit` query
+parameter, or `-1` for all assets within the path:
 ```http
-GET /assets/users/123/profile-picture/-/redirect/created
+GET /assets/users/123/profile-picture/-/link/new?limit=3
+```
+
+## Ordering
+When fetching a single asset or multiple assets, you can specify the order. 
+
+- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most recently-created assets.
+- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-_created_ assets.
+
+To specify an ordering place it after the return format selector:
+```http
+GET /assets/users/123/profile-picture/-/redirect/new
 ```
 This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
 ```http
-GET /assets/users/123/profile-picture/-/created
-```
-TODO: support `!created` and `modified`.
-
-## Limit
-For `metadata` return formats, you can return more than one.  To return the 3 most-recent assets, specify the `limit` query 
-parameter, or `-1` for all assets within the path:
-```http
-GET /assets/users/123/profile-picture/-/link/created?limit=3
+GET /assets/users/123/profile-picture/-/new
 ```
 
 ### Entry ID
 When an asset is stored within your path, it is assigned a unique `entryId`. This ID is an absolute reference to the asset
 within your path. It is guaranteed to be unique relative to the path. Assets can be fetched by their path + `entryId`
-using the `entry` Query Modifier.
+using the `entry` query selector.
 
 To fetch a specific asset (`entryId` of 42) using the default `link` return format:
 ```http
@@ -249,4 +249,5 @@ Additionally, you can specify the return format along with the `entryId`:
 ```http
 GET /assets/users/123/profile-picture/-/entry/42/redirect
 ```
-Ordering query selectors **cannot** be used with the `entry` modifier.
+A URL with the `entry` selector is the absolute reference to the asset therefore ordering query selectors cannot be used 
+with the `entry` selector.

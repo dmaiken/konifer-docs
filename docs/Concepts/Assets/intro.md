@@ -70,17 +70,17 @@ Labels can be used to query for assets. They are supplied as query parameters.
 ```http 
 GET /assets/users/123?label-key=label-value&phone=Android
 ```
-Labels can also be combined with other query modifiers to further filter your results. For example, this returns the metadata of the 5 most-recently
+Labels can also be combined with other query selectors to further filter your results. For example, this returns the metadata of the 5 most-recently
 created assets containing the label of `phone=iphone`:
 ```http 
-GET /assets/users/123/-/metadata/created/5?phone=iphone
+GET /assets/users/123/-/metadata/new/5?phone=iphone
 ```
 
 ### Deleting
 Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5 most-recently
 created assets containing the label of `phone=iphone`:
 ```http 
-DELETE /assets/users/123/-/created/5?phone=iphone
+DELETE /assets/users/123/-/new/5?phone=iphone
 ```
 
 #### Delete all with label(s)
@@ -90,7 +90,7 @@ DELETE /assets/users/123/-/all?phone=iphone
 ```
 
 #### Recursive delete
-Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s) and the `recursive` modifier.
+Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s) and the `recursive` selector.
 ```http 
 DELETE /assets/users/123/-/recursive?phone=iphone
 ```
@@ -99,7 +99,7 @@ DELETE /assets/users/123/-/recursive?phone=iphone
 Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with the key `w`, prefix the key with
 `label:`.
 ```http
-GET /assets/users/123/-/metadata/created/5?label:w=wValue
+GET /assets/users/123/-/metadata/new/5?label:w=wValue
 ```
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
 

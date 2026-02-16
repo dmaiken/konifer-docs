@@ -135,7 +135,8 @@ root of the inheritance tree. All other paths inherits from this base configurat
 
 ### System Defaults
 For any value not defined in the `/**` path or any of its children, Konifer uses a hardcoded system default. 
-Consult the Path Configuration Reference (TODO) to determine the system default for each property.
+Consult the [Path Configuration Reference](../Reference/configuration-reference.md#path-configuration-reference) 
+to determine the system default for each property.
 
 #### Example
 Storing at `/users/123/profile-picture` only allows `image/png` but storing at `/blog/123` would only allow `image/png`.
