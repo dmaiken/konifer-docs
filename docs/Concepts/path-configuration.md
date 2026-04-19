@@ -139,20 +139,20 @@ Consult the [Path Configuration Reference](../Reference/configuration-reference.
 to determine the system default for each property.
 
 #### Example
-Storing at `/users/123/profile-picture` only allows `image/png` but storing at `/blog/123` would only allow `image/png`.
+Storing at `/users/123/profile-picture` only allows `image/png` but storing at `/blog/123` would only allow `image/gif`.
 
 ```hocon
 paths = [
   {
-    path = "/**"
+    path = "/users/**"
     allowed-content-types = [
       "image/png",
     ]
   }
   {
-    path = "/users/**"
+    path = "/blog/123"
     allowed-content-types = [
-      "image/png",
+      "image/gif",
     ]
   }
 ]
