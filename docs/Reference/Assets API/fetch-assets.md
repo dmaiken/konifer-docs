@@ -161,8 +161,13 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
         "blur": 0,
         "quality": 80,
         "padding": {
-            "amount": 0,
-            "color": []
+          "amount": 0,
+          "color": []
+        },
+        "metadata": {
+          "strip": [
+            "exif", "xmp", "iptc"
+          ],
         }
       },
       "lqip": {}
@@ -219,12 +224,18 @@ Refer to the [Image Transformation Reference](../image-transformation-reference.
 | `blur`     | Integer    | Blur                                            | 0-150                                                                |
 | `quality`  | Integer    | Compression quality (will be 100 for PNG)       | 1-100                                                                |
 | `padding`  | Padding    | Padding                                         |                                                                      |
+| `metadata` | Metadata   | Image metadata                                  |                                                                      |
 
 ###### Padding
 | Field Name | Type      | Description                               | Allowed Values |
 |------------|-----------|-------------------------------------------|----------------|
 | `amount`   | Integer   | Amount of padding in pixels               | >= 0           |
 | `color`    | Integer[] | Color pf padding in [R, G, B, A] integers |                |
+
+###### Metadata
+| Field Name | Type      | Description                                 | Allowed Values        |
+|------------|-----------|---------------------------------------------|-----------------------|
+| `strip`    | List      | Which metadata was removed from the variant | `exif`, `xmp`, `iptc` |
 
 ## Fetching Content
 

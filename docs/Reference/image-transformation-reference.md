@@ -15,20 +15,21 @@ Konifer offers a robust suite of transformation options to create variants from 
 
 ## Parameter Reference
 
-| Parameter | Name           | Description                                                              | Allowed Input                               | Default                                |
-|:----------|:---------------|:-------------------------------------------------------------------------|:--------------------------------------------|:---------------------------------------|
-| `h`       | Height         | The target height of the image                                           | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
-| `w`       | Width          | The target width of the image                                            | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
-| `fit`     | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`            | `fit`                                  |
-| `g`       | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`            | `center`                               |
-| `format`  | Format         | The output format of the image                                           | Format                                      | Original format                        |
-| `r`       | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`             | `0`                                    |
-| `f`       | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`    | `none`                                 |
-| `filter`  | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia` | `none`                                 |
-| `blur`    | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                 | `0`                                    |
-| `q`       | Quality        | Compression level for lossy formats                                      | `1` - `100`                                 | Format dependent (e.g., 80)            |
-| `pad`     | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                               | `0`                                    |
-| `pad-c`   | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)   | Transparent / White (Format dependent) |
+| Parameter | Name           | Description                                                              | Allowed Input                                                     | Default                                |
+|:----------|:---------------|:-------------------------------------------------------------------------|:------------------------------------------------------------------|:---------------------------------------|
+| `h`       | Height         | The target height of the image                                           | Integer `> 0`                                                     | `null` (Preserves aspect ratio)        |
+| `w`       | Width          | The target width of the image                                            | Integer `> 0`                                                     | `null` (Preserves aspect ratio)        |
+| `fit`     | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`                                  | `fit`                                  |
+| `g`       | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`                                  | `center`                               |
+| `format`  | Format         | The output format of the image                                           | Format                                                            | Original format                        |
+| `r`       | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`                                   | `0`                                    |
+| `f`       | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`                          | `none`                                 |
+| `filter`  | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia`                       | `none`                                 |
+| `blur`    | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                                       | `0`                                    |
+| `q`       | Quality        | Compression level for lossy formats                                      | `1` - `100`                                                       | Format dependent (e.g., 80)            |
+| `pad`     | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                                                     | `0`                                    |
+| `pad-c`   | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)                         | Transparent / White (Format dependent) |
+| `strip`   | Strip metadata | Which content metadata fields should be removed                          | `exif`, `iptc`, `xmp` as comma-separated string (e.g. `exif,xmp`) | None                                   |
 
 ### Format
 | Format | Name    | File Extension | Content Type |
@@ -155,3 +156,13 @@ The `pad-c` parameter defines the fill color for the padded area. It requires a 
 #### Examples
 * **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
 * **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)
+
+### Strip Metadata
+The `strip` parameter defines which categories of metadata to strip from the image. EXIF, XMP, and IPTC metadata can be stripped.
+
+:::tip
+Metadata removal is commonly done for either privacy protection or to reduce the size of an image to save on network I/O. 
+You should specify this within profile/eager-variant or in preprocessing if this transformation is desired for all assets.
+
+Remember that stripping metadata within preprocessing will remove it from the original variant!
+:::

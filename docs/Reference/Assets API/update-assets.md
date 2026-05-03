@@ -73,7 +73,12 @@ Content-Type: application/json
 		"padding": {
 		  "amount": 0,
 		  "color": []
-		}
+		},
+		"metadata": {
+          "strip": [
+            "exif", "xmp", "iptc"
+          ],
+        }
       },
 	  "lqip": {}
 	},
