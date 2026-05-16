@@ -6,9 +6,11 @@ sidebar_label: "Update"
 ---
 
 # API Overview
+
 Konifer lets you update asset metadata only. The content cannot be updated.
 
 ## Request
+
 ```http
 PUT /assets/users/123/-/entry/0
 Content-Type: application/json
@@ -21,11 +23,12 @@ Content-Type: application/json
   }
 }
 ```
-| Field Name | Type     | Description                                                                          | Required |
-|------------|----------|--------------------------------------------------------------------------------------|----------|
-| `alt`      | String   | The supplied alt text of your asset                                                  | No       |
-| `labels`   | Object   | Supplied key-value pairs associated with the asset                                   | No       |
-| `tags`     | Array    | Supplied attributes associated with the asset                                        | No       |
+
+| Field Name | Type   | Description                                        | Required |
+|------------|--------|----------------------------------------------------|----------|
+| `alt`      | String | The supplied alt text of your asset                | No       |
+| `labels`   | Object | Supplied key-value pairs associated with the asset | No       |
+| `tags`     | Array  | Supplied attributes associated with the asset      | No       |
 
 :::warning
 PUT is a complete replacement of the asset metadata. Even if updating one field, the rest of the fields
@@ -33,7 +36,9 @@ must be supplied, or they are erased.
 :::
 
 ## Response
+
 The entire [asset metadata response](fetch-assets.md#fetching-metadata) is returned.
+
 ```http 
 HTTP/1.1 200
 Content-Type: application/json
@@ -57,7 +62,8 @@ Content-Type: application/json
         "width": 2560,
         "format": "webp",
 		"pageCount": 1,
-		"loop": 0
+		"loop": 0,
+        "colorSpace": "srgb"
       },
       "transformation": {
 	    "width": 2560,
@@ -73,7 +79,12 @@ Content-Type: application/json
 		"padding": {
 		  "amount": 0,
 		  "color": []
-		}
+		},
+		"metadata": {
+          "strip": [
+            "exif", "xmp", "iptc"
+          ],
+        }
       },
 	  "lqip": {}
 	},
@@ -86,7 +97,8 @@ Content-Type: application/json
         "width": 2560,
         "format": "webp",
         "pageCount": 1,
-        "loop": 0
+        "loop": 0,
+        "colorSpace": "srgb"
       },
       "lqip": {}
     }

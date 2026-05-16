@@ -4,6 +4,7 @@ id: concepts-assets
 title: Assets Introduction
 sidebar_label: "Introduction"
 ---
+
 An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, metadata and content.
 Metadata is stored in Postgres and content is stored in the configured object store (S3, filesystem, or in-memory).
 
@@ -11,24 +12,33 @@ Assets can be created, fetched, and their metadata updated. Content is not updat
 asset's content is considered immutable.
 
 ## API
+
 An asset is created by calling `POST:/assets/{your/defined/path}`. This way, _you_ define the domain structure
-of the platform. For example, if your assets are primarily user-generated content, you may want to organize your API around
+of the platform. For example, if your assets are primarily user-generated content, you may want to organize your API
+around
 your users.
+
 ```http 
 POST /assets/users/123/profile-picture
 ```
+
 ```http
 POST /assets/users/234/background
 ```
+
 If they were blog-oriented:
+
 ```http 
 POST /assets/blog/123/post/5
 ```
 
-Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By default,
-fetching an asset at a given path returns the most-recently created asset, however, that can be changed using Query Selectors.
+Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By
+default,
+fetching an asset at a given path returns the most-recently created asset, however, that can be changed using Query
+Selectors.
 
 ## Content
+
 The following content types are currently supported by Konifer:
 
 | Name    | Content-Type | Format | Animated Format Supported |
@@ -42,84 +52,116 @@ The following content types are currently supported by Konifer:
 | GIF     | `image/gif`  | `gif`  | Yes                       |
 
 ## Metadata
+
 An asset can have the following metadata supplied when creating or updating an asset:
+
 - alt
 - labels
 - tags
 
 ## Alt
-An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It is returned within asset metadata but
+
+An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It is returned within asset
+metadata but
 is also returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
 general limits set by screen readers, the maximum length of an `alt` is 125 characters.
 
 ## Labels
-Labels are key-value pairs used to define custom attributes to the asset. They are optional. Up to 50 labels can be associated to an asset.
+
+Labels are key-value pairs used to define custom attributes to the asset. They are optional. Up to 50 labels can be
+associated to an asset.
 To specify them when storing or updating an asset, use the `labels` field in the request.
 
 ```json
 {
-  "labels": {
-    "label-key": "label-value",
-    "phone": "Android"
-  }
+    "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+    }
 }
 ```
 
 ### Querying
+
 Labels can be used to query for assets. They are supplied as query parameters.
+
 ```http 
 GET /assets/users/123?label-key=label-value&phone=Android
 ```
-Labels can also be combined with other query selectors to further filter your results. For example, this returns the metadata of the 5 most-recently
+
+Labels can also be combined with other query selectors to further filter your results. For example, this returns the
+metadata of the 5 most-recently
 created assets containing the label of `phone=iphone`:
+
 ```http 
 GET /assets/users/123/-/metadata/new/5?phone=iphone
 ```
 
 ### Deleting
-Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5 most-recently
+
+Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5
+most-recently
 created assets containing the label of `phone=iphone`:
+
 ```http 
 DELETE /assets/users/123/-/new/5?phone=iphone
 ```
 
 #### Delete all with label(s)
+
 To delete all assets at a particular path, set your `limit` to `all` and supply the labels.
+
 ```http 
 DELETE /assets/users/123/-/all?phone=iphone
 ```
 
 #### Recursive delete
-Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s) and the `recursive` selector.
+
+Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s)
+and the `recursive` selector.
+
 ```http 
 DELETE /assets/users/123/-/recursive?phone=iphone
 ```
 
 ### Reserved words
-Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with the key `w`, prefix the key with
+
+Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with
+the key `w`, prefix the key with
 `label:`.
+
 ```http
 GET /assets/users/123/-/metadata/new/5?label:w=wValue
 ```
+
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
 
 ### Rules
+
 - Maximum amount of labels: 50
 - Maximum label key length: 128 characters
 - Maximum label value length: 256 characters
 
 ## Tags
+
 Tags are similar to labels in that they are custom attributes assignable to an asset but differ in the following ways:
+
 - They are value-only and do not contain any key-value structure
 - They cannot be used to query or delete assets
 
 To specify tags when storing or updating an asset, use the `tags` field in the request.
+
 ```json
 {
-  "tags": [ "happy", "smiling", "bread" ]
+    "tags": [
+        "happy",
+        "smiling",
+        "bread"
+    ]
 }
 ```
 
 ### Rules
+
 - Maximum amount of tags: 50
 - Maximum tag value length: 256

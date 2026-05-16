@@ -4,10 +4,13 @@ id: http-caching
 title: HTTP Caching
 sidebar_label: "HTTP Caching"
 ---
-Konifer exposes highly-customizable `Cache-Control` headers. Due to the relative nature of the API, no assumptions are made
-regarding the appropriate `Cache-Control` header to apply to an asset. 
+
+Konifer exposes highly-customizable `Cache-Control` headers. Due to the relative nature of the API, no assumptions are
+made
+regarding the appropriate `Cache-Control` header to apply to an asset.
 
 ## Cache-Control Configuration
+
 The `Cache-Control` header can be configured per-path. The following options are available:
 
 | Property                  | Description                                           | Allowed Input                                     | Default |
@@ -26,25 +29,32 @@ Konifer does **not** validate proper semantic `Cache-Control` configurations.
 :::
 
 ### Usage
-To configure, specify properties within the `cache-control` block of your path configuration. You can explore more about the proper
-usage of `Cache-Control` header directives [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control).
+
+To configure, specify properties within the `cache-control` block of your path configuration. You can explore more about
+the proper
+usage of `Cache-Control` header
+directives [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control).
+
 ```hocon
 {
-  paths = [
-    {
-      path = "/users"
-      cache-control {
-        enabled = true
-        max-age = 1000000
-        s-maxage = 2000000
-        immutable = true
-      }
-    }
-  ]
+    paths = [
+        {
+            path = "/users"
+            cache-control {
+                enabled = true
+                max-age = 1000000
+                s-maxage = 2000000
+                immutable = true
+            }
+        }
+    ]
 }
 ```
 
 ## Etags
-Etags are always enabled and are returned regardless of your `cache-control` configuration. `Etags` and conditional 
-validation are only enabled when returning asset in the `content` return format. The usage of `Etags` is outside of the scope
-of this document and can be explored further [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag).
+
+Etags are always enabled and are returned regardless of your `cache-control` configuration. `Etags` and conditional
+validation are only enabled when returning asset in the `content` return format. The usage of `Etags` is outside of the
+scope
+of this document and can be explored
+further [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag).
