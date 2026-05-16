@@ -26,3 +26,5 @@ Konifer offers several features including:
 - Query selector primitives to let you query your assets your way
 - Cache-friendly with robust Cache-Control, Etag, and CDN support
 - URL-signing
+- Strip image metadata
+- Color space detection and management
