@@ -90,7 +90,8 @@ Content-Type: application/json
       "attributes": {
         "height": 100,
         "width": 200,
-        "format": "jpg"
+        "format": "jpg",
+        "colorSpace": "srgb"
       },
       "lqip": {
         "blurhash": "BASE64",
@@ -128,13 +129,14 @@ Additionally, a `Location` header is returned containing an absolute URL to the 
 | `lqip`              | LQIP           | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration         |
 
 #### Attributes
-| Field Name  | Type    | Description                                                                                                 |
-|-------------|---------|-------------------------------------------------------------------------------------------------------------|
-| `height`    | Integer | Height of variant                                                                                           |
-| `width`     | Integer | Width of variant                                                                                            |
-| `format`    | Format  | Format of variant                                                                                           |
-| `pageCount` | Integer | Number of pages in image (1 unless image is animated)                                                       |
-| `loop`      | Integer | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0; -1 is continuous looping |
+| Field Name   | Type    | Description                                                                                                                                      |
+|--------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `height`     | Integer | Height of variant                                                                                                                                |
+| `width`      | Integer | Width of variant                                                                                                                                 |
+| `format`     | Format  | Format of variant                                                                                                                                |
+| `pageCount`  | Integer | Number of pages in image (1 unless image is animated)                                                                                            |
+| `loop`       | Integer | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0; -1 is continuous looping                                      |
+| `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
 
 #### Format
 | Format | Name    | File Extension | Content Type |

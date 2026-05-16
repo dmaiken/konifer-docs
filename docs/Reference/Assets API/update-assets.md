@@ -57,7 +57,8 @@ Content-Type: application/json
         "width": 2560,
         "format": "webp",
 		"pageCount": 1,
-		"loop": 0
+		"loop": 0,
+        "colorSpace": "srgb"
       },
       "transformation": {
 	    "width": 2560,
@@ -91,7 +92,8 @@ Content-Type: application/json
         "width": 2560,
         "format": "webp",
         "pageCount": 1,
-        "loop": 0
+        "loop": 0,
+        "colorSpace": "srgb"
       },
       "lqip": {}
     }

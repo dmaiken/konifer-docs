@@ -24,12 +24,13 @@ Konifer offers a robust suite of transformation options to create variants from 
 | `format`  | Format         | The output format of the image                                           | Format                                                            | Original format                        |
 | `r`       | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`                                   | `0`                                    |
 | `f`       | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`                          | `none`                                 |
-| `filter`  | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `greyscale`, `sepia`                       | `none`                                 |
+| `filter`  | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `grayscale`, `sepia`                       | `none`                                 |
 | `blur`    | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                                       | `0`                                    |
 | `q`       | Quality        | Compression level for lossy formats                                      | `1` - `100`                                                       | Format dependent (e.g., 80)            |
-| `pad`     | Padding        | Adds padding pixels to the image boundaries.                             | Integer `> 0`                                                     | `0`                                    |
+| `pad`     | Padding        | Adds padding pixels to the image boundaries                              | Integer `> 0`                                                     | `0`                                    |
 | `pad-c`   | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)                         | Transparent / White (Format dependent) |
-| `strip`   | Strip metadata | Which content metadata fields should be removed                          | `exif`, `iptc`, `xmp` as comma-separated string (e.g. `exif,xmp`) | None                                   |
+| `strip`   | Strip Metadata | Comma-separated list of metadata fields to remove                        | `exif`, `iptc`, `xmp` (e.g., `exif,xmp`)                          | None                                   |
+| `cs`      | Color Space    | Transforms the image color space                                         | `origin`, `grayscale`, `srgb`, `p3`                               | `origin`                               |
 
 ### Format
 | Format | Name    | File Extension | Content Type |
@@ -56,8 +57,7 @@ The image is resized to fit within the specified dimensions while maintaining it
 ### `fill`
 **Requirements:** Both `h` and `w` are required.
 
-The image is resized to **completely fill** the specified dimensions. The image is scaled maintaining aspect ratio, 
-and any parts of the image that overflow the bounding box are cropped out.
+The image is resized to **completely fill** the specified dimensions. The image is scaled maintaining its aspect ratio, and any parts of the image that overflow the bounding box are cropped out.
 
 **Default Gravity:** Uses `center` gravity (crops equally from sides/top-bottom).
 
@@ -101,17 +101,32 @@ The `q` parameter controls the compression level for lossy formats. Lower values
 | Format      | Default Quality | Notes                                                          |
 |:------------|:----------------|:---------------------------------------------------------------|
 | **JPEG**    | 80              | Good balance for photos.                                       |
-| **WEBP**    | 80              | generally 30% smaller than JPEG at equivalent quality.         |
+| **WEBP**    | 80              | Generally 30% smaller than JPEG at equivalent quality.         |
 | **AVIF**    | 50              | Superior compression, but computationally expensive to encode. |
 | **PNG**     | N/A             | PNG is lossless. The `q` parameter is ignored.                 |
-| **JPEG XL** | 90              |                                                                |
-| **HEIC**    | 50              |                                                                |
-| **GIF**     | 100             | Images are generally small due to limited color pallete        |
+| **JPEG XL** | 90              | High-efficiency modern standard.                               |
+| **HEIC**    | 50              | Standard for iOS captures.                                     |
+| **GIF**     | 100             | Images are generally small due to a limited color palette.     |
 
 Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) library recommendations.
 
 :::tip
-**Performance Note:** The tradeoff for higher quality images is increased encoding cost. For formats like AVIF, encoding costs can be significant.
+**Performance Note:** The trade-off for higher quality images is increased encoding cost. For formats like AVIF, encoding costs can be significant.
+:::
+
+## Color Space
+
+The `cs` parameter defines the color space of the image. Color spaces determine the available color gamut that the image can use.
+
+* **`origin`** (Default): Retains the embedded ICC profile (if present) without modifying the color space.
+* **`grayscale`**: Converts the image to a single-channel (or 2-channel if alpha exists) grayscale image. This is more space-efficient than the `grayscale` filter; however, color-adding transformations (such as `pad-c`) will also be flattened to grayscale.
+* **`srgb`**: Converts the image to sRGB (respecting the embedded ICC profile). The ICC profile is removed from the output since most displays assume sRGB by default.
+* **`p3`**: Converts the image to the Display P3 profile, the standard for modern iOS-based cameras and wide-gamut displays.
+
+:::note
+Converting from a limited color space (like sRGB) to a wider one (like P3) does not magically add missing colors. It only increases the file size without any visual enhancement.
+
+For example, converting a grayscale or sRGB image to P3 will not add colors outside the original gamut.
 :::
 
 ## Geometry & Effects
@@ -119,9 +134,7 @@ Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) l
 ### Rotate (`r`)
 The `r` parameter rotates the image clockwise in 90-degree increments.
 
-If `auto` is supplied, Konifer reads the EXIF `Orientation` metadata from the Original Variant and rotates the image 
-accordingly. The resulting transformed variant has the EXIF `Orientation` tag stripped to prevent double-rotation
-by displays.
+If `auto` is supplied, Konifer reads the EXIF `Orientation` metadata from the Original Variant and rotates the image accordingly. The resulting transformed variant has the EXIF `Orientation` tag stripped to prevent double-rotation by displays.
 
 ### Flip (`f`)
 Flipping mirrors the image along a specified axis:
@@ -132,8 +145,14 @@ Flipping mirrors the image along a specified axis:
 Apply stylistic effects to the image:
 * **`none`** (default): No filter applied.
 * **`black_white`**: Applies a binary threshold, forcing pixels to be either pure black or pure white (High contrast).
-* **`greyscale`**: Removes color info, preserving 256 shades of gray (Photo style).
+* **`grayscale`**: Removes color information, preserving 256 shades of gray (Photo style).
 * **`sepia`**: Applies a warm, brownish tone matrix (identical to the CSS `sepia(100%)` filter).
+
+:::note
+The `grayscale` filter is not the same as the `grayscale` color space (`cs`). Images with this filter applied will still be 3-channel (or 4-channel if the image contains alpha). Other transformations, such as padding, will still retain color.
+
+For example: `?filter=grayscale&pad=10&pad-c=#FF2900` will result in a grayscale image with a red border.
+:::
 
 ### Blur (`blur`)
 Applies a Gaussian blur. The value represents the sigma of the blur.
@@ -145,24 +164,26 @@ Applies a Gaussian blur. The value represents the sigma of the blur.
 You can add a border or padding to an image using the `pad` parameter, which specifies the size (in pixels) to extend the image canvas.
 
 ### Amount (`pad`)
-Specify the amount of padding in pixels. 
+Specify the amount of padding in pixels.
 
 ### Padding Color (`pad-c`)
 The `pad-c` parameter defines the fill color for the padded area. It requires a hex string in CSS-style format.
 
-* **If `pad-c` is omitted:** Padding is transparent (for PNG/WebP/AVIF/Jpeg XL/HEIC) or white (for JPEG/GIF).
+* **If `pad-c` is omitted:** Padding is transparent (for PNG/WebP/AVIF/JPEG XL/HEIC) or white (for JPEG/GIF).
 * **Hex Format:** Supports both RGB (Opaque) and RGBA (Transparent) formats.
 
 #### Examples
 * **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
 * **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)
 
+## Metadata
+
 ### Strip Metadata
 The `strip` parameter defines which categories of metadata to strip from the image. EXIF, XMP, and IPTC metadata can be stripped.
 
 :::tip
-Metadata removal is commonly done for either privacy protection or to reduce the size of an image to save on network I/O. 
-You should specify this within profile/eager-variant or in preprocessing if this transformation is desired for all assets.
+Metadata removal is commonly done for either privacy protection or to reduce the size of an image to save on network I/O.
+You should specify this within a Profile, Eager Variant, or Pre-processing rule if this transformation is desired for all assets.
 
-Remember that stripping metadata within preprocessing will remove it from the original variant!
+Remember that stripping metadata within pre-processing will remove it from the Original Variant!
 :::

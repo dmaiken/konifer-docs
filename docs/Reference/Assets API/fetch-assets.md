@@ -147,7 +147,8 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
         "width": 1752,
         "format": "webp",
         "pageCount": 1,
-        "loop": 0
+        "loop": 0,
+        "colorSpace": "srgb"
       },
       "transformation": {
         "width": 2560,
@@ -200,31 +201,33 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 | `lqip`              | LQIP           | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration    |
 
 ##### Attributes
-| Field Name   | Type       | Description                                                                                                  |
-|--------------|------------|--------------------------------------------------------------------------------------------------------------|
-| `height`     | Integer    | Height of variant                                                                                            |
-| `width`      | Integer    | Width of variant                                                                                             |
-| `format`     | Format     | Format of variant                                                                                            |
-| `pageCount`  | Integer    | Number of pages in image (0 unless image is animated)                                                        |
-| `loop`       | Integer    | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0, -1 is continuous looping  |
+| Field Name   | Type    | Description                                                                                                                                      |
+|--------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `height`     | Integer | Height of variant                                                                                                                                |
+| `width`      | Integer | Width of variant                                                                                                                                 |
+| `format`     | Format  | Format of variant                                                                                                                                |
+| `pageCount`  | Integer | Number of pages in image (0 unless image is animated)                                                                                            |
+| `loop`       | Integer | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0, -1 is continuous looping                                      |
+| `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
 
 ##### Transformation
 Refer to the [Image Transformation Reference](../image-transformation-reference.md) for greater detail about available image transformations.
 
-| Field Name | Type       | Description                                     | Allowed Values                                                       |
-|------------|------------|-------------------------------------------------|----------------------------------------------------------------------|
-| `height`   | Integer    | Height of variant in pixels                     | > 0                                                                  |
-| `width`    | Integer    | Width of variant in pixels                      | > 0                                                                  |
-| `fit`      | Attributes | Fit                                             | `fit`, `fill`, `stretch`                                             |
-| `gravity`  | Gravity    | Gravity                                         | `center`, `entropy`, `attention`                                     |
-| `format`   | Format     | Format of variant                               | See Format                                                           |
-| `rotate`   | Rotate     | Rotation                                        | `zero`, `ninety`, `one_hundred_eight`, `two_hundred_seventy`, `auto` |
-| `flip`     | Flip       | Whether variat is flipped and across which axis | `none`, `h`, `v`                                                     |
-| `filter`   | Filter     | Filter                                          | `none`, `black_white`, `greyscale`, `sepia`                          |
-| `blur`     | Integer    | Blur                                            | 0-150                                                                |
-| `quality`  | Integer    | Compression quality (will be 100 for PNG)       | 1-100                                                                |
-| `padding`  | Padding    | Padding                                         |                                                                      |
-| `metadata` | Metadata   | Image metadata                                  |                                                                      |
+| Field Name   | Type       | Description                                     | Allowed Values                                                       |
+|--------------|------------|-------------------------------------------------|----------------------------------------------------------------------|
+| `height`     | Integer    | Height of variant in pixels                     | > 0                                                                  |
+| `width`      | Integer    | Width of variant in pixels                      | > 0                                                                  |
+| `fit`        | Attributes | Fit                                             | `fit`, `fill`, `stretch`                                             |
+| `gravity`    | Gravity    | Gravity                                         | `center`, `entropy`, `attention`                                     |
+| `format`     | Format     | Format of variant                               | See Format                                                           |
+| `rotate`     | Rotate     | Rotation                                        | `zero`, `ninety`, `one_hundred_eight`, `two_hundred_seventy`, `auto` |
+| `flip`       | Flip       | Whether variat is flipped and across which axis | `none`, `h`, `v`                                                     |
+| `filter`     | Filter     | Filter                                          | `none`, `black_white`, `greyscale`, `sepia`                          |
+| `blur`       | Integer    | Blur                                            | 0-150                                                                |
+| `quality`    | Integer    | Compression quality (ignored for PNG)           | 1-100                                                                |
+| `colorSpace` | ColorSpace | Color space                                     | `grayscale`, `srgb`, `p3`                                            |
+| `padding`    | Padding    | Padding                                         |                                                                      |
+| `metadata`   | Metadata   | Image metadata                                  |                                                                      |
 
 ###### Padding
 | Field Name | Type      | Description                               | Allowed Values |
@@ -259,7 +262,7 @@ K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
 ```
 
 :::note
-Etag is only returned for this and the Download return format
+Etag is only returned for Content and Download return formats
 :::
 
 ## Fetching Content Download
