@@ -20,14 +20,14 @@ Properties for configuring the datastore.
 
 ```hocon 
 data-store {
-  provider = postgresql
-  postgresql {
-    database = konifer
-    host = localhost
-    port = 5432
-    user = postgres
-    password = ""
-  }
+    provider = postgresql
+    postgresql {
+        database = konifer
+        host = localhost
+        port = 5432
+        user = postgres
+        password = ""
+    }
 }
 ```
 | Property                         | Description                               | Allowed Input             | Default      | Environment variable |

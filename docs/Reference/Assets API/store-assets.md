@@ -4,18 +4,23 @@ id: asset-storing
 title: Storing Assets
 sidebar_label: "Store"
 ---
+
 When you store an asset, the asset and it's metadata are stored in your object store and database, respectively.
 There are two ways to store an asset:
+
 1. **Multipart Upload:** Use this when the asset content is available locally.
 2. **URL Source:** Use this when the asset content must be downloaded by Konifer from an external URL.
 
 The URL structure for both is:
+
 ```http
 POST /assets/{your/defined/path}
 ```
+
 The difference is how the content is supplied. Only one method is allowed per request.
 
 ## Multipart Upload
+
 A multipart upload lets you specify the asset content and metadata in the same request.
 
 | Part Name  | Content-Type                         | Purpose                                                          | Required?                  |
@@ -24,49 +29,64 @@ A multipart upload lets you specify the asset content and metadata in the same r
 | `asset`    | Image MIME type (e.g., `image/jpeg`) | The raw binary content of the file being stored.                 | Yes                        |
 
 ### Metadata JSON structure
+
 The structure for the `metadata` part is (no fields are required):
+
 ```json
 {
-  "alt": "The alt text for an image",
-  "labels": {
-    "label-key": "label-value",
-    "phone": "Android"
-  },
-  "tags": [ "cold", "verified" ]
+    "alt": "The alt text for an image",
+    "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+    },
+    "tags": [
+        "cold",
+        "verified"
+    ]
 }
 ```
-| Field Name   | Type         | Description                                                          | Required  |
-|--------------|--------------|----------------------------------------------------------------------|-----------|
-| `alt`        | String       | The supplied alt text of your asset                                  | No        |
-| `labels`     | Object       | Supplied key-value pairs associated with the asset                   | No        |
-| `tags`       | Array        | Supplied attributes associated with the asset                        | No        |
+
+| Field Name | Type   | Description                                        | Required |
+|------------|--------|----------------------------------------------------|----------|
+| `alt`      | String | The supplied alt text of your asset                | No       |
+| `labels`   | Object | Supplied key-value pairs associated with the asset | No       |
+| `tags`     | Array  | Supplied attributes associated with the asset      | No       |
 
 ## URL Source
-Instead of supplying the file contents directly, you can specify a URL that Konifer downloads the asset content from. 
+
+Instead of supplying the file contents directly, you can specify a URL that Konifer downloads the asset content from.
 The request is identical to the multipart `metadata`, but you must add a `url` to the request:
+
 ```json
 {
-  "url": "https://yoururl.com/image.jpeg",
-  "alt": "The alt text for an image",
-  "labels": {
-    "label-key": "label-value",
-    "phone": "Android"
-  },
-  "tags": [ "cold", "verified" ]
+    "url": "https://yoururl.com/image.jpeg",
+    "alt": "The alt text for an image",
+    "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+    },
+    "tags": [
+        "cold",
+        "verified"
+    ]
 }
 ```
-| Field Name | Type     | Description                                                                          | Required |
-|------------|----------|--------------------------------------------------------------------------------------|----------|
-| `alt`      | String   | The supplied alt text of your asset                                                  | No       |
-| `labels`   | Object   | Supplied key-value pairs associated with the asset                                   | No       |
-| `tags`     | Array    | Supplied attributes associated with the asset                                        | No       |
-| `url`      | String   | URL source of content. Domain must be allowed within `allowed-domains` configuration | Yes      |
+
+| Field Name | Type   | Description                                                                          | Required |
+|------------|--------|--------------------------------------------------------------------------------------|----------|
+| `alt`      | String | The supplied alt text of your asset                                                  | No       |
+| `labels`   | Object | Supplied key-value pairs associated with the asset                                   | No       |
+| `tags`     | Array  | Supplied attributes associated with the asset                                        | No       |
+| `url`      | String | URL source of content. Domain must be allowed within `allowed-domains` configuration | Yes      |
 
 Since there is only JSON in the request, the `Content-Type` is `application/json`.
 
 ## Store Asset Response
-Regardless of the upload method used, a successful storage request returns a `201 Created` status and the following JSON response
+
+Regardless of the upload method used, a successful storage request returns a `201 Created` status and the following JSON
+response
 representing the asset metadata.
+
 ```http 
 HTTP/1.1 201 CREATED
 Content-Type: application/json
@@ -102,8 +122,10 @@ Content-Type: application/json
   "createdAt": "2025-11-12T01:20:55"
 }
 ```
+
 Additionally, a `Location` header is returned containing an absolute URL to the asset's link return format.
-> Note: the entryId query selector is supplied so the URL is absolute and can be used for subsequent GET and PUT operations.
+> Note: the entryId query selector is supplied so the URL is absolute and can be used for subsequent GET and PUT
+> operations.
 
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|
@@ -119,6 +141,7 @@ Additionally, a `Location` header is returned containing an absolute URL to the 
 | `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
 ### AssetVariant
+
 | Field Name          | Type           | Description                                                                          |
 |---------------------|----------------|--------------------------------------------------------------------------------------|
 | `isOriginalVariant` | Boolean        | Whether the variant is the original variant. For store-asset response, this is true. |
@@ -129,6 +152,7 @@ Additionally, a `Location` header is returned containing an absolute URL to the 
 | `lqip`              | LQIP           | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration         |
 
 #### Attributes
+
 | Field Name   | Type    | Description                                                                                                                                      |
 |--------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | `height`     | Integer | Height of variant                                                                                                                                |
@@ -139,6 +163,7 @@ Additionally, a `Location` header is returned containing an absolute URL to the 
 | `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
 
 #### Format
+
 | Format | Name    | File Extension | Content Type |
 |:-------|:--------|:---------------|:-------------|
 | `png`  | PNG     | .png           | image/png    |

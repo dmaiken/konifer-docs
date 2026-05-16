@@ -69,17 +69,17 @@ Creating an asset at `/users/123` uses the `users` bucket (inherited from the `/
 restrictions on the allowed content types (defined on the more-specific `/users/123` path).
 ```hocon
 paths = [
-  {
-    path = "/users"
-    bucket = "users"
-  },
-  {
-    path = "/users/123"
-    allowed-content-types = [
-      "image/png",
-      "image/jpeg"
-    ]
-  }
+    {
+        path = "/users"
+        bucket = "users"
+    },
+    {
+        path = "/users/123"
+        allowed-content-types = [
+            "image/png",
+            "image/jpeg"
+        ]
+    }
 ]
 ```
 ### Deep Inheritance

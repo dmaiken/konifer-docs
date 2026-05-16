@@ -15,12 +15,12 @@ Let's define a `thumbnail` variant profile to have:
 At the root level of your configuration, define a `variant-profile` array:
 ```hocon
 variant-profiles = [
-  {
-    name = thumbnail
-    w = 128
-    fit = fill
-    r = auto
-  }
+    {
+        name = thumbnail
+        w = 128
+        fit = fill
+        r = auto
+    }
 ]
 ```
 
