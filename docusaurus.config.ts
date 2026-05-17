@@ -49,6 +49,20 @@ const config: Config = {
   ],
 
   themeConfig: {
+      algolia: {
+          appId: 'LR90ZF2B4S',
+          apiKey: '5963eb82452e74cb8eef210aadc73c1c',
+          indexName: 'Konifer Documentation',
+          contextualSearch: true,
+
+          replaceSearchResultPathname: {
+              from: '/docs/', // or as RegExp: /\/docs\//
+              to: '/',
+          },
+
+          searchPagePath: 'search',
+          insights: false,
+      },
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
