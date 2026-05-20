@@ -7,8 +7,7 @@ sidebar_label: "Configuration Properties"
 Values used in snippets are the default properties.
 
 ## Environment Variables
-Properties that have an environment variable specified will still be overridden if the property's value is defined in 
-your conf file. 
+Properties that have an environment variable specified will override the respective property in `konifer.conf`.
 
 The order of configuration precedence is:
 1. Property in `konifer.conf`
@@ -32,13 +31,15 @@ data-store {
 ```
 | Property                         | Description                               | Allowed Input             | Default      | Environment variable |
 |:---------------------------------|:------------------------------------------|:--------------------------|:-------------|:---------------------|
-| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` |                      |
+| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` | IN_MEMORY*           |
 | `data-store.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |                      |
 | `data-store.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |                      |
 | `data-store.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |                      |
 | `data-store.postgresql.user`     | Postgresql user                           | String                    | `postgres`   | PG_USER              |
 | `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         | PG_PASSWORD          |          
 | `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |                      |
+
+If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to `in-memory`.
 
 ## HTTP
 ```hocon
@@ -70,13 +71,15 @@ objectstore {
 ```
 | Property                            | Description                                                       | Allowed Input                       | Default      | Environment variable |
 |:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
-| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` |                      |
+| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` | IN_MEMORY*           |
 | `objectstore.s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
 | `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |                      |
 | `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |                      |
 | `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         | S3_SECRET_KEY        |
 | `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
 | `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |                      |
+
+If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to `in-memory`.
 
 ## Source
 ```hocon 
