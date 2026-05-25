@@ -11,10 +11,14 @@ query selectors.
 Query selectors are positional values specified after the path-separator, `/-/`. They are used to control the format
 and ordering of fetched assets.
 
+Query selectors are specified in the following order:
+1. **Ordering**: what asset(s) you want
+2. **Return format**: how you want the asset(s) presented
+
 ### Defaults
 The following are the default values and can be omitted as selectors:
-- return_format: `link`
-- ordering: `new`
+- **Ordering**: `new`
+- **Return Format**: `link`
 
 So this:
 ```http
@@ -22,15 +26,30 @@ GET /assets/users/123/profile-picture
 ```
 Is the same as:
 ```http
-GET /assets/users/123/profile-picture/-/link/new/
+GET /assets/users/123/profile-picture/-/new/link/
 ```
 Any default can be omitted for brevity
 ```http
-GET /assets/users/123/profile-picture/-/metadata/new
+GET /assets/users/123/profile-picture/-/new/metadata
 ```
 is the same as:
 ```http
 GET /assets/users/123/profile-picture/-/metadata
+```
+
+## Ordering
+When fetching a single asset or multiple assets, you can specify the order.
+
+- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most recently-created assets.
+- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-_modified_ assets.
+
+To specify an ordering, place it before the return format selector:
+```http
+GET /assets/users/123/profile-picture/-/new/redirect
+```
+This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
+```http
+GET /assets/users/123/profile-picture/-/new
 ```
 
 ## Return format
@@ -227,22 +246,7 @@ Returns:
 For `metadata` return formats, you can return more than one.  To return the 3 most-recent assets, specify the `limit` query
 parameter, or `-1` for all assets within the path:
 ```http
-GET /assets/users/123/profile-picture/-/link/new?limit=3
-```
-
-## Ordering
-When fetching a single asset or multiple assets, you can specify the order. 
-
-- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most recently-created assets.
-- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-_created_ assets.
-
-To specify an ordering place it after the return format selector:
-```http
-GET /assets/users/123/profile-picture/-/redirect/new
-```
-This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
-```http
-GET /assets/users/123/profile-picture/-/new
+GET /assets/users/123/profile-picture/-/new/link?limit=3
 ```
 
 ### Entry ID

@@ -94,7 +94,7 @@ metadata of the 5 most-recently
 created assets containing the label of `phone=iphone`:
 
 ```http 
-GET /assets/users/123/-/metadata/new/5?phone=iphone
+GET /assets/users/123/-/new/metadata/5?phone=iphone
 ```
 
 ### Deleting
@@ -131,7 +131,7 @@ the key `w`, prefix the key with
 `label:`.
 
 ```http
-GET /assets/users/123/-/metadata/new/5?label:w=wValue
+GET /assets/users/123/-/new/metadata?label:w=wValue
 ```
 
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
