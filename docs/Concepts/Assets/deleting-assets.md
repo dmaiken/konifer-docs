@@ -15,7 +15,8 @@ When you issue a delete request:
 1. **Metadata:** The database record is removed immediately. The asset is no longer discoverable or queryable via the
    API.
 2. **Content:** The binary content (in S3/Filesystem) is scheduled for asynchronous removal. It is usually physically
-   deleted within a few minutes.
+   deleted within a few minutes. If content fails to be removed from the object store, it will be retried until it is
+   removed.
 
 :::warning
 Deleting an asset is unrecoverable. There is no way to reverse a delete, and there is no soft-delete mechanism!
@@ -57,6 +58,29 @@ DELETE /assets/users/123/profile/-/entry/0
 
 This deletes the asset at `/users/123/profile` with `entryId` of 0.
 
+## Limit
+
+Selectors can be combined with limit to delete multiple assets. Limit defaults to 1.
+
+To delete the five most recently created assets at a path (second line showing the omission of the default ordering
+selector, `new`):
+
+```http
+DELETE /assets/users/123/profile/-/new?limit=5
+DELETE /assets/users/123/profile?limit=5
+```
+
+## Labels
+
+Selectors can be combined with labels and selectors to identify the asset to delete.
+
+To delete the five most recently created assets that have the label `phone=iphone`:
+
+```http
+DELETE /assets/users/123/profile/-/new?limit=5&phone=iphone
+DELETE /assets/users/123/profile?limit=5&phone=iphone
+```
+
 ## Bulk & recursive deletion
 
 Konifer supports powerful bulk-delete operations for cleaning up entire user directories or projects.
@@ -69,7 +93,7 @@ By setting the limit query parameter to `-1`, all assets are deleted within the 
 DELETE /assets/users/123/profile?limit=-1
 ```
 
-### Recursive delete
+### Deleting Recursively
 
 By using the `recursive` selector, you can delete all assets in a path as well as all sub-paths.
 
