@@ -1,23 +1,542 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+.page {
+  background:
+    linear-gradient(180deg, rgba(247, 250, 247, 0.96), rgba(255, 255, 255, 1) 34rem),
+    #ffffff;
+  color: #17211b;
+}
 
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
+.hero {
+  border-bottom: 1px solid rgba(37, 71, 51, 0.12);
+}
+
+.heroInner {
+  align-items: center;
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: minmax(0, 1fr) minmax(25rem, 0.9fr);
+  margin: 0 auto;
+  max-width: 1180px;
+  min-height: 42rem;
+  padding: 4.5rem 1.5rem 5rem;
+}
+
+.heroCopy h1 {
+  color: #102015;
+  font-size: 4rem;
+  line-height: 1.02;
+  margin: 1.25rem 0 1.5rem;
+  max-width: 13ch;
+}
+
+.brandLine {
+  align-items: center;
+  color: #254733;
+  display: flex;
+  font-weight: 700;
+  gap: 0.75rem;
+}
+
+.logoMark {
+  height: 2.75rem;
+  width: 2.75rem;
+}
+
+.heroLead {
+  color: #3d4f43;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 42rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: 0.5rem;
+  font-weight: 700;
+  min-width: 9rem;
+}
+
+.primaryButton {
+  --ifm-button-background-color: #236d45;
+  --ifm-button-border-color: #236d45;
+}
+
+.secondaryButton {
+  --ifm-button-background-color: #ffffff;
+  --ifm-button-border-color: rgba(35, 109, 69, 0.24);
+  color: #254733;
+}
+
+.heroVisual {
+  display: grid;
+  gap: 1rem;
+}
+
+.codeWindow {
+  background: #121713;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  box-shadow: 0 1.5rem 4rem rgba(16, 32, 21, 0.18);
+  color: #edf7ef;
   overflow: hidden;
 }
 
+.windowBar {
+  align-items: center;
+  background: #202821;
+  display: flex;
+  gap: 0.45rem;
+  height: 2.25rem;
+  padding: 0 1rem;
+}
+
+.windowBar span {
+  background: #6b7e70;
+  border-radius: 999px;
+  display: block;
+  height: 0.62rem;
+  width: 0.62rem;
+}
+
+.windowBar span:nth-child(1) {
+  background: #e56f5d;
+}
+
+.windowBar span:nth-child(2) {
+  background: #e3b94f;
+}
+
+.windowBar span:nth-child(3) {
+  background: #48b276;
+}
+
+.codeWindow pre {
+  background: transparent;
+  border: 0;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin: 0;
+  overflow-x: auto;
+  padding: 1.35rem;
+}
+
+.codeWindow code {
+  white-space: pre;
+}
+
+.codeComment {
+  color: #8fa797;
+}
+
+.codeVerb {
+  color: #7bd88f;
+  font-weight: 700;
+}
+
+.pipeline {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pipeline span {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(37, 71, 51, 0.16);
+  border-radius: 0.5rem;
+  color: #254733;
+  display: flex;
+  font-size: 0.86rem;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.65rem;
+  text-align: center;
+}
+
+.section {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 5rem 1.5rem;
+}
+
+.sectionHeader {
+  max-width: 48rem;
+}
+
+.section h2 {
+  color: #102015;
+  font-size: 2.35rem;
+  line-height: 1.12;
+  margin-bottom: 1rem;
+}
+
+.section p {
+  color: #425346;
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.capabilityGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2rem;
+}
+
+.capabilityCard {
+  background: #ffffff;
+  border: 1px solid rgba(37, 71, 51, 0.14);
+  border-radius: 0.5rem;
+  min-height: 16rem;
+  padding: 1.25rem;
+}
+
+.capabilityCard h3 {
+  color: #142319;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.capabilityCard p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+.apiSection {
+  align-items: center;
+  border-bottom: 1px solid rgba(37, 71, 51, 0.12);
+  border-top: 1px solid rgba(37, 71, 51, 0.12);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.72fr);
+  max-width: none;
+  padding-left: max(1.5rem, calc((100vw - 1180px) / 2));
+  padding-right: max(1.5rem, calc((100vw - 1180px) / 2));
+}
+
+.apiCopy {
+  max-width: 40rem;
+}
+
+.selectorGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.selectorPanel {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.selectorLabel {
+  color: #425346;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 0.55rem;
+  text-transform: uppercase;
+}
+
+.selectorGrid span,
+.paramPanel span,
+.formatList span {
+  border-radius: 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.selectorGrid span {
+  background: #173021;
+  color: #eaf6ec;
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+}
+
+.selectorGrid strong {
+  font-weight: 700;
+}
+
+.selectorGrid small {
+  color: #b7c9bd;
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.82rem;
+}
+
+.stackSection {
+  align-items: center;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 0.74fr);
+}
+
+.stackCopy {
+  max-width: 43rem;
+}
+
+.stackCopy a,
+.configSection a {
+  color: #236d45;
+  font-weight: 700;
+}
+
+.stackExample {
+  background: #ffffff;
+  border: 1px solid rgba(37, 71, 51, 0.14);
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.stackExample span,
+.stackExample strong {
+  border-radius: 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+  padding: 0.85rem 0.9rem;
+}
+
+.stackExample span {
+  background: #eff6f2;
+  color: #254733;
+}
+
+.stackExample strong {
+  background: #173021;
+  color: #eaf6ec;
+  font-size: 0.94rem;
+}
+
+.transformLayout {
+  align-items: start;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 0.72fr);
+}
+
+.formatList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.formatList span {
+  background: #eff6f2;
+  border: 1px solid rgba(37, 71, 51, 0.12);
+  color: #254733;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.paramPanel {
+  background: #f6f0e5;
+  border: 1px solid rgba(108, 78, 34, 0.18);
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem;
+}
+
+.paramPanel span {
+  background: #ffffff;
+  border: 1px solid rgba(108, 78, 34, 0.14);
+  color: #60461f;
+  padding: 0.8rem 0.9rem;
+}
+
+.configSection {
+  align-items: center;
+  background: #f7faf7;
+  border-bottom: 1px solid rgba(37, 71, 51, 0.12);
+  border-top: 1px solid rgba(37, 71, 51, 0.12);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 0.92fr) minmax(24rem, 0.88fr);
+  max-width: none;
+  padding-left: max(1.5rem, calc((100vw - 1180px) / 2));
+  padding-right: max(1.5rem, calc((100vw - 1180px) / 2));
+}
+
+.configSection > div {
+  max-width: 44rem;
+}
+
+.configCode {
+  background: #121713;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  color: #edf7ef;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  overflow-x: auto;
+  padding: 1.25rem;
+}
+
+.futureSection {
+  align-items: center;
+  background: #102015;
+  border-radius: 0;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  max-width: none;
+  padding-left: max(1.5rem, calc((100vw - 1180px) / 2));
+  padding-right: max(1.5rem, calc((100vw - 1180px) / 2));
+}
+
+.futureSection div {
+  max-width: 48rem;
+}
+
+.futureSection h2,
+.futureSection p {
+  color: #f2f7f3;
+}
+
+.futureSection p {
+  margin-bottom: 0;
+}
+
+[data-theme='dark'] .page {
+  background:
+    linear-gradient(180deg, rgba(14, 22, 17, 1), rgba(10, 14, 12, 1) 34rem),
+    #0a0e0c;
+  color: #eef7f0;
+}
+
+[data-theme='dark'] .hero,
+[data-theme='dark'] .apiSection {
+  border-color: rgba(234, 246, 236, 0.12);
+}
+
+[data-theme='dark'] .heroCopy h1,
+[data-theme='dark'] .section h2,
+[data-theme='dark'] .capabilityCard h3 {
+  color: #f4fbf5;
+}
+
+[data-theme='dark'] .brandLine,
+[data-theme='dark'] .heroLead,
+[data-theme='dark'] .section p {
+  color: #c0d1c4;
+}
+
+[data-theme='dark'] .selectorLabel {
+  color: #a9bcb0;
+}
+
+[data-theme='dark'] .secondaryButton {
+  --ifm-button-background-color: #17211b;
+  --ifm-button-border-color: rgba(234, 246, 236, 0.18);
+  color: #eef7f0;
+}
+
+[data-theme='dark'] .pipeline span,
+[data-theme='dark'] .capabilityCard,
+[data-theme='dark'] .stackExample {
+  background: #101812;
+  border-color: rgba(234, 246, 236, 0.12);
+  color: #eaf6ec;
+}
+
+[data-theme='dark'] .stackExample span {
+  background: #111d16;
+  color: #d7e9dc;
+}
+
+[data-theme='dark'] .stackExample strong {
+  background: #1d3425;
+}
+
+[data-theme='dark'] .formatList span {
+  background: #111d16;
+  border-color: rgba(234, 246, 236, 0.12);
+  color: #d7e9dc;
+}
+
+[data-theme='dark'] .paramPanel {
+  background: #201b12;
+  border-color: rgba(239, 203, 131, 0.16);
+}
+
+[data-theme='dark'] .paramPanel span {
+  background: #12100c;
+  border-color: rgba(239, 203, 131, 0.14);
+  color: #f0ce8a;
+}
+
+[data-theme='dark'] .configSection {
+  background: #0d130f;
+  border-color: rgba(234, 246, 236, 0.12);
+}
+
 @media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+  .heroInner,
+  .apiSection,
+  .stackSection,
+  .transformLayout,
+  .configSection {
+    grid-template-columns: 1fr;
+  }
+
+  .heroInner {
+    min-height: 0;
+    padding-top: 3rem;
+  }
+
+  .heroCopy h1 {
+    font-size: 3rem;
+    max-width: 15ch;
+  }
+
+  .capabilityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media screen and (max-width: 640px) {
+  .heroInner,
+  .section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .heroCopy h1 {
+    font-size: 2.35rem;
+  }
+
+  .heroLead {
+    font-size: 1.05rem;
+  }
+
+  .heroActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .pipeline,
+  .capabilityGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .futureSection {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }

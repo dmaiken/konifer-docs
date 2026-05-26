@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Konifer',
-  tagline: 'The microservice you need',
+  tagline: 'Self-hosted image storage, transformation, and delivery',
   favicon: 'img/favicon.png',
   trailingSlash: false,
 
@@ -37,7 +37,7 @@ const config: Config = {
       'classic',
       {
         docs: {
-          routeBasePath: '/',
+          routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
         },
         blog: false,
@@ -54,12 +54,6 @@ const config: Config = {
           apiKey: '5963eb82452e74cb8eef210aadc73c1c',
           indexName: 'Konifer Documentation',
           contextualSearch: true,
-
-          replaceSearchResultPathname: {
-              from: '/docs/', // or as RegExp: /\/docs\//
-              to: '/',
-          },
-
           searchPagePath: 'search',
           insights: false,
       },
@@ -79,7 +73,12 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'docsSidebar',
           position: 'left',
-          label: 'Documentation',
+          label: 'Docs',
+        },
+        {
+          to: '/docs/getting-started',
+          label: 'Getting Started',
+          position: 'left',
         },
         {
           href: 'https://github.com/dmaiken/konifer',
