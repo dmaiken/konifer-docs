@@ -9,9 +9,10 @@ const transformParams = [
   'w=1200',
   'h=630',
   'fit=crop',
-  'g=attention',
+  'blur=10',
   'format=webp',
-  'quality=82',
+  'q=82',
+  'r=auto',
 ];
 
 const responseModes = [

@@ -34,7 +34,7 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      '@docusaurus/preset-classic',
       {
         docs: {
           routeBasePath: 'docs',
@@ -44,19 +44,23 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
+        gtag: {
+          trackingID: 'G-888P26DBCE',
+          anonymizeIP: true,
+        },
       } satisfies Preset.Options,
     ],
   ],
 
   themeConfig: {
-      algolia: {
-          appId: 'LR90ZF2B4S',
-          apiKey: '5963eb82452e74cb8eef210aadc73c1c',
-          indexName: 'Konifer Documentation',
-          contextualSearch: true,
-          searchPagePath: 'search',
-          insights: false,
-      },
+    algolia: {
+      appId: 'LR90ZF2B4S',
+      apiKey: '5963eb82452e74cb8eef210aadc73c1c',
+      indexName: 'Konifer Documentation',
+      contextualSearch: true,
+      searchPagePath: 'search',
+      insights: false,
+    },
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
