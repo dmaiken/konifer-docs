@@ -4,31 +4,36 @@ id: configuration-reference
 title: Configuration Reference
 sidebar_label: "Configuration Properties"
 ---
+
 Values used in snippets are the default properties.
 
 ## Environment Variables
+
 Properties that have an environment variable specified will override the respective property in `konifer.conf`.
 
 The order of configuration precedence is:
+
 1. Property in `konifer.conf`
 2. Environment variable (for available properties)
 3. Default value (if specified)
 
 ## Datastore
+
 Properties for configuring the datastore.
 
 ```hocon 
 data-store {
-    provider = postgresql
-    postgresql {
-        database = konifer
-        host = localhost
-        port = 5432
-        user = postgres
-        password = ""
-    }
+  provider = postgresql
+  postgresql {
+    database = konifer
+    host = localhost
+    port = 5432
+    user = postgres
+    password = ""
+  }
 }
 ```
+
 | Property                         | Description                               | Allowed Input             | Default      | Environment variable |
 |:---------------------------------|:------------------------------------------|:--------------------------|:-------------|:---------------------|
 | `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` | IN_MEMORY*           |
@@ -39,20 +44,23 @@ data-store {
 | `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         | PG_PASSWORD          |          
 | `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |                      |
 
-If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to `in-memory`.
+If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
+`in-memory`.
 
 ## HTTP
+
 ```hocon
 http {
   public-url = "http://localhost"
 }
 ```
-| Property          | Description                                                                                               | Allowed Input                              | Default              |
-|:------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:---------------------|
-| `http.public-url` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost`   |
 
+| Property          | Description                                                                                               | Allowed Input                              | Default            |
+|:------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:-------------------|
+| `http.public-url` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost` |
 
 ## Object Store
+
 Properties for configuring the datastore.
 
 ```hocon 
@@ -69,6 +77,7 @@ objectstore {
   }
 }
 ```
+
 | Property                            | Description                                                       | Allowed Input                       | Default      | Environment variable |
 |:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
 | `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` | IN_MEMORY*           |
@@ -79,9 +88,11 @@ objectstore {
 | `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
 | `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |                      |
 
-If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to `in-memory`.
+If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
+`in-memory`.
 
 ## Source
+
 ```hocon 
 source {
   url {
@@ -93,13 +104,15 @@ source {
   }
 }
 ```
-| Property                     | Description                                                                                                 | Allowed Input                        | Default   |
-|:-----------------------------|:------------------------------------------------------------------------------------------------------------|:-------------------------------------|:----------|
-| `source.url.allowed-domains` | Domains that Konifer is permitted to access when storing assets from a URL source                           | Any valid domain                     | `[]`      |
-| `source.url.max-bytes`       | Maximum size of supplied asset content downloaded from URL. Will reject assets larger than this.            | Positive integer representing bytes  | 1048576   |
-| `source.multipart.max-bytes` | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes  | 1048576   |
+
+| Property                     | Description                                                                                                 | Allowed Input                       | Default |
+|:-----------------------------|:------------------------------------------------------------------------------------------------------------|:------------------------------------|:--------|
+| `source.url.allowed-domains` | Domains that Konifer is permitted to access when storing assets from a URL source                           | Any valid domain                    | `[]`    |
+| `source.url.max-bytes`       | Maximum size of supplied asset content downloaded from URL. Will reject assets larger than this.            | Positive integer representing bytes | 1048576 |
+| `source.multipart.max-bytes` | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes | 1048576 |
 
 ## Variant Profiles
+
 ```hocon
 variant-profiles = [
   # Empty by default
@@ -108,14 +121,17 @@ variant-profiles = [
   }
 ]
 ```
-| Property                | Description                                                                           | Allowed Input           | Default |
-|:------------------------|:--------------------------------------------------------------------------------------|:------------------------|:--------|
-| `variant-profiles`      | Array of defined variant profiles that canfor eager variants and on-demand variants.  | Variant profile object  | `[]`    |
-| `variant-profiles.name` | Name of the variant profile                                                           | Any url-safe string     | None    |
 
-All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a variant profile object.
+| Property                | Description                                                                          | Allowed Input          | Default |
+|:------------------------|:-------------------------------------------------------------------------------------|:-----------------------|:--------|
+| `variant-profiles`      | Array of defined variant profiles that canfor eager variants and on-demand variants. | Variant profile object | `[]`    |
+| `variant-profiles.name` | Name of the variant profile                                                          | Any url-safe string    | None    |
+
+All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a
+variant profile object.
 
 ## Variant Generation
+
 ```hocon
 variant-generation {
   queue-size = 1000
@@ -123,6 +139,7 @@ variant-generation {
   workers = [2 X CPU cores]
 }
 ```
+
 | Property                                  | Description                                                                                                                    | Allowed Input    | Default       |
 |:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
 | `variant-generation.queue-size`           | Amount of variant generation requests that can be queued up awaiting processing. Requests over this limit suspend the request. | Positive integer | 1000          |
@@ -130,6 +147,7 @@ variant-generation {
 | `variant-generation.workers`              | Amount of concurrent image processor workers                                                                                   | Positive integer | 2 x CPU cores |
 
 ## URL Signing
+
 ```hocon
 url-signing {
   enabled = false
@@ -137,6 +155,7 @@ url-signing {
   secret-key = "[no default]"
 }
 ```
+
 | Property                 | Description                                    | Allowed Input                               | Default       | Environment variable   |
 |:-------------------------|:-----------------------------------------------|:--------------------------------------------|:--------------|:-----------------------|
 | `url-signing.enabled`    | Enable url-signing for GET requests or not     | Boolean                                     | `false`       |                        |
@@ -144,8 +163,10 @@ url-signing {
 | `url-signing.secret-key` | HMAC secret key used for validating signatures | String                                      | None          | URL_SIGNING_SECRET_KEY |
 
 ## Path Configuration Reference
+
 By default, nothing is configured within `paths`. If nothing was configured, this is how your paths would be configured
 by default
+
 ```hocon
 paths {
   # Match everything greedily after /
@@ -191,6 +212,7 @@ paths {
 ```
 
 ### Image
+
 ```hocon
 "/**" {
   image {
@@ -198,11 +220,13 @@ paths {
   }
 }
 ```
+
 | Property     | Description             | Allowed Input            | Default |
 |:-------------|:------------------------|:-------------------------|:--------|
 | `image.lqip` | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
 
 ### Preprocessing
+
 ```hocon
 "/**" {
   preprocessing {
@@ -213,23 +237,28 @@ paths {
   }
 }
 ```
+
 | Property                 | Description          | Allowed Input | Default |
 |:-------------------------|:---------------------|:--------------|:--------|
 | `preprocessing.enabled ` | Enable preprocessing | Boolean       | `false` |
 
-All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the `image` block.
+All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the
+`image` block.
 
 ### Eager Variants
+
 ```hocon
 "/**" {
   eager-variants = []
 }
 ```
-| Property          | Description                                              | Allowed Input                                | Default |
-|:------------------|:---------------------------------------------------------|:---------------------------------------------|:--------|
-| `eager-variants`  | List of variant profiles to generate eager variants from | profiles names from `variant-profiles` array | None    |
+
+| Property         | Description                                              | Allowed Input                                | Default |
+|:-----------------|:---------------------------------------------------------|:---------------------------------------------|:--------|
+| `eager-variants` | List of variant profiles to generate eager variants from | profiles names from `variant-profiles` array | None    |
 
 ### Object Store
+
 ```hocon
 "/**" {
   object-store {
@@ -237,11 +266,13 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   }
 }
 ```
-| Property                                | Description                                                                                                                                                        | Allowed Input                                      | Default            |
-|:----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
-| `object-store.bucket`                   | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name                                  | `assets`           |
+
+| Property              | Description                                                                                                                                                        | Allowed Input     | Default  |
+|:----------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------|:---------|
+| `object-store.bucket` | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name | `assets` |
 
 ### Return Format
+
 ```hocon
 "/**" {
   return-format {
@@ -257,13 +288,15 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   }
 }
 ```
-| Property                                 | Description                                                                                                                                                        | Allowed Input                                      | Default            |
-|:-----------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
-| `return-format.redirect.strategy`        | How to serve redirect URLs                                                                                                                                         | `none`, `presigned`, `template`                    | `none`             |
-| `return-format.redirect.template.string` | Template string to use if `strategy` is `template`                                                                                                                 | Valid URL string                                   | `localhost`        |
-| `return-format.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned                                                                                                | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
+
+| Property                                 | Description                                                         | Allowed Input                                      | Default            |
+|:-----------------------------------------|:--------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
+| `return-format.redirect.strategy`        | How to serve redirect URLs                                          | `none`, `presigned`, `template`                    | `none`             |
+| `return-format.redirect.template.string` | Template string to use if `strategy` is `template`                  | Valid URL string                                   | `localhost`        |
+| `return-format.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
 
 ### Cache Control
+
 ```hocon
 "/**" {
   cache-control {
@@ -278,6 +311,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
   }
 }
 ```
+
 | Property                  | Description                                           | Allowed Input                                     | Default |
 |:--------------------------|:------------------------------------------------------|:--------------------------------------------------|:--------|
 | `enabled`                 | Whether the `Cache-Control` header should be returned | Boolean                                           | `false` |

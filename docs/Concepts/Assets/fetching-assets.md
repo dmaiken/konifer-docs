@@ -4,63 +4,87 @@ id: concepts-fetching-assets
 title: Fetching Assets
 sidebar_label: "Fetching"
 ---
-After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways using
+
+After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways
+using
 query selectors.
 
 ## Query Selectors
+
 Query selectors are positional values specified after the path-separator, `/-/`. They are used to control the format
 and ordering of fetched assets.
 
 Query selectors are specified in the following order:
+
 1. **Ordering**: what asset(s) you want
 2. **Return format**: how you want the asset(s) presented
 
 ### Defaults
+
 The following are the default values and can be omitted as selectors:
+
 - **Ordering**: `new`
 - **Return Format**: `link`
 
 So this:
+
 ```http
 GET /assets/users/123/profile-picture
 ```
+
 Is the same as:
+
 ```http
 GET /assets/users/123/profile-picture/-/new/link/
 ```
+
 Any default can be omitted for brevity
+
 ```http
 GET /assets/users/123/profile-picture/-/new/metadata
 ```
+
 is the same as:
+
 ```http
 GET /assets/users/123/profile-picture/-/metadata
 ```
 
 ## Ordering
+
 When fetching a single asset or multiple assets, you can specify the order.
 
-- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most recently-created assets.
-- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-_modified_ assets.
+- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most
+  recently-created assets.
+- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-
+  _modified_ assets.
 
 To specify an ordering, place it before the return format selector:
+
 ```http
 GET /assets/users/123/profile-picture/-/new/redirect
 ```
+
 This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
+
 ```http
 GET /assets/users/123/profile-picture/-/new
 ```
 
 ## Return format
+
 You can return your asset in one of five different return formats:
 
 ### `link` (default)
+
 Returns a link to the asset in your object store. If you have any LQIPs enabled, these are returned as well.
+
 ```http
 GET /assets/users/123/profile-picture/-/link
 ```
+
 Returns:
+
 ```json
 {
   "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content",
@@ -71,20 +95,26 @@ Returns:
   "alt": "Your alt"
 }
 ```
+
 #### Asset Link Response
-| Field Name | Type     | Description                                                                  |
-|------------|----------|------------------------------------------------------------------------------|
-| `url`      | String   | The absolute URL (using `/entry`) to the `content` API                       |
-| `lqip`     | LQIP     | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`      | String   | The `alt` supplied when storing the asset                                    |
+
+| Field Name | Type   | Description                                                                  |
+|------------|--------|------------------------------------------------------------------------------|
+| `url`      | String | The absolute URL (using `/entry`) to the `content` API                       |
+| `lqip`     | LQIP   | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`      | String | The `alt` supplied when storing the asset                                    |
 
 ### `content`
+
 Typically used when you want Konifer to apply transformations (e.g., resizing) and stream the result without
 exposing the underlying S3 URL.
+
 ```http
 GET /assets/users/123/profile-picture/-/content
 ```
+
 Returns:
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: image/jpeg
@@ -93,35 +123,48 @@ K-Alt: "Your defined alt, if any"
 ```
 
 ### `download`
-Similar to `content` but sets the `Content-Disposition` header so that the asset triggers a "Save As" dialog in a browser.
+
+Similar to `content` but sets the `Content-Disposition` header so that the asset triggers a "Save As" dialog in a
+browser.
+
 ```http
 GET /assets/users/123/profile-picture/-/download
 ```
+
 Returns:
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
 Content-Disposition: attachment; filename="profile-picture.jpeg"
 ```
+
 > Note: the `filename` in the `Content-Dipsosition` headers is the `alt` if supplied, or else the path.
 
 ### `redirect`
-By default, redirection is disabled and using the redirect selector returns asset content just like the `content` selector does.
+
+By default, redirection is disabled and using the redirect selector returns asset content just like the `content`
+selector does.
 To enable, a redirect strategy must be defined within your path configuration.
 
 If enabled,
+
 ```http
 GET /assets/users/123/profile-picture/-/redirect
 ```
+
 Returns a **`Temporary Redirect 307`**:
+
 ```http
 Code: 307
 Location: https://assets.mydomain.com/d905170f-defd-47e4-b606-d01993ba7b42
 ```
 
 #### Redirect Strategies
+
 Redirect strategies are defined within path configuration. The default strategy is `none`.
+
 ```hocon
 paths {
   "/**" {
@@ -135,14 +178,18 @@ paths {
 ```
 
 ##### Presigned Redirection
+
 Setting strategy to `presigned` causes a presigned URL from your configured object store to be generated and used
-as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible object stores;
+as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible
+object stores;
 however, you must ensure your S3-compatible object store supports the Presigned API (most do).
 
-This strategy is not available for in-memory or filesystem object stores. If `presigned` is used for these object store implementations,
+This strategy is not available for in-memory or filesystem object stores. If `presigned` is used for these object store
+implementations,
 no error is thrown, but redirection remains disabled.
 
 To set the TTL for the presigned URL, specify it within the `presigned` configuration block.
+
 ```hocon
 paths {
   "/**" {
@@ -159,8 +206,10 @@ paths {
 ```
 
 ##### Template Redirection
-Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Simply define a 
+
+Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Simply define a
 template string and Konifer uses that to resolve your redirection URL.
+
 ```hocon
 paths {
   "/**" {
@@ -175,57 +224,63 @@ paths {
   }
 }
 ```
+
 Konifer uses the `{bucket}` and `{key}` variables in your template to populate a URL string. Any protocol is permitted
 except for executable protocols such as `javascript:`, `vbscript:`, and `data:`.
 
 ### `metadata`
+
 A json response of the image and it's properties, cached variants, and image attributes.
+
 ```http
 GET /assets/users/123/profile-picture/-/metadata
 ```
+
 Returns:
+
 ```json
 {
-    "class": "IMAGE",
-    "alt": "The alt text for an image",
-    "entryId": 1049,
-    // Unique identifier scoped to the path
-    "labels": {
-        "label-key": "label-value",
-        "phone": "Android"
-    },
-    "tags": [
-        "cold",
-        "verified"
-    ],
-    "source": "URL",
-    // or UPLOAD if using multipart upload
-    "sourceUrl": "https://yoururl.com/image.jpeg",
-    "variants": [
-        {
-            "isOriginalVariant": true,
-            "storeBucket": "assets",
-            // Defined in configuration
-            "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
-            // Generated by Konifer
-            "imageAttributes": {
-                "height": 100,
-                "width": 200,
-                "mimeType": "image/jpeg"
-            },
-            "lqip": {
-                // Empty if LQIPs are disabled
-                "blurhash": "BASE64",
-                "thumbhash": "BASE64"
-            }
-        }
-    ],
-    "createdAt": "2025-11-12T01:20:55"
-    // ISO 8601
+  "class": "IMAGE",
+  "alt": "The alt text for an image",
+  "entryId": 1049,
+  // Unique identifier scoped to the path
+  "labels": {
+    "label-key": "label-value",
+    "phone": "Android"
+  },
+  "tags": [
+    "cold",
+    "verified"
+  ],
+  "source": "URL",
+  // or UPLOAD if using multipart upload
+  "sourceUrl": "https://yoururl.com/image.jpeg",
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      // Defined in configuration
+      "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
+      // Generated by Konifer
+      "imageAttributes": {
+        "height": 100,
+        "width": 200,
+        "mimeType": "image/jpeg"
+      },
+      "lqip": {
+        // Empty if LQIPs are disabled
+        "blurhash": "BASE64",
+        "thumbhash": "BASE64"
+      }
+    }
+  ],
+  "createdAt": "2025-11-12T01:20:55"
+  // ISO 8601
 }
 ```
 
 #### Asset Metadata Response
+
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|
 | `class`      | String       | The type of the asset, currently always `IMAGE`                      |
@@ -240,24 +295,33 @@ Returns:
 | `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
 ## Limit
-For `metadata` return formats, you can return more than one.  To return the 3 most-recent assets, specify the `limit` query
+
+For `metadata` return formats, you can return more than one. To return the 3 most-recent assets, specify the `limit`
+query
 parameter, or `-1` for all assets within the path:
+
 ```http
 GET /assets/users/123/profile-picture/-/new/link?limit=3
 ```
 
 ### Entry ID
-When an asset is stored within your path, it is assigned a unique `entryId`. This ID is an absolute reference to the asset
+
+When an asset is stored within your path, it is assigned a unique `entryId`. This ID is an absolute reference to the
+asset
 within your path. It is guaranteed to be unique relative to the path. Assets can be fetched by their path + `entryId`
 using the `entry` query selector.
 
 To fetch a specific asset (`entryId` of 42) using the default `link` return format:
+
 ```http
 GET /assets/users/123/profile-picture/-/entry/42
 ```
+
 Additionally, you can specify the return format along with the `entryId`:
+
 ```http
 GET /assets/users/123/profile-picture/-/entry/42/redirect
 ```
-A URL with the `entry` selector is the absolute reference to the asset therefore ordering query selectors cannot be used 
+
+A URL with the `entry` selector is the absolute reference to the asset therefore ordering query selectors cannot be used
 with the `entry` selector.

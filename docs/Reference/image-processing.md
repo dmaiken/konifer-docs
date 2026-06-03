@@ -34,14 +34,14 @@ memory is managed in three distinct regions.
 If Konifer crashes, the error type determines the fix:
 
 1. **`OutOfMemoryError: Java heap space`**
-    - **Cause**: Application logic or metadata overhead has exhausted the Heap.
-    - **Fix**: Increase JVM Heap using -Xmx or -XX:MaxRAMPercentage.
+  - **Cause**: Application logic or metadata overhead has exhausted the Heap.
+  - **Fix**: Increase JVM Heap using -Xmx or -XX:MaxRAMPercentage.
 2. **`OutOfMemoryError: Direct buffer memory`**
-    - **Cause**: Netty has exhausted IO buffers, likely due to high concurrent uploads.
-    - **Fix**: Increase -XX:MaxDirectMemorySize. (Note: If unspecified, this often defaults to the Heap size).
+  - **Cause**: Netty has exhausted IO buffers, likely due to high concurrent uploads.
+  - **Fix**: Increase -XX:MaxDirectMemorySize. (Note: If unspecified, this often defaults to the Heap size).
 3. **Container `OOMKilled` (Exit Code 137)**
-    - **Cause**: libvips exhausted the remaining system RAM. The OS killed the container to save the host.
-    - **Fix**: Increase the Container Memory Limit without increasing the JVM Heap (e.g., lower -XX:MaxRAMPercentage).
+  - **Cause**: libvips exhausted the remaining system RAM. The OS killed the container to save the host.
+  - **Fix**: Increase the Container Memory Limit without increasing the JVM Heap (e.g., lower -XX:MaxRAMPercentage).
 
 ## Temporary Files
 
@@ -104,11 +104,11 @@ thumbnail generation task (Eager).
 
 1. **Synchronous (High Priority)**: These are tasks where a client is actively waiting for a response. The request is
    waiting until processing completes.
-    - On-Demand Variants
-    - Pre-processing original variants during upload
+  - On-Demand Variants
+  - Pre-processing original variants during upload
 
 2. **Asynchronous (Low Priority)**: These are best-effort transformations that occur within an asynchronous context.
-    - Eager variants
+  - Eager variants
 
 :::note
 Fallback Mechanism: If a client requests an Eager Variant that hasn't been processed yet (e.g., due to a long queue)
