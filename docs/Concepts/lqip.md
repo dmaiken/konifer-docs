@@ -30,31 +30,28 @@ implementations,
 define your Path Configuration to be:
 
 ```hocon
-paths = [
-    {
-        path = "/users"
-        lqip = [
-            blurhash,
-            thumbhash
-        ]
-    }
-]
+paths {
+  "/users" {
+    lqip = [
+      blurhash,
+      thumbhash
+    ]
+  }
+}
 ```
 
 If LQIPs are enabled in a parent path and you wish to disable in a specific child path, set `lqip` to an empty array:
 
 ```hocon
-paths = [
-    {
-        path = "/**"
-        lqip = [
-            blurhash,
-            thumbhash
-        ]
-    },
-    {
-        path = "/users"
-        lqip = []
-    }
-]
+paths {
+  "/**" {
+    lqip = [
+      blurhash,
+      thumbhash
+    ]
+  }
+  "/users" {
+    lqip = []
+  }
+}
 ```

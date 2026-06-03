@@ -106,19 +106,18 @@ Fetch your variant as a redirect to your CDN.
 Add this to `konifer.conf` and restart your container:
 
 ```hocon
-paths = [
-    {
-        path = "/**"
-        return-format {
-            redirect {
-                strategy = template
-                template {
-                    string = "https://mycdn.com/{bucket}/{key}"
-                }
-            }
+paths {
+  "/**" {
+    return-format {
+      redirect {
+        strategy = template
+        template {
+          string = "https://mycdn.com/{bucket}/{key}"
         }
+      }
     }
-]
+  }
+}
 ```
 
 Now specify the redirect selector:

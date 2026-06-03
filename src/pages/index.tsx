@@ -252,19 +252,17 @@ export default function Home(): ReactNode {
             <Link to="/docs/Concepts/concepts-path-configuration">Read Path Configuration</Link>
           </div>
           <pre className={styles.configCode}>
-            <code>{`paths = [
-  {
-    path = "/public/avatars/**"
+            <code>{`paths {
+  "/public/avatars/**" {
     eager-variants = [ small, medium, large ]
     return-format.redirect.strategy = template
     cache-control.max-age = 31536000
-  },
-  {
-    path = "/users/*/profile-picture"
+  }
+  "/users/*/profile-picture" {
     bucket = "profile-pictures"
     allowed-content-types = [ "image/jpeg" ]
   }
-]`}</code>
+}`}</code>
           </pre>
         </section>
 

@@ -147,9 +147,9 @@ url-signing {
 By default, nothing is configured within `paths`. If nothing was configured, this is how your paths would be configured
 by default
 ```hocon
-paths = [
-  {
-    path = "/**" # Match everything greedily after /
+paths {
+  # Match everything greedily after /
+  "/**" {
     image {
       lqip = []
     }
@@ -187,13 +187,12 @@ paths = [
       immutable = false
     }
   }
-]
+
 ```
 
 ### Image
 ```hocon
-{
-  path = "/**"
+"/**" {
   image {
     lqip = []
   }
@@ -205,8 +204,7 @@ paths = [
 
 ### Preprocessing
 ```hocon
-{
-  path = "/**"
+"/**" {
   preprocessing {
     enabled = false
     image {
@@ -223,8 +221,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 
 ### Eager Variants
 ```hocon
-{
-  path = "/**"
+"/**" {
   eager-variants = []
 }
 ```
@@ -234,8 +231,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 
 ### Object Store
 ```hocon
-{
-  path = "/**"
+"/**" {
   object-store {
     bucket = assets
   }
@@ -247,8 +243,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 
 ### Return Format
 ```hocon
-{
-  path = "/**"
+"/**" {
   return-format {
     redirect {
       strategy = none
@@ -270,8 +265,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 
 ### Cache Control
 ```hocon
-{
-  path = "/**"
+"/**" {
   cache-control {
     enabled = false
     max-age = "[no default]"

@@ -123,21 +123,20 @@ Location: https://assets.mydomain.com/d905170f-defd-47e4-b606-d01993ba7b42
 #### Redirect Strategies
 Redirect strategies are defined within path configuration. The default strategy is `none`.
 ```hocon
-paths = [
-  {
-    path = "/**"
+paths {
+  "/**" {
     return-format {
       redirect {
         strategy = "none|presigned|template"
       }
     }
   }
-]
+}
 ```
 
 ##### Presigned Redirection
 Setting strategy to `presigned` causes a presigned URL from your configured object store to be generated and used
-as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible object stores,
+as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible object stores;
 however, you must ensure your S3-compatible object store supports the Presigned API (most do).
 
 This strategy is not available for in-memory or filesystem object stores. If `presigned` is used for these object store implementations,
@@ -145,9 +144,8 @@ no error is thrown, but redirection remains disabled.
 
 To set the TTL for the presigned URL, specify it within the `presigned` configuration block.
 ```hocon
-paths = [
-  {
-    path = "/**"
+paths {
+  "/**" {
     return-format {
       redirect {
         strategy = presigned
@@ -157,16 +155,15 @@ paths = [
       }
     }
   }
-]
+}
 ```
 
 ##### Template Redirection
 Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Simply define a 
 template string and Konifer uses that to resolve your redirection URL.
 ```hocon
-paths = [
-  {
-    path = "/**"
+paths {
+  "/**" {
     return-format {
       redirect {
         strategy = template
@@ -176,7 +173,7 @@ paths = [
       }
     }
   }
-]
+}
 ```
 Konifer uses the `{bucket}` and `{key}` variables in your template to populate a URL string. Any protocol is permitted
 except for executable protocols such as `javascript:`, `vbscript:`, and `data:`.
