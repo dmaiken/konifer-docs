@@ -36,7 +36,7 @@ Ordering is specified using the `order` [query selector](../../Concepts/Assets/f
 
 ### Limit
 
-Multiple assets can be deleting using limits. Specify limit using the `limit` query parameter.
+Multiple assets can be deleted using limits. Specify limit using the `limit` query parameter.
 
 - **Default**: 1
 - **Delete all at path**: -1
