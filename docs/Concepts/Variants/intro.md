@@ -49,22 +49,20 @@ for any reason, generation is not rescheduled. When you request the variant, it 
 Eager variants are defined in your path configuration. The following configuration generates two different variants.
 
 ```hocon
-variant-profiles = [
-  {
-    name = small
+variant-profiles {
+  small {
     h = 50
     w = 50
     fit = cover
     mimeType = "image/png"
-  },
-  {
-    name = medium
+  }
+  medium {
     h = 100
     w = 100
     fit = cover
     mimeType = "image/png"
   }
-]
+}
 
 paths {
   "/users/**" {

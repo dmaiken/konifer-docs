@@ -114,18 +114,16 @@ source {
 ## Variant Profiles
 
 ```hocon
-variant-profiles = [
+variant-profiles {
   # Empty by default
-  {
-    name = ""
+  "profile-name" {
   }
-]
+}
 ```
 
-| Property                | Description                                                                          | Allowed Input          | Default |
-|:------------------------|:-------------------------------------------------------------------------------------|:-----------------------|:--------|
-| `variant-profiles`      | Array of defined variant profiles that canfor eager variants and on-demand variants. | Variant profile object | `[]`    |
-| `variant-profiles.name` | Name of the variant profile                                                          | Any url-safe string    | None    |
+| Property           | Description                                                                                                  | Allowed Input          | Default |
+|:-------------------|:-------------------------------------------------------------------------------------------------------------|:-----------------------|:--------|
+| `variant-profiles` | Map of defined variant profiles that canfor eager variants and on-demand variants. Keyed by the profile name | Variant profile object | `{}`    |
 
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a
 variant profile object.
@@ -164,8 +162,7 @@ url-signing {
 
 ## Path Configuration Reference
 
-By default, nothing is configured within `paths`. If nothing was configured, this is how your paths would be configured
-by default
+By default, nothing is configured within `paths`. If nothing is configured, the default configuration below is used.
 
 ```hocon
 paths {
@@ -208,7 +205,7 @@ paths {
       immutable = false
     }
   }
-
+}
 ```
 
 ### Image
