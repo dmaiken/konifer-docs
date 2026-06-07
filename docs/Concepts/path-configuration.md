@@ -29,9 +29,14 @@ You can configure the path `/public/avatars/**` to:
 ```hocon
 paths {
   "/public/avatars/**" {
-    eager-variants = [small, medium, large]
-    max-height = 300
-    max-width = 500
+    transform {
+      eager-variants = [small, medium, large]
+      preprocessing {
+        enabled = true
+        max-height = 300
+        max-width = 500
+      }
+    }
   }
 }
 ```

@@ -66,10 +66,12 @@ variant-profiles {
 
 paths {
   "/users/**" {
-    eager-variants = [
-      small,
-      medium
-    ]
+    transform {
+      eager-variants = [
+        small,
+        medium
+      ]
+    }
   }
 }
 ```

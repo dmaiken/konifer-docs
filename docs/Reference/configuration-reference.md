@@ -171,14 +171,16 @@ paths {
     image {
       lqip = []
     }
-    preprocessing {
-      enabled = false
-      image {
-        # Preprocessing disabled by default
-        # Populate with URL manipulation parameters i.e. w = 100, h = 200, r = 90, etc.
+    transform {
+      preprocessing {
+        enabled = false
+        image {
+          # Preprocessing disabled by default
+          # Populate with URL manipulation parameters i.e. w = 100, h = 200, r = 90, etc.
+        }
       }
+      eager-variants = []
     }
-    eager-variants = []
     object-store {
       bucket = assets
     }
@@ -222,37 +224,52 @@ paths {
 |:-------------|:------------------------|:-------------------------|:--------|
 | `image.lqip` | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
 
-### Preprocessing
+### Transform
+
+#### Preprocessing
 
 ```hocon
 "/**" {
-  preprocessing {
-    enabled = false
-    image {
-      # Preprocessing disabled by default
+  transform {
+    preprocessing {
+      enabled = false
+      image {
+        # Preprocessing disabled by default
+      }
     }
   }
 }
 ```
 
-| Property                 | Description          | Allowed Input | Default |
-|:-------------------------|:---------------------|:--------------|:--------|
-| `preprocessing.enabled ` | Enable preprocessing | Boolean       | `false` |
+| Property                           | Description          | Allowed Input | Default |
+|:-----------------------------------|:---------------------|:--------------|:--------|
+| `transform.preprocessing.enabled ` | Enable preprocessing | Boolean       | `false` |
 
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the
-`image` block.
+`image` block as well as:
 
-### Eager Variants
+| Property                              | Description          | Allowed Input | Default |
+|:--------------------------------------|:---------------------|:--------------|:--------|
+| `transform.preprocessing.max-height ` | Maximum height       | Integer       | None    |
+| `transform.preprocessing.max-width `  | Maximum width        | Integer       | None    |
+
+:::note
+`h` and `w` take precedence over `max-height` and `max-width` respectively, if both are specified.
+:::
+
+#### Eager Variants
 
 ```hocon
 "/**" {
-  eager-variants = []
+  transform {
+    eager-variants = []
+  }
 }
 ```
 
-| Property         | Description                                              | Allowed Input                                | Default |
-|:-----------------|:---------------------------------------------------------|:---------------------------------------------|:--------|
-| `eager-variants` | List of variant profiles to generate eager variants from | profiles names from `variant-profiles` array | None    |
+| Property                   | Description                                              | Allowed Input                                | Default |
+|:---------------------------|:---------------------------------------------------------|:---------------------------------------------|:--------|
+| `transform.eager-variants` | List of variant profiles to generate eager variants from | profiles names from `variant-profiles` array | None    |
 
 ### Object Store
 

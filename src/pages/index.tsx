@@ -254,7 +254,7 @@ export default function Home(): ReactNode {
           <pre className={styles.configCode}>
             <code>{`paths {
   "/public/avatars/**" {
-    eager-variants = [ small, medium, large ]
+    transform { eager-variants = [ small, medium, large ] }
     return-format.redirect.strategy = template
     cache-control.max-age = 31536000
   }
