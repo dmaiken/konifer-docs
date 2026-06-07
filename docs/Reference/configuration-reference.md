@@ -13,8 +13,8 @@ Properties that have an environment variable specified will override the respect
 
 The order of configuration precedence is:
 
-1. Property in `konifer.conf`
-2. Environment variable (for available properties)
+1. Environment variable (for available properties)
+2. Property in `konifer.conf`
 3. Default value (if specified)
 
 ## Datastore
