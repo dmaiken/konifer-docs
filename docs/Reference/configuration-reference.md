@@ -180,6 +180,9 @@ paths {
         }
       }
       eager-variants = []
+      on-demand-variant {
+        mode = enabled
+      }
     }
     object-store {
       bucket = assets
@@ -270,6 +273,22 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 | Property                   | Description                                              | Allowed Input                                | Default |
 |:---------------------------|:---------------------------------------------------------|:---------------------------------------------|:--------|
 | `transform.eager-variants` | List of variant profiles to generate eager variants from | profiles names from `variant-profiles` array | None    |
+
+#### On-demand Variant
+
+```hocon
+"/**" {
+  transform {
+    on-demand-variant {
+      mode = enabled
+    }
+  }
+}
+```
+
+| Property                           | Description                       | Allowed Input             | Default   |
+|:-----------------------------------|:----------------------------------|:--------------------------|:----------|
+| `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only` | `enabled` |
 
 ### Object Store
 
