@@ -251,10 +251,10 @@ paths {
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the
 `image` block as well as:
 
-| Property                                    | Description          | Allowed Input | Default |
-|:--------------------------------------------|:---------------------|:--------------|:--------|
-| `transform.preprocessing.image.max-height ` | Maximum height       | Integer       | None    |
-| `transform.preprocessing.image.max-width `  | Maximum width        | Integer       | None    |
+| Property                                    | Description    | Allowed Input | Default |
+|:--------------------------------------------|:---------------|:--------------|:--------|
+| `transform.preprocessing.image.max-height ` | Maximum height | Integer       | None    |
+| `transform.preprocessing.image.max-width `  | Maximum width  | Integer       | None    |
 
 :::note
 `h` and `w` take precedence over `max-height` and `max-width` respectively, if both are specified.

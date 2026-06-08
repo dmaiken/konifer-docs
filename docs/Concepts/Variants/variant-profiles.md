@@ -51,6 +51,7 @@ Any individual transformation parameters supplied override the profile's respect
 in the profile.
 
 ## Restricting transformations to only profiles
+
 You may want to limit the on-demand variants allowed to only those defined in variant profiles. To do this,
 set `transform.on-demand-variant.mode` to `profile_only` in your Path Configuration.
 
@@ -66,6 +67,8 @@ paths {
 }
 ```
 
-With `profile_only` set, any request containing a transformation parameter that is not `profile` will return a 400 Bad Request.
-The default `mode` is `enabled` which permits any transformation parameter including `profile`. Original variants can also be requested
+With `profile_only` set, any request containing a transformation parameter that is not `profile` will return a 400 Bad
+Request.
+The default `mode` is `enabled` which permits any transformation parameter including `profile`. Original variants can
+also be requested
 if `profile` is not supplied.
