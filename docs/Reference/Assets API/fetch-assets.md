@@ -243,21 +243,21 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 Refer to the [Image Transformation Reference](../image-transformation-reference.md) for greater detail about available
 image transformations.
 
-| Field Name   | Type       | Description                                     | Allowed Values                                                       |
-|--------------|------------|-------------------------------------------------|----------------------------------------------------------------------|
-| `height`     | Integer    | Height of variant in pixels                     | > 0                                                                  |
-| `width`      | Integer    | Width of variant in pixels                      | > 0                                                                  |
-| `fit`        | Attributes | Fit                                             | `fit`, `fill`, `stretch`                                             |
-| `gravity`    | Gravity    | Gravity                                         | `center`, `entropy`, `attention`                                     |
-| `format`     | Format     | Format of variant                               | See Format                                                           |
-| `rotate`     | Rotate     | Rotation                                        | `zero`, `ninety`, `one_hundred_eight`, `two_hundred_seventy`, `auto` |
-| `flip`       | Flip       | Whether variat is flipped and across which axis | `none`, `h`, `v`                                                     |
-| `filter`     | Filter     | Filter                                          | `none`, `black_white`, `greyscale`, `sepia`                          |
-| `blur`       | Integer    | Blur                                            | 0-150                                                                |
-| `quality`    | Integer    | Compression quality (ignored for PNG)           | 1-100                                                                |
-| `colorSpace` | ColorSpace | Color space                                     | `grayscale`, `srgb`, `p3`                                            |
-| `padding`    | Padding    | Padding                                         |                                                                      |
-| `metadata`   | Metadata   | Image metadata                                  |                                                                      |
+| Field Name   | Type       | Description                                     | Allowed Values                              |
+|--------------|------------|-------------------------------------------------|---------------------------------------------|
+| `height`     | Integer    | Height of variant in pixels                     | > 0                                         |
+| `width`      | Integer    | Width of variant in pixels                      | > 0                                         |
+| `fit`        | Attributes | Fit                                             | `fit`, `fill`, `stretch`                    |
+| `gravity`    | Gravity    | Gravity                                         | `center`, `entropy`, `attention`            |
+| `format`     | Format     | Format of variant                               | See Format                                  |
+| `rotate`     | Rotate     | Rotation                                        | `0`, `90`, `180`, `270`, `auto`             |
+| `flip`       | Flip       | Whether variat is flipped and across which axis | `none`, `h`, `v`                            |
+| `filter`     | Filter     | Filter                                          | `none`, `black_white`, `grayscale`, `sepia` |
+| `blur`       | Integer    | Blur                                            | 0-150                                       |
+| `quality`    | Integer    | Compression quality (ignored for PNG)           | 1-100                                       |
+| `colorSpace` | ColorSpace | Color space                                     | `grayscale`, `srgb`, `p3`                   |
+| `padding`    | Padding    | Padding                                         |                                             |
+| `metadata`   | Metadata   | Image metadata                                  |                                             |
 
 ###### Padding
 

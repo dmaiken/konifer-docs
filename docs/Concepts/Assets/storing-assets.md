@@ -56,11 +56,11 @@ HOCON.
 
 ```hocon
 source {
-    url {
-        allowed-domains = [
-            "your-domain.com"
-        ]
-    }
+  url {
+    allowed-domains = [
+      "your-domain.com"
+    ]
+  }
 }
 ```
 
@@ -70,7 +70,7 @@ A request to store an asset using a URL looks like this (omitting all optional m
 
 ```json
 {
-    "url": "your-domain.com/your-image.jpeg"
+  "url": "your-domain.com/your-image.jpeg"
 }
 ```
 
@@ -82,15 +82,15 @@ and are returned as headers when fetching asset content.
 
 ```json
 {
-    "alt": "The alt text for an image",
-    "labels": {
-        "label-key": "label-value",
-        "phone": "Android"
-    },
-    "tags": [
-        "cold",
-        "verified"
-    ]
+  "alt": "The alt text for an image",
+  "labels": {
+    "label-key": "label-value",
+    "phone": "Android"
+  },
+  "tags": [
+    "cold",
+    "verified"
+  ]
 }
 ```
 
@@ -98,24 +98,25 @@ and are returned as headers when fetching asset content.
 
 When you store an asset, you can transform the source content. Doing so means the original variant becomes the
 result of your defined transformation. Any variant generated for this asset is generated from the original variant.
-Keep this in mind when defining any preprocessing. For example preprocessing an image down to 50x50 limits
+Keep this in mind when defining any preprocessing. For example, preprocessing an image down to 50x50 limits
 your ability to create sharp, resized variants larger than 50x50.
 
-The following configuration converts the supplied asset content to an AVIF image format and set the width to 1024.
+The following configuration converts the supplied asset content to an AVIF image format and sets the width to 1024.
 
 ```hocon
-paths = [
-    {
-        path = "/users/**"
-        preprocessing {
-            enabled = true
-            image {
-                format = "image/avif"
-                w = 1024
-            }
+paths {
+  "/users/**" {
+    transform {
+      preprocessing {
+        enabled = true
+        image {
+          format = "image/avif"
+          w = 1024
         }
+      }
     }
-]
+  }
+}
 ```
 
 All [image transformation parameters](../../Reference/image-transformation-reference.md#parameter-reference) can be used
@@ -130,19 +131,20 @@ height or width exceeds their respective maximums, they are downscaled.
 The following configuration will downscale any image larger than 1024x1024 down to 1024x1024 using a fit mode of `fit`.
 
 ```hocon
-paths = [
-    {
-        path = "/users/**"
-        preprocessing {
-            enabled = true
-            image {
-                max-height = 1024
-                max-width = 1024
-                fit = fit # Optional - defaults to: fit
-            }
+paths {
+  "/users/**" {
+    transform {
+      preprocessing {
+        enabled = true
+        image {
+          max-height = 1024
+          max-width = 1024
+          fit = fit # Optional - defaults to: fit
         }
+      }
     }
-]
+  }
+}
 ```
 
 :::note
@@ -151,19 +153,20 @@ being
 scaled to 2048x1024. Avoid mixing height/width and `max-height`/`max-width`.
 
 ```hocon
-paths = [
-    {
-        path = "/users/**"
-        preprocessing {
-            enabled = true
-            image {
-                max-height = 1024
-                max-width = 1024
-                w = 2048
-            }
+paths {
+  "/users/**" {
+    transform {
+      preprocessing {
+        enabled = true
+        image {
+          max-height = 1024
+          max-width = 1024
+          w = 2048
         }
+      }
     }
-]
+  }
+}
 ```
 
 :::

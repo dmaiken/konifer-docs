@@ -37,17 +37,16 @@ directives [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/He
 
 ```hocon
 {
-    paths = [
-        {
-            path = "/users"
-            cache-control {
-                enabled = true
-                max-age = 1000000
-                s-maxage = 2000000
-                immutable = true
-            }
-        }
-    ]
+  paths = {
+    "/users" {
+      cache-control {
+        enabled = true
+        max-age = 1000000
+        s-maxage = 2000000
+        immutable = true
+      }
+    }
+  }
 }
 ```
 
