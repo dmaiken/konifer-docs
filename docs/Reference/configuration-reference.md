@@ -286,9 +286,9 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 }
 ```
 
-| Property                           | Description                       | Allowed Input             | Default   |
-|:-----------------------------------|:----------------------------------|:--------------------------|:----------|
-| `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only` | `enabled` |
+| Property                           | Description                       | Allowed Input                         | Default   |
+|:-----------------------------------|:----------------------------------|:--------------------------------------|:----------|
+| `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only`, `disabled` | `enabled` |
 
 ### Object Store
 
