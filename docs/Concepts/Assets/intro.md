@@ -5,10 +5,10 @@ title: Assets Introduction
 sidebar_label: "Introduction"
 ---
 
-An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, metadata and content.
-Metadata is stored in Postgres and content is stored in the configured object store (S3, filesystem, or in-memory).
+An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, information and content.
+Information is stored in Postgres, and content is stored in the configured object store (S3, filesystem, or in-memory).
 
-Assets can be created, fetched, and their metadata updated. Content is not updatable since, for caching purposes, an
+Assets can be created, fetched, and their information updated. Content is not updatable since, for caching purposes, an
 asset's content is considered immutable.
 
 ## API
@@ -34,7 +34,7 @@ POST /assets/blog/123/post/5
 
 Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By
 default,
-fetching an asset at a given path returns the most-recently created asset, however, that can be changed using Query
+fetching an asset at a given path returns the most-recently created asset; however, that can be changed using Query
 Selectors.
 
 ## Content
@@ -53,7 +53,7 @@ The following content types are currently supported by Konifer:
 
 ## Metadata
 
-An asset can have the following metadata supplied when creating or updating an asset:
+An asset can have the following information supplied when creating or updating an asset:
 
 - alt
 - labels
@@ -62,14 +62,14 @@ An asset can have the following metadata supplied when creating or updating an a
 ## Alt
 
 An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It is returned within asset
-metadata but
+information but
 is also returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
 general limits set by screen readers, the maximum length of an `alt` is 125 characters.
 
 ## Labels
 
 Labels are key-value pairs used to define custom attributes to the asset. They are optional. Up to 50 labels can be
-associated to an asset.
+associated with an asset.
 To specify them when storing or updating an asset, use the `labels` field in the request.
 
 ```json
@@ -90,16 +90,16 @@ GET /assets/users/123?label-key=label-value&phone=Android
 ```
 
 Labels can also be combined with other query selectors to further filter your results. For example, this returns the
-metadata of the 5 most-recently
+information of the five most-recently
 created assets containing the label of `phone=iphone`:
 
 ```http 
-GET /assets/users/123/-/new/metadata/5?phone=iphone
+GET /assets/users/123/-/new/info/5?phone=iphone
 ```
 
 ### Deleting
 
-Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the 5
+Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the five
 most-recently
 created assets containing the label of `phone=iphone`:
 
@@ -115,7 +115,7 @@ To delete all assets at a particular path, set your `limit` to `all` and supply 
 DELETE /assets/users/123/-/all?phone=iphone
 ```
 
-#### Recursive delete
+#### Recursively delete
 
 Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s)
 and the `recursive` selector.
@@ -126,19 +126,19 @@ DELETE /assets/users/123/-/recursive?phone=iphone
 
 ### Reserved words
 
-Labels and transformation parameters (`h`, `w`, etc) are both defined using query parameters. To specify a label with
+Labels and transformation parameters (`h`, `w`, etc.) are both defined using query parameters. To specify a label with
 the key `w`, prefix the key with
 `label:`.
 
 ```http
-GET /assets/users/123/-/new/metadata?label:w=wValue
+GET /assets/users/123/-/new/info?label:w=wValue
 ```
 
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
 
 ### Rules
 
-- Maximum amount of labels: 50
+- Maximum number of labels: 50
 - Maximum label key length: 128 characters
 - Maximum label value length: 256 characters
 
@@ -163,5 +163,5 @@ To specify tags when storing or updating an asset, use the `tags` field in the r
 
 ### Rules
 
-- Maximum amount of tags: 50
+- Maximum number of tags: 50
 - Maximum tag value length: 256

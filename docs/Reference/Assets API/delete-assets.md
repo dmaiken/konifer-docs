@@ -5,12 +5,12 @@ title: Deleting Assets
 sidebar_label: "Delete"
 ---
 
-When the asset is deleted, the metadata is deleted synchronously. All variant content is
-removed from the object store asynchronously, however the variant metadata is deleted synchronously and the asset
+When the asset is deleted, the asset information and reference are deleted synchronously. All variant content is
+removed from the object store asynchronously, however, the variant references are deleted synchronously, and the asset
 is no longer accessible using Konifer APIs.
 
 :::warning
-Deleting an asset is unrecoverable. There is no way to reverse a delete, and there is no soft-delete mechanism!
+Deleting an asset is unrecoverable. There is no way to reverse deletes, and there is no soft-delete mechanism!
 :::
 
 ## Request

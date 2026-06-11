@@ -10,7 +10,7 @@ sidebar_label: "Storing Assets"
 Konifer leverages a dual-store architecture to manage assets efficiently.
 
 1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3, S3-compatible,
-   filesystem and in-memory providers.
+   filesystem, and in-memory providers.
 2. **Metadata Store:** Persists relational data, path hierarchies, tags, and labels. Currently, in-memory and PostgreSQL
    are the supported engines.
 
@@ -85,7 +85,7 @@ object-store {
 
 ### Filesystem
 
-Konifer can store files to a specified filesystem location. This filesystem path must be configured and has no default
+Konifer can store files in a specified filesystem location. This filesystem path must be configured and has no default
 property.
 
 ```hocon
@@ -127,7 +127,7 @@ When using the filesystem or in-memory object store implementations, the `presig
 Konifer uses PostgreSQL for robust transactional support and hierarchical path queries.
 
 :::warning
-ltree Extension The ltree extension must be enabled on your PostgreSQL database before
+The `ltree` extension must be enabled on your PostgreSQL database before
 Konifer starts. Run the following SQL command as a superuser:
 
 ```sql

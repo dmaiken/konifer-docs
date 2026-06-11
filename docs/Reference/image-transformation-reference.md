@@ -64,7 +64,7 @@ The image is resized to fit within the specified dimensions while maintaining it
 
 **Requirements:** Both `h` and `w` are required.
 
-The image is resized to **completely fill** the specified dimensions. The image is scaled maintaining its aspect ratio,
+The image is resized to **fill** the specified dimensions. The image is scaled, maintaining its aspect ratio,
 and any parts of the image that overflow the bounding box are cropped out.
 
 **Default Gravity:** Uses `center` gravity (crops equally from sides/top-bottom).
@@ -88,7 +88,7 @@ to determine what gets cropped.
 
 #### Gravity Options (`g`)
 
-Currently, 3 gravity options are supported:
+Currently, three gravity options are supported:
 
 * **`center`** (Default): Keeps the geometric center of the image.
 * **`entropy`**: Detects "busy" areas (high contrast/edges). Best for landscapes, products, or textured objects.
@@ -101,11 +101,11 @@ Konifer supports the following modern image formats:
 
 * **JPEG**
 * **PNG**
-* **WEBP** (single and multi-page)
+* **WEBP** (single and multipage)
 * **AVIF**
 * **JPEG XL**
 * **HEIC**
-* **GIF** (single and multi-page)
+* **GIF** (single and multipage)
 
 ### Quality (`q`)
 
@@ -177,7 +177,7 @@ Apply stylistic effects to the image:
 * **`sepia`**: Applies a warm, brownish tone matrix (identical to the CSS `sepia(100%)` filter).
 
 :::note
-The `grayscale` filter is not the same as the `grayscale` color space (`cs`). Images with this filter applied will still
+The `grayscale` filter is different from the `grayscale` color space (`cs`). Images with this filter applied will still
 be 3-channel (or 4-channel if the image contains alpha). Other transformations, such as padding, will still retain
 color.
 

@@ -32,13 +32,13 @@ using Accept header values. Prioritization is respected. Learn more about the Ac
 [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept). If `Accept: image/*` is used,
 the original variant's format is returned.
 
-If no format is acceptable using either methods, a `400 Bad Request` is returned.
+If no format is acceptable using either method, a `400 Bad Request` is returned.
 
 ## Fetching Link (`/link`)
 
 Fetches an absolute link to the asset as well as any [LQIP](../../Concepts/lqip.md) and `alt` fields. If no return
 format
-selector is supplied, link is the default.
+selector is supplied, `link` is the default.
 
 ### Request
 
@@ -108,12 +108,12 @@ K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
 <image bytes>
 ```
 
-## Fetching Metadata
+## Fetching Asset Information
 
 ### Request
 
 ```http
-GET /assets/users/123/profile-picture/-/metadata
+GET /assets/users/123/profile-picture/-/info
 ```
 
 #### Limit

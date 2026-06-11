@@ -7,7 +7,7 @@ sidebar_label: "Update"
 
 # API Overview
 
-Konifer lets you update asset metadata only. The content cannot be updated.
+Konifer lets you update asset information only. Asset content cannot be updated.
 
 ## Request
 
@@ -31,13 +31,13 @@ Content-Type: application/json
 | `tags`     | Array  | Supplied attributes associated with the asset      | No       |
 
 :::warning
-PUT is a complete replacement of the asset metadata. Even if updating one field, the rest of the fields
+PUT is a complete replacement of the asset's information. Even if updating one field, the rest of the fields
 must be supplied, or they are erased.
 :::
 
 ## Response
 
-The entire [asset metadata response](fetch-assets.md#fetching-metadata) is returned.
+The entire [asset information response](fetch-assets.md#fetching-asset-information) is returned.
 
 ```http 
 HTTP/1.1 200

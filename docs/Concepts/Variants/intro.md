@@ -25,7 +25,7 @@ Original Variant is the exact representation of the supplied content.
 
 ## Variant Types
 
-Variants can be generated in 2 different ways (in addition to Ingest Transformations):
+Variants can be generated in two different ways (in addition to Ingest Transformations):
 
 - Eager variant generation
 - On-demand variant generation
@@ -77,7 +77,7 @@ paths {
 
 ### On-demand Variant Generation
 
-Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc), a variant
+Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc.), a variant
 is generated from the Original Variant on-demand. The variant is also cached in your configured object store.
 
 ## Variant Caching
@@ -109,7 +109,7 @@ or limit on-demand variants using the `transform.on-demand-variant.mode` Path Co
 - **`profile_only`**: Only `profile` can be supplied. This enables you to limit variant transformations to only
 those defined as [variant profiles](variant-profiles.md).
 - **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant has 
-not been generated at time of request, it will be generated on-demand.
+not been generated at the time of request, it will be generated on-demand.
 
 ## Deleting your Asset
 

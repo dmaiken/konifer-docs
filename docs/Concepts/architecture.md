@@ -48,7 +48,7 @@ By mounting a volume to the Docker container, Konifer can store assets on any fi
 
 ## Metadata Store
 
-Konifer uses Postgres to manage asset metadata. This is done because relying on Object Store metadata is slow and
+Konifer uses Postgres to manage asset metadata and information. This is done because relying on Object Store metadata is slow and
 inflexible.
 Konifer leverages the [Ltree](https://www.postgresql.org/docs/current/ltree.html) extension and is required to be
 enabled on the
@@ -60,7 +60,7 @@ The Ltree extension must be enabled within Postgres. Enabling extensions general
 
 ## Temporary Files
 
-In order to keep memory pressure low when storing assets and generating variants, temporary files are used extensively.
+To keep memory pressure low when storing assets and generating variants, temporary files are used extensively.
 It is recommended to leverage a local disk source
 like [AWS Instance Storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html)
 and not external storage like [AWS EBS](https://aws.amazon.com/ebs/) for performant IO. Temporary data is deleted as

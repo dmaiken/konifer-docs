@@ -41,22 +41,22 @@ GET /assets/users/123/profile-picture/-/new/link/
 Any default can be omitted for brevity
 
 ```http
-GET /assets/users/123/profile-picture/-/new/metadata
+GET /assets/users/123/profile-picture/-/new/info
 ```
 
-is the same as:
+it is the same as:
 
 ```http
-GET /assets/users/123/profile-picture/-/metadata
+GET /assets/users/123/profile-picture/-/info
 ```
 
 ## Ordering
 
 When fetching a single asset or multiple assets, you can specify the order.
 
-- **`new`** (default): Return the most recently-created asset. If `limit` is specified, return the `n` most
-  recently-created assets.
-- **`modified`**: Return the most recently-modified asset. If `limit` is specified, return the `n` most recently-
+- **`new`** (default): Return the most recently created asset. If `limit` is specified, return the `n` most
+  recently created assets.
+- **`modified`**: Return the most recently modified asset. If `limit` is specified, return the `n` most recently
   _modified_ assets.
 
 To specify an ordering, place it before the return format selector:
@@ -163,7 +163,7 @@ Location: https://assets.mydomain.com/d905170f-defd-47e4-b606-d01993ba7b42
 
 #### Redirect Strategies
 
-Redirect strategies are defined within path configuration. The default strategy is `none`.
+Redirect strategies are defined within Path Configuration. The default strategy is `none`.
 
 ```hocon
 paths {
@@ -207,8 +207,8 @@ paths {
 
 ##### Template Redirection
 
-Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Simply define a
-template string and Konifer uses that to resolve your redirection URL.
+Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Define a
+template string, and Konifer uses that to resolve your redirection URL.
 
 ```hocon
 paths {
@@ -228,12 +228,12 @@ paths {
 Konifer uses the `{bucket}` and `{key}` variables in your template to populate a URL string. Any protocol is permitted
 except for executable protocols such as `javascript:`, `vbscript:`, and `data:`.
 
-### `metadata`
+### `info`
 
-A json response of the image and it's properties, cached variants, and image attributes.
+A JSON response of the image and its properties, cached variants, and image attributes.
 
 ```http
-GET /assets/users/123/profile-picture/-/metadata
+GET /assets/users/123/profile-picture/-/info
 ```
 
 Returns:
@@ -296,7 +296,7 @@ Returns:
 
 ## Limit
 
-For `metadata` return formats, you can return more than one. To return the 3 most-recent assets, specify the `limit`
+For `info` return formats, you can return more than one. To return the three most-recent assets, specify the `limit`
 query
 parameter, or `-1` for all assets within the path:
 
@@ -323,5 +323,5 @@ Additionally, you can specify the return format along with the `entryId`:
 GET /assets/users/123/profile-picture/-/entry/42/redirect
 ```
 
-A URL with the `entry` selector is the absolute reference to the asset therefore ordering query selectors cannot be used
+A URL with the `entry` selector is the absolute reference to the asset; therefore, ordering query selectors cannot be used
 with the `entry` selector.

@@ -19,7 +19,7 @@ When you issue a delete request:
    removed.
 
 :::warning
-Deleting an asset is unrecoverable. There is no way to reverse a delete, and there is no soft-delete mechanism!
+Deleting an asset is unrecoverable. There is no way to reverse deletes, and there is no soft-delete mechanism!
 :::
 
 ### Idempotency
