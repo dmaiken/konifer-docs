@@ -5,7 +5,7 @@ title: LQIPs (Low Quality Image Previews)
 sidebar_label: "LQIPs"
 ---
 
-Low quality image previews or LQIPs are small, usually blurry versions of the image you'd like to display while the
+Low-quality image previews or LQIPs are small, usually blurry versions of the image you'd like to display while the
 larger image is downloaded over a network. This can be useful for a variety of reasons. Konifer supports two LQIP
 implementations:
 
@@ -15,9 +15,9 @@ implementations:
 One or both of these can be enabled.
 
 > **Note**: For proper usage and decoding of these LQIP implementations, reference the links above. Correct LQIP
-> usage is out of scope of this documentation.
+> usage is out of the scope of this documentation.
 
-LQIP(s) are generated at the same time a variant is generated which could be eagerly or on-demand. Konifer is smart
+LQIP(s) are generated at the same time a variant is generated which could be eager or on-demand. Konifer is smart
 enough
 to know when an LQIP should be regenerated and when it does not need to be. For example, if you apply a `blur`
 transformation,
@@ -40,7 +40,7 @@ paths {
 }
 ```
 
-If LQIPs are enabled in a parent path and you wish to disable in a specific child path, set `lqip` to an empty array:
+If LQIPs are enabled in a parent path, and you wish to disable in a specific child path, set `lqip` to an empty array:
 
 ```hocon
 paths {

@@ -34,15 +34,15 @@ data-store {
 }
 ```
 
-| Property                         | Description                               | Allowed Input             | Default      | Environment variable |
-|:---------------------------------|:------------------------------------------|:--------------------------|:-------------|:---------------------|
-| `data-store.provider`            | The implementation of your metadata store | `in-memory`, `postgresql` | `postgresql` | IN_MEMORY*           |
-| `data-store.postgresql.database` | Database to use within the RDBMS          | String                    | `konifer`    |                      |
-| `data-store.postgresql.host`     | Postgresql host                           | String                    | `localhost`  |                      |
-| `data-store.postgresql.port`     | Postgresql port                           | Integer                   | 5432         |                      |
-| `data-store.postgresql.user`     | Postgresql user                           | String                    | `postgres`   | PG_USER              |
-| `data-store.postgresql.password` | Postgresql password                       | String                    | `""`         | PG_PASSWORD          |          
-| `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                       | String                    | `prefer`     |                      |
+| Property                         | Description                           | Allowed Input             | Default      | Environment variable |
+|:---------------------------------|:--------------------------------------|:--------------------------|:-------------|:---------------------|
+| `data-store.provider`            | The implementation of your data store | `in-memory`, `postgresql` | `postgresql` | IN_MEMORY*           |
+| `data-store.postgresql.database` | Database to use within the RDBMS      | String                    | `konifer`    |                      |
+| `data-store.postgresql.host`     | Postgresql host                       | String                    | `localhost`  |                      |
+| `data-store.postgresql.port`     | Postgresql port                       | Integer                   | 5432         |                      |
+| `data-store.postgresql.user`     | Postgresql user                       | String                    | `postgres`   | PG_USER              |
+| `data-store.postgresql.password` | Postgresql password                   | String                    | `""`         | PG_PASSWORD          |          
+| `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                   | String                    | `prefer`     |                      |
 
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
 `in-memory`.
@@ -286,9 +286,9 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 }
 ```
 
-| Property                           | Description                       | Allowed Input             | Default   |
-|:-----------------------------------|:----------------------------------|:--------------------------|:----------|
-| `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only` | `enabled` |
+| Property                           | Description                       | Allowed Input                         | Default   |
+|:-----------------------------------|:----------------------------------|:--------------------------------------|:----------|
+| `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only`, `disabled` | `enabled` |
 
 ### Object Store
 

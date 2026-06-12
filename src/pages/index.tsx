@@ -20,7 +20,7 @@ const responseModes = [
   'link',
   'redirect',
   'download',
-  'metadata',
+  'info',
 ];
 
 const orderingModes = [
@@ -81,9 +81,9 @@ function CodeWindow(): ReactNode {
           {'\n'}
           <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/content?profile=thumbnail
           {'\n\n'}
-          <span className={styles.codeComment}># Ask for metadata, links, or redirects instead</span>
+          <span className={styles.codeComment}># Ask for asset information, links, or redirects instead</span>
           {'\n'}
-          <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/metadata
+          <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/info
         </code>
       </pre>
     </div>
@@ -122,7 +122,7 @@ export default function Home(): ReactNode {
               <Heading as="h1">Self-hosted image infrastructure that fits your API.</Heading>
               <p className={styles.heroLead}>
                 Konifer stores original images, generates and caches transformed variants, and
-                returns content, links, redirects, downloads, or metadata from URLs that follow
+                returns content, links, redirects, downloads, or information from URLs that follow
                 your application&apos;s domain model.
               </p>
               <div className={styles.heroActions}>

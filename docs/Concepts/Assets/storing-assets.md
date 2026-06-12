@@ -7,10 +7,10 @@ sidebar_label: "Storing"
 
 When storing an asset, the content must be supplied as well as any optional metadata. The content can be supplied as:
 
-- a multi-part upload if you possess the binary asset content
+- a multipart upload if you possess the binary asset content
 - a URL supplied alongside any metadata
 
-When asset content is stored, it is referred to as the `originalVariant`. When fetching asset metadata,
+When asset content is stored, it is referred to as the `originalVariant`. When fetching asset information,
 `isOriginalVariant` is
 `true` for the variant that represents the original supplied content.
 
@@ -66,7 +66,7 @@ source {
 
 If the domain is not allowed when uploading an asset, a 400 is returned.
 
-A request to store an asset using a URL looks like this (omitting all optional metadata):
+A request to store an asset using a URL looks like this (omitting all optional information):
 
 ```json
 {
@@ -74,9 +74,9 @@ A request to store an asset using a URL looks like this (omitting all optional m
 }
 ```
 
-## Metadata
+## Information
 
-Asset metadata is supplied as JSON. All metadata is optional, but fields such as `alt` and LQIP(s) are useful for
+Asset information is supplied as JSON. All information fields are optional, but fields such as `alt` and LQIP(s) are useful for
 display purposes
 and are returned as headers when fetching asset content.
 

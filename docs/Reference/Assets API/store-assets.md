@@ -5,7 +5,7 @@ title: Storing Assets
 sidebar_label: "Store"
 ---
 
-When you store an asset, the asset and it's metadata are stored in your object store and database, respectively.
+When you store an asset, the asset and its metadata are stored in your object store and database, respectively.
 There are two ways to store an asset:
 
 1. **Multipart Upload:** Use this when the asset content is available locally.
@@ -85,7 +85,7 @@ Since there is only JSON in the request, the `Content-Type` is `application/json
 
 Regardless of the upload method used, a successful storage request returns a `201 Created` status and the following JSON
 response
-representing the asset metadata.
+containing the asset's information.
 
 ```http 
 HTTP/1.1 201 CREATED
@@ -124,7 +124,7 @@ Content-Type: application/json
 ```
 
 Additionally, a `Location` header is returned containing an absolute URL to the asset's link return format.
-> Note: the entryId query selector is supplied so the URL is absolute and can be used for subsequent GET and PUT
+> Note: the entryId query selector is supplied, so the URL is absolute and can be used for later GET and PUT
 > operations.
 
 | Field Name   | Type         | Description                                                          |

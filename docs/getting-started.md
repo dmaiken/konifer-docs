@@ -18,7 +18,7 @@ Konifer requires the following to start:
 2. **Database:** A running database instance, such as PostgreSQL (required for production use or depending on the
    specified configuration).
 3. **Object Store:** Access to an S3 API-compatible object store (e.g., AWS S3, Cloudflare R2, MinIO, etc.).
-   The filesystem is also a supported option as long as it can be mounted to container at runtime.
+   The filesystem is also a supported option as long as it can be mounted to the container at runtime.
 4. **Configuration:** A configuration file named `konifer.conf` using HOCON syntax. To try Konifer out without any
    configuration in development mode, this is not needed.
 
@@ -30,7 +30,7 @@ of all properties used within Konifer. Do not be afraid!
 
 ## Development mode
 
-Konifer can start up using an in-memory object store and/or metadata store for development use. In-memory configuration
+Konifer can start up using an in-memory object store and/or data store for development use. In-memory configuration
 is NOT recommended for production use since anything stored in-memory is ephemeral and could result in excessive memory
 usage.
 
@@ -127,13 +127,13 @@ curl --request GET \
   --url 'http://localhost:8080/assets/my-images/-/redirect?blur=100' 
 ```
 
-### Metadata
+### Information
 
-View metadata of the asset as well.
+View asset information as well.
 
 ```bash
 curl --request GET \
-  --url 'http://localhost:8080/assets/my-images/-/metadata' 
+  --url 'http://localhost:8080/assets/my-images/-/info' 
 ```
 
 ## Labels and Tags

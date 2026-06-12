@@ -25,7 +25,7 @@ Original Variant is the exact representation of the supplied content.
 
 ## Variant Types
 
-Variants can be generated in 2 different ways (in addition to Ingest Transformations):
+Variants can be generated in two different ways (in addition to Ingest Transformations):
 
 - Eager variant generation
 - On-demand variant generation
@@ -33,9 +33,8 @@ Variants can be generated in 2 different ways (in addition to Ingest Transformat
 ### Eager Variant Generation
 
 You may know which variants you need at the time you store the asset. Eager variants are generated at the time of
-upload,
-however, the generation is asynchronous and best-effort. The Store Asset API returns before eager variants are
-generated, however, a background process to generate them is kicked off at the time of upload.
+upload; however, the generation is asynchronous and best-effort. The Store Asset API returns before eager variants are
+generated; however, a background process to generate them is kicked off at the time of upload.
 
 **Important**: Eager variants _must_ be defined using variant profiles.
 
@@ -78,7 +77,7 @@ paths {
 
 ### On-demand Variant Generation
 
-Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc), a variant
+Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc.), a variant
 is generated from the Original Variant on-demand. The variant is also cached in your configured object store.
 
 ## Variant Caching
@@ -101,6 +100,16 @@ GET /assets/users/123/profile-picture?f=v
 
 The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that
 is vertically-flipped. Konifer is intelligent enough to know the resulting variant is the same.
+
+## On-demand Variant Generation Modes
+
+By default, on-demand variants are allowed to be generated and are cached in your configured object store. You can disable 
+or limit on-demand variants using the `transform.on-demand-variant.mode` Path Configuration. The default setting is `enabled`.
+
+- **`profile_only`**: Only `profile` can be supplied. This enables you to limit variant transformations to only
+those defined as [variant profiles](variant-profiles.md).
+- **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant has 
+not been generated at the time of request, it will be generated on-demand.
 
 ## Deleting your Asset
 

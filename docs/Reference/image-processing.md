@@ -11,21 +11,21 @@ Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying tran
 demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does
 not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
 
-This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a very small memory footprint and
+This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a tiny memory footprint and
 extremely low latency.
 
 :::caution
-Libvips buffers the entire image if it is progressively-rendered JPEGs (image content is interlaced to provide a
-progressively-improving
+Libvips buffers the entire image if it is progressively rendered JPEGs (image content is interlaced to provide a
+progressively improving
 display quality as the image is downloaded). Avoid ingestion of these images.
 :::
 
 ## Memory Management
 
-Because Konifer is a Kotlin application running on the JVM (Netty) while utilizing libvips (C library) for processing,
+Because Konifer is a Kotlin application running on the JVM (Netty) while using libvips (C library) for processing,
 memory is managed in three distinct regions.
 
-1. **JVM Heap**: Manages application logic, routing, and request metadata. Controlled by -Xmx.
+1. **JVM Heap**: Manages application logic, routing, and request information. Controlled by -Xmx.
 2. **Direct Memory (Off-Heap)**: Manages Netty IO buffers for network uploads. Controlled by -XX:MaxDirectMemorySize.
 3. **Native Memory (Off-Heap)**: Manages the actual image pixels processed by libvips. Not controlled by JVM flags.
 
@@ -75,14 +75,14 @@ docker run -d \
 
 ## Variant Workers
 
-Konifer utilizes a bounded thread pool to manage concurrent image transformations. This prevents the server from being
+Konifer uses a bounded thread pool to manage concurrent image transformations. This prevents the server from being
 overwhelmed by a sudden spike in complex transformation requests.
 
 ### Concurrency Limit
 
 By default, Konifer calculates the worker pool size using the formula: `Available CPU Cores * 2`.
 
-**Example:** On a 4-core system, Konifer initializes 8 Variant Workers.
+**Example:** On a 4-core system, Konifer initializes eight Variant Workers.
 
 ### Configuration
 
