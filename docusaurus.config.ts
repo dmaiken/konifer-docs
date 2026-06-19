@@ -61,8 +61,7 @@ const config: Config = {
       searchPagePath: 'search',
       insights: false,
     },
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/konifer-small.png',
     colorMode: {
       respectPrefersColorScheme: true,
     },
