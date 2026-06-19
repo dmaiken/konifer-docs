@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 id: concepts-variant-profiles
 title: Variant Profiles
 sidebar_label: "Profiles"

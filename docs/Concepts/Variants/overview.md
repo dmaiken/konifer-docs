@@ -1,11 +1,11 @@
 ---
 sidebar_position: 1
 id: concepts-variants
-title: Introduction
-sidebar_label: "Introduction"
+title: Variants
+sidebar_label: "Overview"
 ---
 
-A Variant represents a specific, transformed version of the asset's content. It is generated using the
+A variant represents a specific, transformed version of the asset's content. It is generated using the
 transformation options available within Konifer (e.g., resizing, cropping, format change).
 
 A variant is composed of:
@@ -36,7 +36,9 @@ You may know which variants you need at the time you store the asset. Eager vari
 upload; however, the generation is asynchronous and best-effort. The Store Asset API returns before eager variants are
 generated; however, a background process to generate them is kicked off at the time of upload.
 
-**Important**: Eager variants _must_ be defined using variant profiles.
+:::info
+Eager variants can only be defined using [variant profiles](variant-profiles.md).
+:::
 
 #### Best-effort
 
@@ -78,28 +80,8 @@ paths {
 ### On-demand Variant Generation
 
 Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc.), a variant
-is generated from the Original Variant on-demand. The variant is also cached in your configured object store.
-
-## Variant Caching
-
-When variants are generated eagerly or on-demand, they are cached in your object store. If a cached variant matching
-your request exists, it is returned. If not, the variant is generated and persisted in your object store.
-
-Sometimes, the different parameters result in the same variant. For example, these two requests generate the same
-variant:
-
-```http
-GET /assets/users/123/profile-picture?f=h&r=180
-```
-
-and
-
-```http
-GET /assets/users/123/profile-picture?f=v
-```
-
-The first requests a variant that is horizontally-flipped and rotated 180 degrees. The second requests a variant that
-is vertically-flipped. Konifer is intelligent enough to know the resulting variant is the same.
+is generated from the Original Variant on-demand. The variant is also cached in your configured object store. See
+[Variant Caching](caching.md) for how Konifer stores and reuses generated variants.
 
 ## On-demand Variant Generation Modes
 
@@ -109,7 +91,7 @@ or limit on-demand variants using the `transform.on-demand-variant.mode` Path Co
 - **`profile_only`**: Only `profile` can be supplied. This enables you to limit variant transformations to only
 those defined as [variant profiles](variant-profiles.md).
 - **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant has 
-not been generated at the time of request, it will be generated on-demand.
+not been generated at the time of request, it can still be generated on-demand.
 
 ## Deleting your Asset
 
