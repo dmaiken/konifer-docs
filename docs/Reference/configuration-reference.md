@@ -183,6 +183,10 @@ paths {
       on-demand-variant {
         mode = enabled
       }
+      expire {
+        strategy = never
+        ttl = [no default]
+      }
     }
     object-store {
       bucket = assets
@@ -289,6 +293,36 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 | Property                           | Description                       | Allowed Input                         | Default   |
 |:-----------------------------------|:----------------------------------|:--------------------------------------|:----------|
 | `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only`, `disabled` | `enabled` |
+
+#### Expiration
+```hocon
+"/**" {
+  transform {
+    expire {
+      strategy = never
+      ttl = [no default]
+    }
+  }
+}
+```
+
+| Property                    | Description                                                                                                   | Allowed Input                    | Default    |
+|:----------------------------|:--------------------------------------------------------------------------------------------------------------|:---------------------------------|:-----------|
+| `transform.expire.strategy` | The variant expiry strategy to use                                                                            | `never`, `ttl`, `idle`           | `never`    |
+| `transform.expire.ttl`      | The time-to-live (in `Duration` format) used in `idle` or `ttl` strategies. Ignored when strategy is `never`. | Duration e.g. `24h`, `7d`, `10m` | No default |
+
+##### Duration
+A duration is represented similarly to how Spring accepts a `Duration` property value. The time unit is appended to the amount. 
+Units can be:
+- s for seconds
+- m for minutes
+- h for hours
+- d for days
+
+:::note
+Due to how expired variants are purged, expiration may be delayed by up to 1 minute after the configured TTL.
+:::
+
 
 ### Object Store
 

@@ -1,8 +1,8 @@
 ---
 sidebar_position: 1
 id: concepts-assets
-title: Assets Introduction
-sidebar_label: "Introduction"
+title: Assets
+sidebar_label: "Overview"
 ---
 
 An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, information and content.
