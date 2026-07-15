@@ -44,11 +44,17 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-        gtag: {
-          trackingID: 'G-888P26DBCE',
-          anonymizeIP: true,
-        },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  plugins: [
+    [
+      './plugins/guarded-gtag/index.cjs',
+      {
+        trackingID: 'G-888P26DBCE',
+        anonymizeIP: true,
+      },
     ],
   ],
 
