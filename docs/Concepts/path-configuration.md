@@ -25,8 +25,20 @@ You can configure the path `/public/avatars/**` to:
 
 - Generate three specific thumbnail sizes eagerly upon upload.
 - Limit the height and width of a supplied image.
+- Reject uploads that match a configured upload rule.
 
 ```hocon
+rule-definitions {
+  "blood-and-gore" {
+    prompts = [
+      "graphic visible blood",
+      "open wound with blood",
+      "bloody injury scene"
+    ]
+    threshold = 0.72
+  }
+}
+
 paths {
   "/public/avatars/**" {
     transform {
@@ -36,6 +48,12 @@ paths {
         max-height = 300
         max-width = 500
       }
+    }
+    upload-ruleset {
+      default = accept
+      reject-rules = [
+        { rule = "blood-and-gore" }
+      ]
     }
   }
 }

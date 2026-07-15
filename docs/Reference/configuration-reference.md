@@ -128,6 +128,34 @@ variant-profiles {
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a
 variant profile object.
 
+## Rule Definitions
+
+Rule definitions are global zero-shot image classification rules that can be referenced by path-level upload rulesets.
+They are empty by default.
+
+```hocon
+rule-definitions {
+  "rule-name" {
+    prompts = [
+      "a visual description of the content to detect"
+    ]
+    threshold = 0.70
+  }
+}
+```
+
+| Property                            | Description                                                                                      | Allowed Input             | Default |
+|:------------------------------------|:-------------------------------------------------------------------------------------------------|:--------------------------|:--------|
+| `rule-definitions`                  | Map of named rule definitions. The rule name is referenced from path-level upload rulesets.      | Rule definition object    | `{}`    |
+| `rule-definitions.<name>.prompts`   | Text prompts used for zero-shot matching. The highest scoring prompt determines the rule result. | 1-100 strings             | None    |
+| `rule-definitions.<name>.threshold` | Minimum model score required for the rule to match.                                              | Decimal from `0.0`-`1.0`  | None    |
+
+Rule names cannot be blank and cannot be longer than 32 characters. Use lowercase rule definition keys because upload
+rule references are normalized to lowercase.
+
+SigLIP2 model files are only required when `rule-definitions` is populated. See
+[Upload Rules](../Concepts/upload-rules.md#installing-model-files) for model installation and mount instructions.
+
 ## Variant Generation
 
 ```hocon
@@ -191,6 +219,11 @@ paths {
     object-store {
       bucket = assets
     }
+    upload-ruleset {
+      default = accept
+      accept-rules = []
+      reject-rules = []
+    }
     return-format {
       redirect {
         strategy = none
@@ -230,6 +263,18 @@ paths {
 | Property     | Description             | Allowed Input            | Default |
 |:-------------|:------------------------|:-------------------------|:--------|
 | `image.lqip` | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
+
+### Allowed Content Types
+
+```hocon
+"/**" {
+  allowed-content-types = [ "image/png", "image/jpeg" ]
+}
+```
+
+| Property                | Description                                                                                 | Allowed Input                  | Default |
+|:------------------------|:--------------------------------------------------------------------------------------------|:-------------------------------|:--------|
+| `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
 
 ### Transform
 
@@ -337,6 +382,31 @@ Due to how expired variants are purged, expiration may be delayed by up to 1 min
 | Property              | Description                                                                                                                                                        | Allowed Input     | Default  |
 |:----------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------|:---------|
 | `object-store.bucket` | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name | `assets` |
+
+### Upload Ruleset
+
+```hocon
+"/**" {
+  upload-ruleset {
+    default = accept
+    accept-rules = []
+    reject-rules = []
+  }
+}
+```
+
+| Property                                      | Description                                                                     | Allowed Input                 | Default  |
+|:----------------------------------------------|:--------------------------------------------------------------------------------|:------------------------------|:---------|
+| `upload-ruleset.default`                      | Decision to use when no configured upload rule matches.                         | `accept`, `reject`            | `accept` |
+| `upload-ruleset.accept-rules`                 | Rules that accept an upload when matched. Usually used with `default = reject`. | List of upload rule objects   | `[]`     |
+| `upload-ruleset.reject-rules`                 | Rules that reject an upload when matched. Usually used with `default = accept`. | List of upload rule objects   | `[]`     |
+| `upload-ruleset.*-rules[].rule`               | Name of a top-level rule definition to evaluate.                                | Configured rule name          | None     |
+| `upload-ruleset.*-rules[].violation-response` | Optional response message returned when a reject rule rejects an upload.        | String shorter than 200 chars | None     |
+
+The same rule cannot appear in both `accept-rules` and `reject-rules` within a single upload ruleset.
+
+Upload rulesets are path configuration, so a child path can override an inherited ruleset. See
+[Upload Rules](../Concepts/upload-rules.md) for examples and prompt ensemble guidance.
 
 ### Return Format
 

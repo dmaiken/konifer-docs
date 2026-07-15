@@ -52,6 +52,10 @@ const capabilities = [
     body: 'Resize, crop, rotate, blur, pad, strip metadata, manage color space, and convert formats on demand or through named variant profiles.',
   },
   {
+    title: 'Content-aware upload policy',
+    body: 'Use zero-shot image rules to accept or reject uploads by path. Customers can define prompt ensembles for their own content standards without training a custom classifier.',
+  },
+  {
     title: 'CDN-aware by design',
     body: 'Serve bytes directly, return object-store links, issue redirects, use Cache-Control and ETags, and protect public transformation URLs with HMAC signing.',
   },
@@ -161,6 +165,42 @@ export default function Home(): ReactNode {
           </div>
         </section>
 
+        <section className={clsx(styles.section, styles.rulesSection)}>
+          <div className={styles.rulesCopy}>
+            <span className={styles.sectionKicker}>Upload rules</span>
+            <Heading as="h2">Reject the wrong image before it becomes an asset</Heading>
+            <p>
+              Konifer can evaluate uploads with SigLIP2 zero-shot image classification before they
+              are stored. Define rule definitions once, attach upload rulesets to path patterns, and
+              let each part of your product enforce its own visual content policy.
+            </p>
+            <Link to="/docs/Concepts/concepts-upload-rules">Explore Upload Rules</Link>
+          </div>
+          <pre className={styles.rulesCode}>
+            <code>{`rule-definitions {
+  "product-photo" {
+    prompts = [
+      "a clean catalog image of a product",
+      "a product photo on a plain background",
+      "a single item photographed for sale"
+    ]
+    threshold = 0.66
+  }
+}
+
+paths {
+  "/catalog/products/**" {
+    upload-ruleset {
+      default = reject
+      accept-rules = [
+        { rule = "product-photo" }
+      ]
+    }
+  }
+}`}</code>
+          </pre>
+        </section>
+
         <section className={clsx(styles.section, styles.apiSection)}>
           <div className={styles.apiCopy}>
             <Heading as="h2">An API philosophy built around integration</Heading>
@@ -246,7 +286,7 @@ export default function Home(): ReactNode {
             <p>
               Configure behavior by path pattern, then let inheritance do the work. Public avatars,
               private user content, CMS images, and generated media can share one service while
-              using different storage buckets, validation rules, eager variants, preprocessing,
+              using different storage buckets, upload rulesets, eager variants, preprocessing,
               redirect strategies, caching, and LQIP behavior.
             </p>
             <Link to="/docs/Concepts/concepts-path-configuration">Read Path Configuration</Link>

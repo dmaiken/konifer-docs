@@ -284,9 +284,44 @@
 }
 
 .stackCopy a,
-.configSection a {
+.configSection a,
+.rulesSection a {
   color: #236d45;
   font-weight: 700;
+}
+
+.rulesSection {
+  align-items: center;
+  border-top: 1px solid rgba(37, 71, 51, 0.12);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 0.88fr) minmax(24rem, 0.88fr);
+}
+
+.rulesCopy {
+  max-width: 43rem;
+}
+
+.sectionKicker {
+  color: #236d45;
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.rulesCode {
+  background: #121713;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  color: #edf7ef;
+  font-size: 0.88rem;
+  line-height: 1.58;
+  margin: 0;
+  overflow-x: auto;
+  padding: 1.25rem;
 }
 
 .stackExample {
@@ -436,6 +471,10 @@
   color: #a9bcb0;
 }
 
+[data-theme='dark'] .sectionKicker {
+  color: #7bd88f;
+}
+
 [data-theme='dark'] .secondaryButton {
   --ifm-button-background-color: #17211b;
   --ifm-button-border-color: rgba(234, 246, 236, 0.18);
@@ -486,6 +525,7 @@
   .apiSection,
   .stackSection,
   .transformLayout,
+  .rulesSection,
   .configSection {
     grid-template-columns: 1fr;
   }
