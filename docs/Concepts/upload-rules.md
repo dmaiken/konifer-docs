@@ -5,15 +5,15 @@ title: Upload Rules
 sidebar_label: "Upload Rules"
 ---
 
-Upload rules let Konifer accept or reject uploads by comparing image content against text prompts. They are useful when a
-path should only receive a narrow class of images, or when a path should reject images that match an unwanted content
-category.
+Upload rules let Konifer accept, reject, or label uploads by comparing image content against text prompts. They are useful
+when a path should only receive a narrow class of images, when a path should reject images that match an unwanted content
+category, or when uploaded assets should be categorized automatically.
 
 Upload rules are built from two configuration pieces:
 
 - `rule-definitions` define what Konifer should look for in the uploaded image.
-- `upload-ruleset` selects which definitions apply to a path and whether matching definitions accept or reject the
-  upload.
+- `upload-ruleset` selects which definitions apply to a path and whether matching definitions accept, reject, or label
+  the upload.
 
 Konifer evaluates rules with a SigLIP2 zero-shot image classification model. Each rule definition has one or more text
 prompts and a threshold. Konifer embeds the uploaded image, compares it to each prompt in the rule definition, and uses
@@ -50,7 +50,11 @@ usually more useful than `"unsafe content"`.
 ## Upload Rulesets
 
 Upload rulesets are path configuration. They live under a path entry in `paths` and decide how matched rules affect the
-upload.
+upload. A ruleset can use three kinds of rule actions:
+
+- `accept-rules` accept matching uploads. They are commonly paired with `default = reject` to create an allow list.
+- `reject-rules` reject matching uploads. They are commonly paired with `default = accept` to create a deny list.
+- `label-rules` add configured labels to matching uploads without changing whether the upload is accepted or rejected.
 
 ```hocon
 paths {
@@ -68,10 +72,11 @@ paths {
 }
 ```
 
-There are two common patterns:
+There are three common patterns:
 
 - Deny list: set `default = accept` and add `reject-rules`. Uploads pass unless they match a reject rule.
 - Allow list: set `default = reject` and add `accept-rules`. Uploads fail unless they match an accept rule.
+- Automatic labeling: add `label-rules` to either policy to categorize accepted assets when visual content matches.
 
 For example, an avatar path can require human portrait-like uploads:
 
@@ -102,6 +107,48 @@ paths {
 If an upload is rejected and the matched reject rule has a `violation-response`, Konifer returns that message. If several
 reject rules match, their responses are joined together. When no response is configured, Konifer uses the default upload
 rules rejection message.
+
+### Labeling Matched Uploads
+
+Label rules use the same global rule definitions as accept and reject rules. When a label rule matches, Konifer adds its
+configured labels to the stored asset:
+
+```hocon
+rule-definitions {
+  "product-photo" {
+    prompts = [
+      "a product photo on a plain background",
+      "a single item photographed for sale",
+      "a clean catalog image of a product"
+    ]
+    threshold = 0.66
+  }
+}
+
+paths {
+  "/catalog/**" {
+    upload-ruleset {
+      default = accept
+      label-rules = [
+        {
+          rule = "product-photo"
+          labels = {
+            "content-type" = "product-photo"
+            "classification-source" = "upload-rule"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+Label rules do not accept an upload that would otherwise be rejected. They add labels only to assets that pass the
+ruleset's accept or reject decision. Labels from all matched label rules are combined with labels supplied in the upload
+request. When both define the same key, the label rule's value takes precedence.
+
+Use distinct label keys across label rules. If several matched rules define the same key, the result depends on rule
+evaluation order and should not be used as a precedence mechanism.
 
 ## Prompt Ensembles
 

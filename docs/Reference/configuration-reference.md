@@ -223,6 +223,7 @@ paths {
       default = accept
       accept-rules = []
       reject-rules = []
+      label-rules = []
     }
     return-format {
       redirect {
@@ -391,19 +392,25 @@ Due to how expired variants are purged, expiration may be delayed by up to 1 min
     default = accept
     accept-rules = []
     reject-rules = []
+    label-rules = []
   }
 }
 ```
 
-| Property                                      | Description                                                                     | Allowed Input                 | Default  |
-|:----------------------------------------------|:--------------------------------------------------------------------------------|:------------------------------|:---------|
-| `upload-ruleset.default`                      | Decision to use when no configured upload rule matches.                         | `accept`, `reject`            | `accept` |
-| `upload-ruleset.accept-rules`                 | Rules that accept an upload when matched. Usually used with `default = reject`. | List of upload rule objects   | `[]`     |
-| `upload-ruleset.reject-rules`                 | Rules that reject an upload when matched. Usually used with `default = accept`. | List of upload rule objects   | `[]`     |
-| `upload-ruleset.*-rules[].rule`               | Name of a top-level rule definition to evaluate.                                | Configured rule name          | None     |
-| `upload-ruleset.*-rules[].violation-response` | Optional response message returned when a reject rule rejects an upload.        | String shorter than 200 chars | None     |
+| Property                                      | Description                                                                                                           | Allowed Input                 | Default  |
+|:----------------------------------------------|:----------------------------------------------------------------------------------------------------------------------|:------------------------------|:---------|
+| `upload-ruleset.default`                      | Decision to use when no configured accept or reject rule matches.                                                     | `accept`, `reject`            | `accept` |
+| `upload-ruleset.accept-rules`                 | Rules that accept an upload when matched. Usually used with `default = reject`.                                       | List of upload rule objects   | `[]`     |
+| `upload-ruleset.reject-rules`                 | Rules that reject an upload when matched. Usually used with `default = accept`.                                       | List of upload rule objects   | `[]`     |
+| `upload-ruleset.label-rules`                  | Rules that add labels when matched. Labeling does not change the upload decision.                                     | List of upload rule objects   | `[]`     |
+| `upload-ruleset.*-rules[].rule`               | Name of a top-level rule definition to evaluate.                                                                      | Configured rule name          | None     |
+| `upload-ruleset.*-rules[].violation-response` | Optional response message returned when a reject rule rejects an upload.                                              | String shorter than 200 chars | None     |
+| `upload-ruleset.label-rules[].labels`         | Labels added to the stored asset when the rule matches. Rule labels override request labels that use the same key.    | Map of label keys and values  | `{}`     |
 
 The same rule cannot appear in both `accept-rules` and `reject-rules` within a single upload ruleset.
+
+Each label key must be nonblank and no longer than 128 characters. Each value must be nonblank and no longer than 256
+characters. An asset can have at most 50 labels after labels from the upload request and matched label rules are merged.
 
 Upload rulesets are path configuration, so a child path can override an inherited ruleset. See
 [Upload Rules](../Concepts/upload-rules.md) for examples and prompt ensemble guidance.
