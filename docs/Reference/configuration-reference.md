@@ -59,6 +59,26 @@ http {
 |:------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:-------------------|
 | `http.public-url` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost` |
 
+## API
+
+Properties for enabling optional API endpoints.
+
+```hocon
+api {
+  rule-evaluation {
+    enabled = false
+  }
+}
+```
+
+| Property                      | Description                                                                   | Allowed Input | Default |
+|:------------------------------|:------------------------------------------------------------------------------|:--------------|:--------|
+| `api.rule-evaluation.enabled` | Enables `POST /rule-evaluations` for testing rule definitions against images. | Boolean       | `false` |
+
+When disabled, the rule evaluation route is not registered and returns `404 Not Found`. Enabling it initializes SigLIP2
+rule inference even when `rule-definitions` is empty, so the model files must be installed. See
+[Rule Evaluation](../Concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
+
 ## Object Store
 
 Properties for configuring the datastore.
@@ -105,11 +125,11 @@ source {
 }
 ```
 
-| Property                     | Description                                                                                                 | Allowed Input                       | Default |
-|:-----------------------------|:------------------------------------------------------------------------------------------------------------|:------------------------------------|:--------|
-| `source.url.allowed-domains` | Domains that Konifer is permitted to access when storing assets from a URL source                           | Any valid domain                    | `[]`    |
-| `source.url.max-bytes`       | Maximum size of supplied asset content downloaded from URL. Will reject assets larger than this.            | Positive integer representing bytes | 1048576 |
-| `source.multipart.max-bytes` | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes | 1048576 |
+| Property                     | Description                                                                         | Allowed Input                       | Default |
+|:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:--------|
+| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`    |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 1048576 |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 1048576 |
 
 ## Variant Profiles
 
@@ -153,7 +173,7 @@ rule-definitions {
 Rule names cannot be blank and cannot be longer than 32 characters. Use lowercase rule definition keys because upload
 rule references are normalized to lowercase.
 
-SigLIP2 model files are only required when `rule-definitions` is populated. See
+SigLIP2 model files are required when `rule-definitions` is populated or the Rule Evaluation API is enabled. See
 [Upload Rules](../Concepts/upload-rules.md#installing-model-files) for model installation and mount instructions.
 
 ## Variant Generation

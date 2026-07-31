@@ -20,8 +20,8 @@ prompts and a threshold. Konifer embeds the uploaded image, compares it to each 
 the highest prompt score. The rule matches when that score is greater than or equal to the rule's threshold.
 
 :::note
-The SigLIP2 model files are only required when `rule-definitions` is populated. If no rule definitions are configured,
-Konifer does not initialize upload rule model inference.
+Konifer initializes rule inference when `rule-definitions` is populated or the
+[Rule Evaluation API](rule-evaluation.md) is enabled. If neither is configured, the SigLIP2 model files are not required.
 :::
 
 ## Rule Definitions
@@ -233,6 +233,9 @@ Thresholds are model scores, not percentages. Higher values are stricter and may
 catch more possible matches but may reject unrelated uploads. Tune each rule separately because some concepts are easier
 for the model to identify than others.
 
+Use the [Rule Evaluation API](rule-evaluation.md) to compare prompt and threshold behavior against representative images
+without storing assets or changing your active upload rules.
+
 ## Installing Model Files
 
 Upload rules use the SigLIP2 ONNX model pack. Download it from the [Konifer repository](https://github.com/dmaiken/konifer/tree/main/scripts):
@@ -268,7 +271,8 @@ For reproducible deployments, use a pinned Hugging Face revision when downloadin
 ./scripts/download-siglip2-models.sh --revision <hugging-face-revision>
 ```
 
-Konifer expects these files to exist at runtime (if `rule-definitions` are configured):
+Konifer expects these files to exist at runtime when `rule-definitions` are configured or the Rule Evaluation API is
+enabled:
 
 ```text
 /app/models/siglip2-base-patch16-224/vision_model.onnx
