@@ -59,6 +59,26 @@ http {
 |:------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------|:-------------------|
 | `http.public-url` | The URL used to resolve content selector links. This is the root public URL of your website/platform/API. | Any URL beginning with http:// or https:// | `http://localhost` |
 
+## API
+
+Properties for enabling optional API endpoints.
+
+```hocon
+api {
+  rule-evaluation {
+    enabled = false
+  }
+}
+```
+
+| Property                      | Description                                                                   | Allowed Input | Default |
+|:------------------------------|:------------------------------------------------------------------------------|:--------------|:--------|
+| `api.rule-evaluation.enabled` | Enables `POST /rule-evaluations` for testing rule definitions against images. | Boolean       | `false` |
+
+When disabled, the rule evaluation route is not registered and returns `404 Not Found`. Enabling it initializes SigLIP2
+rule inference even when `rule-definitions` is empty, so the model files must be installed. See
+[Rule Evaluation](../Concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
+
 ## Object Store
 
 Properties for configuring the datastore.
@@ -105,11 +125,11 @@ source {
 }
 ```
 
-| Property                     | Description                                                                                                 | Allowed Input                       | Default |
-|:-----------------------------|:------------------------------------------------------------------------------------------------------------|:------------------------------------|:--------|
-| `source.url.allowed-domains` | Domains that Konifer is permitted to access when storing assets from a URL source                           | Any valid domain                    | `[]`    |
-| `source.url.max-bytes`       | Maximum size of supplied asset content downloaded from URL. Will reject assets larger than this.            | Positive integer representing bytes | 1048576 |
-| `source.multipart.max-bytes` | Maximum size of supplied asset content uploaded from Multipart source. Will reject assets larger than this. | Positive integer representing bytes | 1048576 |
+| Property                     | Description                                                                         | Allowed Input                       | Default |
+|:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:--------|
+| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`    |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 1048576 |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 1048576 |
 
 ## Variant Profiles
 
@@ -127,6 +147,34 @@ variant-profiles {
 
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a
 variant profile object.
+
+## Rule Definitions
+
+Rule definitions are global zero-shot image classification rules that can be referenced by path-level upload rulesets.
+They are empty by default.
+
+```hocon
+rule-definitions {
+  "rule-name" {
+    prompts = [
+      "a visual description of the content to detect"
+    ]
+    threshold = 0.70
+  }
+}
+```
+
+| Property                            | Description                                                                                      | Allowed Input             | Default |
+|:------------------------------------|:-------------------------------------------------------------------------------------------------|:--------------------------|:--------|
+| `rule-definitions`                  | Map of named rule definitions. The rule name is referenced from path-level upload rulesets.      | Rule definition object    | `{}`    |
+| `rule-definitions.<name>.prompts`   | Text prompts used for zero-shot matching. The highest scoring prompt determines the rule result. | 1-100 strings             | None    |
+| `rule-definitions.<name>.threshold` | Minimum model score required for the rule to match.                                              | Decimal from `0.0`-`1.0`  | None    |
+
+Rule names cannot be blank and cannot be longer than 32 characters. Use lowercase rule definition keys because upload
+rule references are normalized to lowercase.
+
+SigLIP2 model files are required when `rule-definitions` is populated or the Rule Evaluation API is enabled. See
+[Upload Rules](../Concepts/upload-rules.md#installing-model-files) for model installation and mount instructions.
 
 ## Variant Generation
 
@@ -191,6 +239,12 @@ paths {
     object-store {
       bucket = assets
     }
+    upload-ruleset {
+      default = accept
+      accept-rules = []
+      reject-rules = []
+      label-rules = []
+    }
     return-format {
       redirect {
         strategy = none
@@ -230,6 +284,18 @@ paths {
 | Property     | Description             | Allowed Input            | Default |
 |:-------------|:------------------------|:-------------------------|:--------|
 | `image.lqip` | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
+
+### Allowed Content Types
+
+```hocon
+"/**" {
+  allowed-content-types = [ "image/png", "image/jpeg" ]
+}
+```
+
+| Property                | Description                                                                                 | Allowed Input                  | Default |
+|:------------------------|:--------------------------------------------------------------------------------------------|:-------------------------------|:--------|
+| `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
 
 ### Transform
 
@@ -337,6 +403,37 @@ Due to how expired variants are purged, expiration may be delayed by up to 1 min
 | Property              | Description                                                                                                                                                        | Allowed Input     | Default  |
 |:----------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------|:---------|
 | `object-store.bucket` | Bucket to persist assets and variants in. This can be safely changed without de-referencing existing assets, however, existing assets are not moved to new bucket. | Valid bucket name | `assets` |
+
+### Upload Ruleset
+
+```hocon
+"/**" {
+  upload-ruleset {
+    default = accept
+    accept-rules = []
+    reject-rules = []
+    label-rules = []
+  }
+}
+```
+
+| Property                                      | Description                                                                                                           | Allowed Input                 | Default  |
+|:----------------------------------------------|:----------------------------------------------------------------------------------------------------------------------|:------------------------------|:---------|
+| `upload-ruleset.default`                      | Decision to use when no configured accept or reject rule matches.                                                     | `accept`, `reject`            | `accept` |
+| `upload-ruleset.accept-rules`                 | Rules that accept an upload when matched. Usually used with `default = reject`.                                       | List of upload rule objects   | `[]`     |
+| `upload-ruleset.reject-rules`                 | Rules that reject an upload when matched. Usually used with `default = accept`.                                       | List of upload rule objects   | `[]`     |
+| `upload-ruleset.label-rules`                  | Rules that add labels when matched. Labeling does not change the upload decision.                                     | List of upload rule objects   | `[]`     |
+| `upload-ruleset.*-rules[].rule`               | Name of a top-level rule definition to evaluate.                                                                      | Configured rule name          | None     |
+| `upload-ruleset.*-rules[].violation-response` | Optional response message returned when a reject rule rejects an upload.                                              | String shorter than 200 chars | None     |
+| `upload-ruleset.label-rules[].labels`         | Labels added to the stored asset when the rule matches. Rule labels override request labels that use the same key.    | Map of label keys and values  | `{}`     |
+
+The same rule cannot appear in both `accept-rules` and `reject-rules` within a single upload ruleset.
+
+Each label key must be nonblank and no longer than 128 characters. Each value must be nonblank and no longer than 256
+characters. An asset can have at most 50 labels after labels from the upload request and matched label rules are merged.
+
+Upload rulesets are path configuration, so a child path can override an inherited ruleset. See
+[Upload Rules](../Concepts/upload-rules.md) for examples and prompt ensemble guidance.
 
 ### Return Format
 
