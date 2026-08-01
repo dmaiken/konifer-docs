@@ -36,7 +36,7 @@ Konifer itself is replaceable. PostgreSQL and the object store contain the state
 You need:
 
 * A container runtime or orchestrator
-* PostgreSQL with permission to enable the `ltree` extension or the `ltee` extension already enabled
+* PostgreSQL with permission to enable the `ltree` extension or the `ltree` extension already enabled
 * An S3 or S3-compatible bucket, or a persistent filesystem mount
 * A public URL for Konifer (if exposing over the public internet)
 * A secure way to supply credentials and signing secrets
@@ -204,7 +204,7 @@ Image processing uses JVM heap, direct memory, native libvips memory, CPU, and t
 limit must leave room for native processing in addition to the JVM.
 
 Konifer writes temporary processing files under `/app/tmp`. The container's writable layer works initially, but a fast
-temporary volume or appropriately sized `tmpfs` is preferable for sustained or high-volume workloads. Large images may 
+temporary volume or appropriately sized `tmpfs` is preferable for sustained or high-volume workloads. Large images may
 require disk-backed temporary storage rather than RAM.
 
 Start with conservative request limits and variant-worker concurrency, then load-test with representative source images
