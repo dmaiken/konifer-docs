@@ -81,7 +81,7 @@ The `ttl` value uses Konifer's standard `Duration` format. For example:
 - `24h`
 - `7d`
 
-See the [Path Configuration Reference](../../Reference/configuration-reference.md#expiration) for the complete property
+See the [Path Configuration Reference](../../reference/configuration-reference.md#expiration) for the complete property
 reference.
 
 :::note

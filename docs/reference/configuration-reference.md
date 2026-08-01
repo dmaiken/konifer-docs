@@ -77,7 +77,7 @@ api {
 
 When disabled, the rule evaluation route is not registered and returns `404 Not Found`. Enabling it initializes SigLIP2
 rule inference even when `rule-definitions` is empty, so the model files must be installed. See
-[Rule Evaluation](../Concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
+[Rule Evaluation](../concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
 
 ## Object Store
 
@@ -174,7 +174,7 @@ Rule names cannot be blank and cannot be longer than 32 characters. Use lowercas
 rule references are normalized to lowercase.
 
 SigLIP2 model files are required when `rule-definitions` is populated or the Rule Evaluation API is enabled. See
-[Upload Rules](../Concepts/upload-rules.md#installing-model-files) for model installation and mount instructions.
+[Upload Rules](../concepts/upload-rules.md#installing-model-files) for model installation and mount instructions.
 
 ## Variant Generation
 
@@ -433,7 +433,7 @@ Each label key must be nonblank and no longer than 128 characters. Each value mu
 characters. An asset can have at most 50 labels after labels from the upload request and matched label rules are merged.
 
 Upload rulesets are path configuration, so a child path can override an inherited ruleset. See
-[Upload Rules](../Concepts/upload-rules.md) for examples and prompt ensemble guidance.
+[Upload Rules](../concepts/upload-rules.md) for examples and prompt ensemble guidance.
 
 ### Return Format
 

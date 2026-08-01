@@ -27,7 +27,7 @@ DELETE /assets/users/123/-/entry/0
 
 ### Ordering
 
-Ordering is specified using the `order` [query selector](../../Concepts/Assets/fetching-assets.md#ordering).
+Ordering is specified using the `order` [query selector](../../concepts/Assets/fetching-assets.md#ordering).
 
 | Order      | Description                             | Default if not supplied |
 |------------|-----------------------------------------|-------------------------|

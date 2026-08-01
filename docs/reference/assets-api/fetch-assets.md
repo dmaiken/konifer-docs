@@ -13,7 +13,7 @@ query selectors.
 
 ## Ordering
 
-Ordering is specified using the `order` [query selector](../../Concepts/Assets/fetching-assets.md#ordering).
+Ordering is specified using the `order` [query selector](../../concepts/Assets/fetching-assets.md#ordering).
 
 | Order      | Description                             | Default if not supplied |
 |------------|-----------------------------------------|-------------------------|
@@ -36,7 +36,7 @@ If no format is acceptable using either method, a `400 Bad Request` is returned.
 
 ## Fetching Link (`/link`)
 
-Fetches an absolute link to the asset as well as any [LQIP](../../Concepts/lqip.md) and `alt` fields. If no return
+Fetches an absolute link to the asset as well as any [LQIP](../../concepts/lqip.md) and `alt` fields. If no return
 format
 selector is supplied, `link` is the default.
 
@@ -92,7 +92,7 @@ HTTP/1.1 307
 Location: https://assets.mycdn.com/d905170f-defd-47e4-b606-d01993ba7b42
 ```
 
-If [redirection strategy](../../Concepts/Assets/fetching-assets.md#redirect-strategies) is `none` (default), then no
+If [redirection strategy](../../concepts/Assets/fetching-assets.md#redirect-strategies) is `none` (default), then no
 redirect is returned:
 
 ```http

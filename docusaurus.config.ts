@@ -48,6 +48,12 @@ const config: Config = {
     ],
   ],
 
+  themes: ['@docusaurus/theme-mermaid'],
+
+  markdown: {
+    mermaid: true,
+  },
+
   plugins: [
     [
       './plugins/guarded-gtag/index.cjs',
@@ -59,6 +65,12 @@ const config: Config = {
   ],
 
   themeConfig: {
+    mermaid: {
+      theme: {
+        light: 'neutral',
+        dark: 'dark',
+      },
+    },
     algolia: {
       appId: 'LR90ZF2B4S',
       apiKey: '5963eb82452e74cb8eef210aadc73c1c',
@@ -85,7 +97,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          to: '/docs/getting-started',
+          to: '/docs/start-here/getting-started',
           label: 'Getting Started',
           position: 'left',
         },

@@ -60,7 +60,7 @@ limits.
 Up to 10 definitions can be evaluated in one request, with up to 100 prompts in each definition. Konifer embeds the
 image once and evaluates all supplied definitions against that embedding.
 
-See the [Rule Evaluation API reference](../Reference/Rule%20Evaluation%20API/evaluate-rules.md) for request and response
+See the [Rule Evaluation API reference](../reference/rule-evaluation-api/evaluate-rules.md) for request and response
 formats.
 
 ## Enabling the API

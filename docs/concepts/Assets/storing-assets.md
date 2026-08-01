@@ -119,7 +119,7 @@ paths {
 }
 ```
 
-All [image transformation parameters](../../Reference/image-transformation-reference.md#parameter-reference) can be used
+All [image transformation parameters](../../reference/image-transformation-reference.md#parameter-reference) can be used
 within the `image` block.
 
 ### Max Width/Height

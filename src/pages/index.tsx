@@ -130,7 +130,7 @@ export default function Home(): ReactNode {
                 your application&apos;s domain model.
               </p>
               <div className={styles.heroActions}>
-                <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/getting-started">
+                <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/start-here/getting-started">
                   Get started
                 </Link>
                 <Link className={clsx('button button--secondary', styles.secondaryButton)} to="/docs">
@@ -174,7 +174,7 @@ export default function Home(): ReactNode {
               are stored. Define rule definitions once, attach upload rulesets to path patterns, and
               let each part of your product enforce its own visual content policy.
             </p>
-            <Link to="/docs/Concepts/concepts-upload-rules">Explore Upload Rules</Link>
+            <Link to="/docs/concepts/concepts-upload-rules">Explore Upload Rules</Link>
           </div>
           <pre className={styles.rulesCode}>
             <code>{`rule-definitions {
@@ -247,7 +247,7 @@ paths {
               hot swap an avatar, publish a new hero image, or keep simple version history without
               changing the URL it already knows.
             </p>
-            <Link to="/docs/Concepts/Assets/concepts-fetching-assets">Explore query selectors</Link>
+            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore query selectors</Link>
           </div>
           <div className={styles.stackExample}>
             <span>POST /assets/products/sku-123/hero</span>
@@ -289,7 +289,7 @@ paths {
               using different storage buckets, upload rulesets, eager variants, preprocessing,
               redirect strategies, caching, and LQIP behavior.
             </p>
-            <Link to="/docs/Concepts/concepts-path-configuration">Read Path Configuration</Link>
+            <Link to="/docs/concepts/concepts-path-configuration">Read Path Configuration</Link>
           </div>
           <pre className={styles.configCode}>
             <code>{`paths {
@@ -315,7 +315,7 @@ paths {
               same path-based integration model.
             </p>
           </div>
-          <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/getting-started">
+          <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/start-here/getting-started">
             Run Konifer locally
           </Link>
         </section>

@@ -151,4 +151,4 @@ Content-Type: application/json
 | `404 Not Found` | The Rule Evaluation API is disabled.                                                  |
 | `415 Unsupported Media Type` | The request is not `application/json` or `multipart/form-data`.              |
 
-Evaluation accepts the same [supported image formats](../../Concepts/Assets/overview.md#content) as asset storage.
+Evaluation accepts the same [supported image formats](../../concepts/Assets/overview.md#content) as asset storage.
