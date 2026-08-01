@@ -21,7 +21,7 @@ The order of configuration precedence is:
 
 Properties for configuring the datastore.
 
-```hocon 
+```hocon
 data-store {
   provider = postgresql
   postgresql {
@@ -41,7 +41,7 @@ data-store {
 | `data-store.postgresql.host`     | Postgresql host                       | String                    | `localhost`  |                      |
 | `data-store.postgresql.port`     | Postgresql port                       | Integer                   | 5432         |                      |
 | `data-store.postgresql.user`     | Postgresql user                       | String                    | `postgres`   | PG_USER              |
-| `data-store.postgresql.password` | Postgresql password                   | String                    | `""`         | PG_PASSWORD          |          
+| `data-store.postgresql.password` | Postgresql password                   | String                    | `""`         | PG_PASSWORD          |
 | `data-store.postgresql.ssl-mode` | Postgresql SSL Mode                   | String                    | `prefer`     |                      |
 
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
@@ -83,7 +83,7 @@ rule inference even when `rule-definitions` is empty, so the model files must be
 
 Properties for configuring the datastore.
 
-```hocon 
+```hocon
 objectstore {
   provider = filesystem
   s3 { # No defaults - overrides Default Provider Chain if supplied
@@ -101,19 +101,19 @@ objectstore {
 | Property                            | Description                                                       | Allowed Input                       | Default      | Environment variable |
 |:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
 | `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` | IN_MEMORY*           |
-| `objectstore.s3.access-key `        | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
+| `objectstore.s3.access-key`         | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
 | `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |                      |
 | `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |                      |
 | `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         | S3_SECRET_KEY        |
 | `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
-| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid linux path (ex: `/mnt/store`) | None         |                      |
+| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid Linux path (ex: `/mnt/store`) | None         |                      |
 
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
 `in-memory`.
 
 ## Source
 
-```hocon 
+```hocon
 source {
   url {
     allowed-domains = []
@@ -141,12 +141,12 @@ variant-profiles {
 }
 ```
 
-| Property           | Description                                                                                                  | Allowed Input          | Default |
-|:-------------------|:-------------------------------------------------------------------------------------------------------------|:-----------------------|:--------|
-| `variant-profiles` | Map of defined variant profiles that canfor eager variants and on-demand variants. Keyed by the profile name | Variant profile object | `{}`    |
+| Property           | Description                                                                                                            | Allowed Input          | Default |
+|:-------------------|:-----------------------------------------------------------------------------------------------------------------------|:-----------------------|:--------|
+| `variant-profiles` | Map of defined variant profiles that can be used for eager variants and on-demand variants. Keyed by the profile name. | Variant profile object | `{}`    |
 
-All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a
-variant profile object.
+All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a variant
+profile object.
 
 ## Rule Definitions
 
@@ -314,17 +314,17 @@ paths {
 }
 ```
 
-| Property                           | Description          | Allowed Input | Default |
-|:-----------------------------------|:---------------------|:--------------|:--------|
-| `transform.preprocessing.enabled ` | Enable preprocessing | Boolean       | `false` |
+| Property                          | Description          | Allowed Input | Default |
+|:----------------------------------|:---------------------|:--------------|:--------|
+| `transform.preprocessing.enabled` | Enable preprocessing | Boolean       | `false` |
 
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the
 `image` block as well as:
 
-| Property                                    | Description    | Allowed Input | Default |
-|:--------------------------------------------|:---------------|:--------------|:--------|
-| `transform.preprocessing.image.max-height ` | Maximum height | Integer       | None    |
-| `transform.preprocessing.image.max-width `  | Maximum width  | Integer       | None    |
+| Property                                   | Description    | Allowed Input | Default |
+|:-------------------------------------------|:---------------|:--------------|:--------|
+| `transform.preprocessing.image.max-height` | Maximum height | Integer       | None    |
+| `transform.preprocessing.image.max-width`  | Maximum width  | Integer       | None    |
 
 :::note
 `h` and `w` take precedence over `max-height` and `max-width` respectively, if both are specified.
@@ -361,6 +361,7 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 | `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only`, `disabled` | `enabled` |
 
 #### Expiration
+
 ```hocon
 "/**" {
   transform {
@@ -378,8 +379,12 @@ All [image transformation parameters](image-transformation-reference.md#paramete
 | `transform.expire.ttl`      | The time-to-live (in `Duration` format) used in `idle` or `ttl` strategies. Ignored when strategy is `never`. | Duration e.g. `24h`, `7d`, `10m` | No default |
 
 ##### Duration
-A duration is represented similarly to how Spring accepts a `Duration` property value. The time unit is appended to the amount. 
+
+A duration is represented similarly to how Spring accepts a `Duration` property value. The time unit is appended to the
+amount.
+
 Units can be:
+
 - s for seconds
 - m for minutes
 - h for hours
@@ -388,7 +393,6 @@ Units can be:
 :::note
 Due to how expired variants are purged, expiration may be delayed by up to 1 minute after the configured TTL.
 :::
-
 
 ### Object Store
 
@@ -429,7 +433,7 @@ Due to how expired variants are purged, expiration may be delayed by up to 1 min
 
 The same rule cannot appear in both `accept-rules` and `reject-rules` within a single upload ruleset.
 
-Each label key must be nonblank and no longer than 128 characters. Each value must be nonblank and no longer than 256
+Each label key must be non-blank and no longer than 128 characters. Each value must be non-blank and no longer than 256
 characters. An asset can have at most 50 labels after labels from the upload request and matched label rules are merged.
 
 Upload rulesets are path configuration, so a child path can override an inherited ruleset. See
@@ -476,13 +480,13 @@ Upload rulesets are path configuration, so a child path can override an inherite
 }
 ```
 
-| Property                  | Description                                           | Allowed Input                                     | Default |
-|:--------------------------|:------------------------------------------------------|:--------------------------------------------------|:--------|
-| `enabled`                 | Whether the `Cache-Control` header should be returned | Boolean                                           | `false` |
-| `max-age`                 | Set the `max-age` descriptor                          | Integer `> 0`                                     |         |
-| `s-maxage`                | Set the `max-age` descriptor                          | Integer `> 0`                                     |         |
-| `visibility`              | Set the visbility of the cached asset                 | `public`, `private`                               |         |
-| `revalidate`              | Cache control revalidation                            | `must-revalidate`, `proxy-revalidate`, `no-cache` |         |
-| `stale-while-revalidate ` | Set the `stale-while-revalidate` descriptor           | Integer `> 0`                                     |         |
-| `stale-if-error `         | Set the `stale-if-error` descriptor                   | Integer `> 0`                                     |         |
-| `immutable`               | Whether to set the `immutable` descriptor             | Boolean                                           | `false` |
+| Property                 | Description                                           | Allowed Input                                     | Default |
+|:-------------------------|:------------------------------------------------------|:--------------------------------------------------|:--------|
+| `enabled`                | Whether the `Cache-Control` header should be returned | Boolean                                           | `false` |
+| `max-age`                | Set the `max-age` descriptor                          | Integer `> 0`                                     |         |
+| `s-maxage`               | Set the `max-age` descriptor                          | Integer `> 0`                                     |         |
+| `visibility`             | Set the visibility of the cached asset                | `public`, `private`                               |         |
+| `revalidate`             | Cache control revalidation                            | `must-revalidate`, `proxy-revalidate`, `no-cache` |         |
+| `stale-while-revalidate` | Set the `stale-while-revalidate` descriptor           | Integer `> 0`                                     |         |
+| `stale-if-error`         | Set the `stale-if-error` descriptor                   | Integer `> 0`                                     |         |
+| `immutable`              | Whether to set the `immutable` descriptor             | Boolean                                           | `false` |

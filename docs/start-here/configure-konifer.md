@@ -6,8 +6,6 @@ sidebar_label: "Configure Konifer"
 description: Learn where Konifer configuration lives, how settings are resolved, and how to create a production-ready konifer.conf.
 ---
 
-# Configure Konifer
-
 The quickstart uses `IN_MEMORY=true` so you can try Konifer without configuring infrastructure. Before using persistent
 storage, path policies, variant profiles, or delivery settings, create a `konifer.conf` file.
 
@@ -111,7 +109,9 @@ paths {
 ```
 
 More-specific path rules inherit from broader rules. See [Path configuration](../concepts/path-configuration.md) for
-the full model.
+the full model. For example, in the above configuration, `/public/avatars/**` inherits the `bucket` configuration from `/**`.
+
+Konifer supports singular `*` and greedy `**` wildcards.
 
 ## Keep secrets out of `konifer.conf`
 
@@ -125,8 +125,11 @@ S3_SECRET_KEY=replace-with-an-object-store-secret
 URL_SIGNING_SECRET_KEY=replace-with-a-signing-secret
 ```
 
-Only set `URL_SIGNING_SECRET_KEY` when URL signing is enabled. Do not commit `konifer.env`; in a container orchestrator,
-use its secret-management facility instead.
+Only set `URL_SIGNING_SECRET_KEY` when URL signing is enabled.
+
+:::warning
+Do not commit `konifer.env` into source control. In a container orchestrator, use its secret-management facility instead.
+:::
 
 For settings that support an environment variable, precedence is:
 

@@ -87,7 +87,7 @@ Regardless of the upload method used, a successful storage request returns a `20
 response
 containing the asset's information.
 
-```http 
+```http
 HTTP/1.1 201 CREATED
 Content-Type: application/json
 
@@ -159,7 +159,7 @@ Additionally, a `Location` header is returned containing an absolute URL to the 
 | `width`      | Integer | Width of variant                                                                                                                                 |
 | `format`     | Format  | Format of variant                                                                                                                                |
 | `pageCount`  | Integer | Number of pages in image (1 unless image is animated)                                                                                            |
-| `loop`       | Integer | For mulit-paged images, specifies the amount of animated repitions. Defaults to 0; -1 is continuous looping                                      |
+| `loop`       | Integer | For multi-paged images, specifies the amount of animated repetitions. Defaults to 0; -1 is continuous looping                                    |
 | `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
 
 #### Format

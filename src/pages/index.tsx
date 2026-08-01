@@ -305,20 +305,6 @@ paths {
 }`}</code>
           </pre>
         </section>
-
-        <section className={clsx(styles.section, styles.futureSection)}>
-          <div>
-            <Heading as="h2">Built as the beginning of a media engine</Heading>
-            <p>
-              Konifer is image-focused today. The longer-term direction is broader: a self-hosted
-              engine for media assets such as PDFs, audio, text, and eventually video, with the
-              same path-based integration model.
-            </p>
-          </div>
-          <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/start-here/getting-started">
-            Run Konifer locally
-          </Link>
-        </section>
       </main>
     </Layout>
   );

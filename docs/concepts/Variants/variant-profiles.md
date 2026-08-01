@@ -32,7 +32,7 @@ Variant profiles use the same transformation parameters as the Fetch Asset API.
 
 To use a variant profile, supply the `profile` query parameter.
 
-```http 
+```http
 GET /assets/users/123/profile-picture?profile=thumbnail
 ```
 
@@ -43,7 +43,7 @@ from
 above, let's say you wish to create a larger thumbnail that's 256 pixels wide. Specify the `w` you wish in the
 request:
 
-```http 
+```http
 GET /assets/users/123/profile-picture?profile=thumbnail&w=256
 ```
 

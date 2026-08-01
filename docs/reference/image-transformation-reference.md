@@ -5,8 +5,6 @@ title: Image Transformation
 sidebar_label: "Image Transformation"
 ---
 
-# Image Transformation
-
 Konifer offers a robust suite of transformation options to create variants from your image assets. The parameters below
 can be used to:
 
@@ -56,9 +54,9 @@ Image resizing behavior is controlled by the interaction between Height (`h`), W
 
 The image is resized to fit within the specified dimensions while maintaining its original aspect ratio.
 
-* If only `w` is set: Resizes to that width, calculating height automatically.
-* If only `h` is set: Resizes to that height, calculating width automatically.
-* If both are set: The image is scaled so that its longest side matches the bounding box. No cropping occurs.
+- If only `w` is set: Resizes to that width, calculating height automatically.
+- If only `h` is set: Resizes to that height, calculating width automatically.
+- If both are set: The image is scaled so that its longest side matches the bounding box. No cropping occurs.
 
 ### `fill`
 
@@ -90,22 +88,22 @@ to determine what gets cropped.
 
 Currently, three gravity options are supported:
 
-* **`center`** (Default): Keeps the geometric center of the image.
-* **`entropy`**: Detects "busy" areas (high contrast/edges). Best for landscapes, products, or textured objects.
-* **`attention`**: Uses a saliency model to detect faces and human features. Best for profile pictures and social
+- **`center`** (Default): Keeps the geometric center of the image.
+- **`entropy`**: Detects "busy" areas (high contrast/edges). Best for landscapes, products, or textured objects.
+- **`attention`**: Uses a saliency model to detect faces and human features. Best for profile pictures and social
   content.
 
 ## Image Formats & Quality
 
 Konifer supports the following modern image formats:
 
-* **JPEG**
-* **PNG**
-* **WEBP** (single and multipage)
-* **AVIF**
-* **JPEG XL**
-* **HEIC**
-* **GIF** (single and multipage)
+- **JPEG**
+- **PNG**
+- **WEBP** (single and multi-page)
+- **AVIF**
+- **JPEG XL**
+- **HEIC**
+- **GIF** (single and multi-page)
 
 ### Quality (`q`)
 
@@ -134,13 +132,13 @@ encoding costs can be significant.
 The `cs` parameter defines the color space of the image. Color spaces determine the available color gamut that the image
 can use.
 
-* **`origin`** (Default): Retains the embedded ICC profile (if present) without modifying the color space.
-* **`grayscale`**: Converts the image to a single-channel (or 2-channel if alpha exists) grayscale image. This is more
+- **`origin`** (Default): Retains the embedded ICC profile (if present) without modifying the color space.
+- **`grayscale`**: Converts the image to a single-channel (or 2-channel if alpha exists) grayscale image. This is more
   space-efficient than the `grayscale` filter; however, color-adding transformations (such as `pad-c`) will also be
   flattened to grayscale.
-* **`srgb`**: Converts the image to sRGB (respecting the embedded ICC profile). The ICC profile is removed from the
+- **`srgb`**: Converts the image to sRGB (respecting the embedded ICC profile). The ICC profile is removed from the
   output since most displays assume sRGB by default.
-* **`p3`**: Converts the image to the Display P3 profile, the standard for modern iOS-based cameras and wide-gamut
+- **`p3`**: Converts the image to the Display P3 profile, the standard for modern iOS-based cameras and wide-gamut
   displays.
 
 :::note
@@ -164,17 +162,17 @@ displays.
 
 Flipping mirrors the image along a specified axis:
 
-* **`v`**: Vertical flip (top-to-bottom).
-* **`h`**: Horizontal flip (left-to-right).
+- **`v`**: Vertical flip (top-to-bottom).
+- **`h`**: Horizontal flip (left-to-right).
 
 ### Filter (`filter`)
 
 Apply stylistic effects to the image:
 
-* **`none`** (default): No filter applied.
-* **`black_white`**: Applies a binary threshold, forcing pixels to be either pure black or pure white (High contrast).
-* **`grayscale`**: Removes color information, preserving 256 shades of gray (Photo style).
-* **`sepia`**: Applies a warm, brownish tone matrix (identical to the CSS `sepia(100%)` filter).
+- **`none`** (default): No filter applied.
+- **`black_white`**: Applies a binary threshold, forcing pixels to be either pure black or pure white (High contrast).
+- **`grayscale`**: Removes color information, preserving 256 shades of gray (Photo style).
+- **`sepia`**: Applies a warm, brownish tone matrix (identical to the CSS `sepia(100%)` filter).
 
 :::note
 The `grayscale` filter is different from the `grayscale` color space (`cs`). Images with this filter applied will still
@@ -203,13 +201,13 @@ Specify the amount of padding in pixels.
 
 The `pad-c` parameter defines the fill color for the padded area. It requires a hex string in CSS-style format.
 
-* **If `pad-c` is omitted:** Padding is transparent (for PNG/WebP/AVIF/JPEG XL/HEIC) or white (for JPEG/GIF).
-* **Hex Format:** Supports both RGB (Opaque) and RGBA (Transparent) formats.
+- **If `pad-c` is omitted:** Padding is transparent (for PNG/WebP/AVIF/JPEG XL/HEIC) or white (for JPEG/GIF).
+- **Hex Format:** Supports both RGB (Opaque) and RGBA (Transparent) formats.
 
 #### Examples
 
-* **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
-* **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)
+- **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
+- **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)
 
 ## Metadata
 

@@ -67,7 +67,7 @@ curl --fail-with-body \
 
 Request a thumbnail. The thumbnail is transformed by:
 
-- Specifying WebP format, a space-efficient, mature, and well-supported format
+- Specifying WebP format; a space-efficient, mature, and well-supported format
 - Setting height and width to be 256×256
 - Setting the fit to `fill` and gravity to `attention` to center on the most important part of the image
 

@@ -32,7 +32,7 @@ the API returns a `204 No Content`.
 To delete an asset explicitly, use the `entry` selector. This is the safest way to delete an asset since the reference
 is absolute.
 
-```http 
+```http
 DELETE /assets/users/123/-/entry/0
 ```
 
@@ -41,7 +41,7 @@ DELETE /assets/users/123/-/entry/0
 Similar to fetching, specifying the `order` plus an optional limit (defaulting to 1) results in the top asset(s)
 in that ordering being deleted.
 
-```http 
+```http
 DELETE /assets/users/123/profile/-/modified
 ```
 
@@ -52,7 +52,7 @@ Race condition risk on paths with high write volume, using relative selectors (l
 deleting data you did not intend to (e.g., a new file arrives milliseconds before your request). Use with care.
 :::
 
-```http 
+```http
 DELETE /assets/users/123/profile/-/entry/0
 ```
 
@@ -89,7 +89,7 @@ Konifer supports powerful bulk-delete operations for cleaning up entire user dir
 
 By setting the limit query parameter to `-1`, all assets are deleted within the path.
 
-```http 
+```http
 DELETE /assets/users/123/profile?limit=-1
 ```
 
@@ -102,7 +102,7 @@ A common use-case of a recursive delete is if your paths are user-scoped, and th
 platform.
 :::
 
-```http 
+```http
 DELETE /assets/users/123/-/recursive
 ```
 

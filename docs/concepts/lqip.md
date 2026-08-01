@@ -9,8 +9,8 @@ Low-quality image previews or LQIPs are small, usually blurry versions of the im
 larger image is downloaded over a network. This can be useful for a variety of reasons. Konifer supports two LQIP
 implementations:
 
-- [Blurhash](https://blurha.sh/): By far the most common LQIP implementation
-- [Thumbhash](https://evanw.github.io/thumbhash/): A newer, more compact version of Blurhash
+- [BlurHash](https://blurha.sh/): By far the most common LQIP implementation
+- [ThumbHash](https://evanw.github.io/thumbhash/): A newer, more compact version of BlurHash
 
 One or both of these can be enabled.
 

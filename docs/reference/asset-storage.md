@@ -5,7 +5,7 @@ title: Storing Assets and Variants
 sidebar_label: "Storing Assets"
 ---
 
-# Storage Architecture
+## Storage Architecture
 
 Konifer leverages a dual-store architecture to manage assets efficiently.
 
@@ -136,7 +136,7 @@ CREATE EXTENSION IF NOT EXISTS ltree;
 
 :::
 
-Define your database connection details in the postgres block of konifer.conf.
+Define your database connection details in the `postgres` block of konifer.conf.
 
 ```hocon
 data-store {

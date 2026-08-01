@@ -16,16 +16,15 @@ const config: Config = {
   },
 
   url: 'https://konifer.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
   organizationName: 'dmaiken13',
   projectName: 'Konifer',
 
   onBrokenLinks: 'throw',
+  onBrokenAnchors: 'throw',
+  onDuplicateRoutes: 'throw',
 
   i18n: {
     defaultLocale: 'en',
@@ -52,6 +51,10 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+      onBrokenMarkdownImages: 'throw',
+    },
   },
 
   plugins: [
