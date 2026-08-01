@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkonifer_docs=self.webpackChunkkonifer_docs||[]).push([["4794"],{5041(e,s,c){c.d(s,{createEventModelingServices:()=>k.g});var k=c(6737);c(1400)}}]);

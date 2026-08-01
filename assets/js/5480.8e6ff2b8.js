@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkonifer_docs=self.webpackChunkkonifer_docs||[]).push([["5480"],{872(e,c,s){s.d(c,{createPacketServices:()=>k.$});var k=s(9773);s(1400)}}]);

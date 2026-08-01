@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkonifer_docs=self.webpackChunkkonifer_docs||[]).push([["2246"],{4229(e,s,c){c.d(s,{createCynefinServices:()=>k.t});var k=c(3486);c(1400)}}]);

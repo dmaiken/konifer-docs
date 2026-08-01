@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkonifer_docs=self.webpackChunkkonifer_docs||[]).push([["809"],{8976(e,s,c){c.d(s,{createPieServices:()=>k.f});var k=c(6019);c(1400)}}]);
