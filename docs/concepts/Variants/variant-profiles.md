@@ -67,8 +67,6 @@ paths {
 }
 ```
 
-With `profile_only` set, any request containing a transformation parameter that is not `profile` will return a 400 Bad
-Request.
-The default `mode` is `enabled` which permits any transformation parameter including `profile`. Original variants can
-also be requested
-if `profile` is not supplied.
+With `profile_only` set, any request containing a transformation parameter that is not `profile` will return a
+`400 Bad Request`. The default `mode` is `enabled` which permits any transformation parameter including `profile`.
+Original variants can also be requested if `profile` is not supplied.

@@ -50,5 +50,5 @@ Content-Type: application/json
 Updating asset information automatically changes the asset's ETag.
 
 Even though the binary content has not changed, the ETag must rotate because information fields like `alt` are often served
-alongside the content (e.g., in the Konifer-Alt header). Rotating the ETag ensures that CDNs and browsers re-fetch the
+alongside the content (e.g., in the K-Alt header). Rotating the ETag ensures that CDNs and browsers re-fetch the
 asset to receive the updated accessibility information.

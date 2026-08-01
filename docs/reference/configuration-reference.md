@@ -84,7 +84,7 @@ rule inference even when `rule-definitions` is empty, so the model files must be
 Properties for configuring the datastore.
 
 ```hocon
-objectstore {
+object-store {
   provider = filesystem
   s3 { # No defaults - overrides Default Provider Chain if supplied
     access-key = "[no default]"
@@ -98,15 +98,15 @@ objectstore {
 }
 ```
 
-| Property                            | Description                                                       | Allowed Input                       | Default      | Environment variable |
-|:------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
-| `objectstore.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` | IN_MEMORY*           |
-| `objectstore.s3.access-key`         | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
-| `objectstore.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |                      |
-| `objectstore.s3.region`             | The region of your object store                                   | String                              | None         |                      |
-| `objectstore.s3.secret-key`         | The secret key of your object store                               | String                              | None         | S3_SECRET_KEY        |
-| `objectstore.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
-| `objectstore.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid Linux path (ex: `/mnt/store`) | None         |                      |
+| Property                             | Description                                                       | Allowed Input                       | Default      | Environment variable |
+|:-------------------------------------|:------------------------------------------------------------------|:------------------------------------|:-------------|:---------------------|
+| `object-store.provider`              | The implementation of your object store                           | `in-memory`, `s3`, `filesystem`     | `filesystem` | IN_MEMORY*           |
+| `object-store.s3.access-key`         | The access key of your S3 (or S3-compatible) object store         | String                              | None         |                      |
+| `object-store.s3.endpoint-url`       | The endpoint URL of your S3 (or S3-compatible) object store       | String                              | None         |                      |
+| `object-store.s3.region`             | The region of your object store                                   | String                              | None         |                      |
+| `object-store.s3.secret-key`         | The secret key of your object store                               | String                              | None         | S3_SECRET_KEY        |
+| `object-store.s3.force-path-style`   | Communicate with S3 API using path-style or virtual-host style    | Boolean                             | `false`      |                      |
+| `object-store.filesystem.mount-path` | The path that your filesystem is mounted to within your container | Valid Linux path (ex: `/mnt/store`) | None         |                      |
 
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
 `in-memory`.
@@ -117,19 +117,19 @@ If `IN_MEMORY=true` is set as an environment variable, both the data store and o
 source {
   url {
     allowed-domains = []
-    max-bytes = 1048576 # 100MB
+    max-bytes = 104857600 # 100MB
   }
   multipart {
-    max-bytes = 1048576 # 100MB
+    max-bytes = 104857600 # 100MB
   }
 }
 ```
 
-| Property                     | Description                                                                         | Allowed Input                       | Default |
-|:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:--------|
-| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`    |
-| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 1048576 |
-| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 1048576 |
+| Property                     | Description                                                                         | Allowed Input                       | Default   |
+|:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:----------|
+| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`      |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 104857600 |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 104857600 |
 
 ## Variant Profiles
 
@@ -182,15 +182,15 @@ SigLIP2 model files are required when `rule-definitions` is populated or the Rul
 variant-generation {
   queue-size = 1000
   synchronous-priority = 80
-  workers = [2 X CPU cores]
+  workers = [number of available CPU cores]
 }
 ```
 
-| Property                                  | Description                                                                                                                    | Allowed Input    | Default       |
-|:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
-| `variant-generation.queue-size`           | Amount of variant generation requests that can be queued up awaiting processing. Requests over this limit suspend the request. | Positive integer | 1000          |
-| `variant-generation.synchronous-priority` | Percentage priority to give to synchronous variant generation tasks. The remaining priority is reversed for async tasks.       | 1-99             | 80            |
-| `variant-generation.workers`              | Amount of concurrent image processor workers                                                                                   | Positive integer | 2 x CPU cores |
+| Property                                  | Description                                                                                                                    | Allowed Input    | Default                  |
+|:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|:-----------------|:-------------------------|
+| `variant-generation.queue-size`           | Amount of variant generation requests that can be queued up awaiting processing. Requests over this limit suspend the request. | Positive integer | 1000                     |
+| `variant-generation.synchronous-priority` | Percentage priority to give to synchronous variant generation tasks. The remaining priority is reversed for async tasks.       | 1-99             | 80                       |
+| `variant-generation.workers`              | Amount of concurrent image processor workers                                                                                   | Positive integer | # of available CPU cores |
 
 ## URL Signing
 
@@ -252,7 +252,6 @@ paths {
           string = localhost
         }
         presigned {
-          enabled = false
           ttl = 30m
         }
       }
@@ -457,11 +456,11 @@ Upload rulesets are path configuration, so a child path can override an inherite
 }
 ```
 
-| Property                                 | Description                                                         | Allowed Input                                      | Default            |
-|:-----------------------------------------|:--------------------------------------------------------------------|:---------------------------------------------------|:-------------------|
-| `return-format.redirect.strategy`        | How to serve redirect URLs                                          | `none`, `presigned`, `template`                    | `none`             |
-| `return-format.redirect.template.string` | Template string to use if `strategy` is `template`                  | Valid URL string                                   | `localhost`        |
-| `return-format.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned | Duration-style format. Not less than 7 days (`7d`) | `30m` (30 minutes) |
+| Property                                 | Description                                                         | Allowed Input                              | Default            |
+|:-----------------------------------------|:--------------------------------------------------------------------|:-------------------------------------------|:-------------------|
+| `return-format.redirect.strategy`        | How to serve redirect URLs                                          | `none`, `presigned`, `template`            | `none`             |
+| `return-format.redirect.template.string` | Template string to use if `strategy` is `template`                  | Valid URL string                           | `localhost`        |
+| `return-format.redirect.presigned.ttl`   | Time-to-live for presigned redirect URLs if `strategy` is presigned | Duration-style format. Up to 7 days (`7d`) | `30m` (30 minutes) |
 
 ### Cache Control
 

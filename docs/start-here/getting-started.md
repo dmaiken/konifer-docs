@@ -49,7 +49,7 @@ curl --fail-with-body \
   --request POST \
   --url 'http://localhost:8080/assets/users/123/profile-picture' \
   --form 'metadata={"alt":"profile picture"}' \
-  --form 'file=@/path/to/your/image.png'
+  --form 'asset=@/path/to/your/image.png'
 ```
 
 ## 3. View your asset's content
@@ -106,7 +106,7 @@ curl --fail-with-body \
   --request POST \
   --url 'http://localhost:8080/assets/users/123/profile-picture' \
   --form 'metadata={"alt":"profile picture"}' \
-  --form 'file=@/path/to/new-profile-picture.png'
+  --form 'asset=@/path/to/new-profile-picture.png'
 ```
 
 Note the `entryId` returned. It will have incremented.

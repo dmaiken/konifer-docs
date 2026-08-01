@@ -125,9 +125,8 @@ parameter.
 
 #### Variant Generation
 
-Transformation parameters cannot be supplied (i.e. `h`, `r`, `blur`, etc.) when requesting asset metadata. A 400 is
-returned
-if any transformation parameters are supplied.
+Transformation parameters cannot be supplied (i.e. `h`, `r`, `blur`, etc.) when requesting asset metadata. A
+`400 Bad Request` is returned if any transformation parameters are supplied.
 
 ### Response
 
@@ -319,5 +318,5 @@ K-Alt: "Your defined alt, if any"
 K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
 K-LQIP-Blurhash: "BASE64 Blurhash, if enabled"
 K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
-Content-Disposition: attachment; filename="profile-picture.jpeg"
+Content-Disposition: attachment; filename*=UTF-8''profile-picture.jpeg
 ```

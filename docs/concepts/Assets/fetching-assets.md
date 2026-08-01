@@ -137,7 +137,7 @@ Returns:
 HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
-Content-Disposition: attachment; filename="profile-picture.jpeg"
+Content-Disposition: attachment; filename*=UTF-8''profile-picture.jpeg
 ```
 
 > Note: the `filename` in the `Content-Dipsosition` headers is the `alt` if supplied, or else the path.

@@ -62,9 +62,10 @@ An asset can have the following information supplied when creating or updating a
 ## Alt
 
 An `alt` is intended to populate the `alt` attribute of an HTML tag such as `<img>`. It is returned within asset
-information but
-is also returned in the `Konifer-Alt` response header when requesting asset `content` or `link`. To comply with
-general limits set by screen readers, the maximum length of an `alt` is 125 characters.
+information but is also returned in the `K-Alt` response header when requesting asset `content`. To comply
+with general limits set by screen readers, the maximum length of an `alt` is 125 characters.
+
+When requesting asset `link`, `alt` is returned in the response JSON.
 
 ## Labels
 
@@ -94,7 +95,7 @@ information of the five most-recently
 created assets containing the label of `phone=iphone`:
 
 ```http
-GET /assets/users/123/-/new/info/5?phone=iphone
+GET /assets/users/123/-/new/info?phone=iphone&limit=5
 ```
 
 ### Deleting
@@ -104,15 +105,15 @@ most-recently
 created assets containing the label of `phone=iphone`:
 
 ```http
-DELETE /assets/users/123/-/new/5?phone=iphone
+DELETE /assets/users/123/-/new?phone=iphone&limit=5
 ```
 
 #### Delete all with label(s)
 
-To delete all assets at a particular path, set your `limit` to `all` and supply the labels.
+To delete all assets at a particular path, set your `limit` to `-1` and supply the labels.
 
 ```http
-DELETE /assets/users/123/-/all?phone=iphone
+DELETE /assets/users/123?phone=iphone&limit=-1
 ```
 
 #### Recursively delete

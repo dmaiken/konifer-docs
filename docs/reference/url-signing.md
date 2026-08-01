@@ -43,11 +43,12 @@ payload.
 Query parameters **must** be sorted alphabetically by parameter key in the signature payload.
 :::
 
-Include the signature as an `s` query parameter in your payload.
+Encode the HMAC digest as URL-safe Base64 with padding removed, then include it as an `s` query parameter. The `s`
+parameter itself is excluded from the signed payload.
 
 ```http
-GET /assets/users/123/profile?h=300&blur=20&format=webp&s=f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8
+GET /assets/users/123/profile?blur=20&format=webp&h=300&s=BASE64URL_HMAC_SIGNATURE
 ```
 
 If URL signing is enabled, then all requests missing a signature returns a `403 Forbidden`. Invalid signatures also
-return a 403.
+return a `403 Forbidden`.

@@ -24,15 +24,16 @@ Konifer supports three object store implementations:
 
 ### In-memory Configuration
 
-To enable development mode, set the following flags in your configuration:
+To enable development mode, set `IN_MEMORY=true`. This overrides both provider settings. Alternatively, configure both
+providers explicitly:
 
 ```hocon
 object-store {
-    in-memory = true
+    provider = in-memory
 }
 
-database {
-    in-memory = true
+data-store {
+    provider = in-memory
 }
 ```
 

@@ -37,7 +37,7 @@ Content-Type: application/json
   }
 }
 -----------------------------974767299852498929531610575
-Content-Disposition: form-data; name="file"; filename="my-image.jpg"
+Content-Disposition: form-data; name="asset"; filename="my-image.jpg"
 Content-Type: image/jpeg
 
 [Binary data of the image file...]
@@ -62,7 +62,7 @@ source {
 }
 ```
 
-If the domain is not allowed when uploading an asset, a 400 is returned.
+If the domain is not allowed when uploading an asset, a `400 Bad Request` is returned.
 
 A request to store an asset using a URL looks like this (omitting all optional information):
 
