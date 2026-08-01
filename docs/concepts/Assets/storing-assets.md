@@ -16,11 +16,9 @@ When asset content is stored, it is referred to as the `originalVariant`. When f
 
 ## Multipart upload
 
-Binary asset data can be supplied using [HTTP Multipart Form Data](https://www.ietf.org/rfc/rfc2388.txt). More
-information
-about HTTP Multipart Forms [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/POST). Your
-request
-should look like this:
+Binary asset data can be supplied using [HTTP Multipart Form Data](https://www.ietf.org/rfc/rfc2388.txt). See the
+[MDN documentation for HTTP POST requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/POST)
+for more information. Your request should look like this:
 
 ```http
 POST /assets/users/123 HTTP/1.1
@@ -76,9 +74,8 @@ A request to store an asset using a URL looks like this (omitting all optional i
 
 ## Information
 
-Asset information is supplied as JSON. All information fields are optional, but fields such as `alt` and LQIP(s) are useful for
-display purposes
-and are returned as headers when fetching asset content.
+Asset information is supplied as JSON. All information fields are optional, but fields such as `alt` and LQIP(s) are
+useful for display purposes and are returned as headers when fetching asset content.
 
 ```json
 {
@@ -126,7 +123,7 @@ within the `image` block.
 
 In addition to all image transformation parameters, you can also specify `max-height` and `max-width`. If the source
 content's
-height or width exceeds their respective maximums, they are downscaled.
+height or width exceeds their respective maximums, they are down-scaled.
 
 The following configuration will downscale any image larger than 1024x1024 down to 1024x1024 using a fit mode of `fit`.
 

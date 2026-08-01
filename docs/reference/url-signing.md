@@ -45,7 +45,7 @@ Query parameters **must** be sorted alphabetically by parameter key in the signa
 
 Include the signature as an `s` query parameter in your payload.
 
-```http 
+```http
 GET /assets/users/123/profile?h=300&blur=20&format=webp&s=f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8
 ```
 

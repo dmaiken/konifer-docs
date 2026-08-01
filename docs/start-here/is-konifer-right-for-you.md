@@ -4,12 +4,8 @@ sidebar_position: 2
 description: Decide whether Konifer’s path-based image storage, transformation, and delivery model fits your application.
 ---
 
-# Who should use Konifer?
-
 Konifer is a strong fit for applications where images belong to resources the application already knows about, and for
 teams that want storage, transformation, and delivery in infrastructure they control.
-
-The clearest signal is that your images already have meaningful addresses:
 
 ```text
 /assets/users/123/profile-picture
@@ -78,20 +74,6 @@ A persistent deployment uses PostgreSQL and S3-compatible or filesystem storage.
 services and data stores, Konifer fits that familiar operating model. If avoiding service ownership is the priority, a
 managed image platform will likely be a better fit.
 
-## Common use cases
-
-Konifer is domain-neutral, but its model maps naturally to:
-
-* User avatars, organization logos, and tenant branding
-* Product images, marketplace listings, and galleries
-* CMS images and other user-uploaded content
-* Receipts, inspection photos, claim evidence, and supporting documents
-* Versioned or generated artwork such as cards, passes, tickets, and report covers
-* Shared image infrastructure used by several internal services
-
-These are examples rather than built-in modes. The common feature is that the application already knows what each image
-belongs to.
-
 ## Konifer may not be the right fit when…
 
 ### You primarily want a managed platform
@@ -126,16 +108,19 @@ For these use cases,
 consider [ResourceSpace](https://www.resourcespace.com/), [Strapi](https://docs.strapi.io/cms/features/media-library),
 or [Pimcore](https://pimcore.com/en/products/digital-asset-management).
 
-## A quick fit check
+## Common use cases
 
-Konifer is worth evaluating when most of these statements are true:
+Konifer is domain-neutral, but its model maps naturally to:
 
-* Our images belong to resources the application already identifies.
-* Stable, domain-shaped image URLs would simplify our application.
-* We need storage and lifecycle features in addition to transformation.
-* Some image paths need different processing or delivery policies.
-* We want to run the image pipeline in infrastructure we control.
-* We want an API rather than a complete editorial platform.
+* User avatars, organization logos, and tenant branding
+* Product images, marketplace listings, and galleries
+* CMS images and other user-uploaded content
+* Receipts, inspection photos, claim evidence, and supporting documents
+* Versioned or generated artwork such as cards, passes, tickets, and report covers
+* Shared image infrastructure used by several internal services
+
+These are examples rather than built-in modes. The common feature is that the application already knows what each image
+belongs to.
 
 ## Next steps
 

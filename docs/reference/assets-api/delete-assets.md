@@ -21,7 +21,7 @@ Request options are similar to fetching an asset. Order selectors and limits are
 
 Delete a specific asset by specifying its entryId.
 
-```http 
+```http
 DELETE /assets/users/123/-/entry/0
 ```
 
@@ -45,7 +45,7 @@ Multiple assets can be deleted using limits. Specify limit using the `limit` que
 
 By using the `recursive` selector, you can delete all assets in a path as well as all sub-paths.
 
-```http 
+```http
 DELETE /assets/users/123/-/recursive
 ```
 

@@ -48,11 +48,9 @@ By mounting a volume to the Docker container, Konifer can store assets on any fi
 
 ## Metadata Store
 
-Konifer uses Postgres to manage asset metadata and information. This is done because relying on Object Store metadata is slow and
-inflexible.
-Konifer leverages the [Ltree](https://www.postgresql.org/docs/current/ltree.html) extension and is required to be
-enabled on the
-configured Postgres database.
+Konifer uses Postgres to manage asset metadata and information. This is done because relying on Object Store metadata is
+slow and inflexible. Konifer leverages the [Ltree](https://www.postgresql.org/docs/current/ltree.html) extension and is
+required to be enabled on the configured Postgres database.
 
 :::warning
 The Ltree extension must be enabled within Postgres. Enabling extensions generally requires superuser privileges.

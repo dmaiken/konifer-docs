@@ -5,8 +5,6 @@ title: Image Processing Architecture
 sidebar_label: "Image Processing"
 ---
 
-# Image Processing Architecture
-
 Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a
 demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does
 not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
@@ -34,14 +32,19 @@ memory is managed in three distinct regions.
 If Konifer crashes, the error type determines the fix:
 
 1. **`OutOfMemoryError: Java heap space`**
-  - **Cause**: Application logic or metadata overhead has exhausted the Heap.
-  - **Fix**: Increase JVM Heap using -Xmx or -XX:MaxRAMPercentage.
-2. **`OutOfMemoryError: Direct buffer memory`**
-  - **Cause**: Netty has exhausted IO buffers, likely due to high concurrent uploads.
-  - **Fix**: Increase -XX:MaxDirectMemorySize. (Note: If unspecified, this often defaults to the Heap size).
-3. **Container `OOMKilled` (Exit Code 137)**
-  - **Cause**: libvips exhausted the remaining system RAM. The OS killed the container to save the host.
-  - **Fix**: Increase the Container Memory Limit without increasing the JVM Heap (e.g., lower -XX:MaxRAMPercentage).
+
+   - **Cause**: Application logic or metadata overhead has exhausted the heap.
+   - **Fix**: Increase JVM heap using `-Xmx` or `-XX:MaxRAMPercentage`.
+
+1. **`OutOfMemoryError: Direct buffer memory`**
+
+   - **Cause**: Netty has exhausted I/O buffers, likely due to high concurrent uploads.
+   - **Fix**: Increase `-XX:MaxDirectMemorySize`. (If unspecified, this often defaults to the heap size.)
+
+1. **Container `OOMKilled` (exit code 137)**
+
+   - **Cause**: libvips exhausted the remaining system RAM. The OS killed the container to save the host.
+   - **Fix**: Increase the container memory limit without increasing the JVM heap (for example, lower `-XX:MaxRAMPercentage`).
 
 ## Temporary Files
 
@@ -51,7 +54,7 @@ writable layer, which can be slow. For improved performance, mount a fast volume
 directory.
 Konifer is pre-configured to check this location.
 
-### Using a RAM disk (tmpfs)
+### Using a RAM disk ([tmpfs](https://www.kernel.org/doc/html/latest/filesystems/tmpfs.html))
 
 ```shell
 docker run -d \
@@ -104,11 +107,13 @@ thumbnail generation task (Eager).
 
 1. **Synchronous (High Priority)**: These are tasks where a client is actively waiting for a response. The request is
    waiting until processing completes.
-  - On-Demand Variants
-  - Pre-processing original variants during upload
 
-2. **Asynchronous (Low Priority)**: These are best-effort transformations that occur within an asynchronous context.
-  - Eager variants
+   - On-Demand variants
+   - Pre-processing original variants during upload
+
+1. **Asynchronous (Low Priority)**: These are best-effort transformations that occur within an asynchronous context.
+
+   - Eager variants
 
 :::note
 Fallback Mechanism: If a client requests an Eager Variant that hasn't been processed yet (e.g., due to a long queue)
@@ -124,11 +129,11 @@ Synchronous tasks and 20% to Asynchronous tasks.
 This ensures that background work continues to progress (preventing starvation) without degrading API responsiveness.
 
 :::note
-This wighting is only considered when queues are full. If only Asynchronous tasks are queued, that queue is
+Weighting is only considered when queues are full. If only Asynchronous tasks are queued, that queue is
 pulled from until Synchronous tasks are queued. In other words, the scheduler's algorithm leverages work-stealing.
 :::
 
-To change this weighting:
+To change the weighting:
 
 ```hocon
 variant-generation {

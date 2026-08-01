@@ -18,7 +18,7 @@ of the platform. For example, if your assets are primarily user-generated conten
 around
 your users.
 
-```http 
+```http
 POST /assets/users/123/profile-picture
 ```
 
@@ -28,7 +28,7 @@ POST /assets/users/234/background
 
 If they were blog-oriented:
 
-```http 
+```http
 POST /assets/blog/123/post/5
 ```
 
@@ -85,7 +85,7 @@ To specify them when storing or updating an asset, use the `labels` field in the
 
 Labels can be used to query for assets. They are supplied as query parameters.
 
-```http 
+```http
 GET /assets/users/123?label-key=label-value&phone=Android
 ```
 
@@ -93,7 +93,7 @@ Labels can also be combined with other query selectors to further filter your re
 information of the five most-recently
 created assets containing the label of `phone=iphone`:
 
-```http 
+```http
 GET /assets/users/123/-/new/info/5?phone=iphone
 ```
 
@@ -103,7 +103,7 @@ Labels can be used to delete assets and are used in the same manner as fetching 
 most-recently
 created assets containing the label of `phone=iphone`:
 
-```http 
+```http
 DELETE /assets/users/123/-/new/5?phone=iphone
 ```
 
@@ -111,7 +111,7 @@ DELETE /assets/users/123/-/new/5?phone=iphone
 
 To delete all assets at a particular path, set your `limit` to `all` and supply the labels.
 
-```http 
+```http
 DELETE /assets/users/123/-/all?phone=iphone
 ```
 
@@ -120,7 +120,7 @@ DELETE /assets/users/123/-/all?phone=iphone
 Recursive deletes can be performed with labels as well. To delete assets at and underneath a path, supply the label(s)
 and the `recursive` selector.
 
-```http 
+```http
 DELETE /assets/users/123/-/recursive?phone=iphone
 ```
 

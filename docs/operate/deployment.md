@@ -4,8 +4,6 @@ title: Deploying Konifer
 description: Deploy Konifer with persistent PostgreSQL and object storage, then prepare it for production traffic.
 ---
 
-# Deploying Konifer
-
 This guide takes Konifer from the in-memory quickstart to a persistent deployment. It is platform-neutral: the same
 components can run with Docker, Docker Compose, Kubernetes, or another container orchestrator.
 
@@ -35,11 +33,11 @@ Konifer itself is replaceable. PostgreSQL and the object store contain the state
 
 You need:
 
-* A container runtime or orchestrator
-* PostgreSQL with permission to enable the `ltree` extension or the `ltree` extension already enabled
-* An S3 or S3-compatible bucket, or a persistent filesystem mount
-* A public URL for Konifer (if exposing over the public internet)
-* A secure way to supply credentials and signing secrets
+- A container runtime or orchestrator
+- PostgreSQL with permission to enable the `ltree` extension or the `ltree` extension already enabled
+- An S3 or S3-compatible bucket, or a persistent filesystem mount
+- A public URL for Konifer (if exposing over the public internet)
+- A secure way to supply credentials and signing secrets
 
 The repository includes a
 [Docker Compose example](https://github.com/dmaiken/konifer/blob/main/docker-compose.yml) that starts Konifer,
@@ -142,8 +140,8 @@ S3_SECRET_KEY=replace-with-an-object-store-secret
 URL_SIGNING_SECRET_KEY=replace-with-a-signing-secret
 ```
 
-Only provide `URL_SIGNING_SECRET_KEY` when URL signing is enabled. In an orchestrator, supply the same values through its
-secret-management mechanism instead of committing an environment file.
+Only provide `URL_SIGNING_SECRET_KEY` when URL signing is enabled. In an orchestrator, supply the same values through
+its secret-management mechanism instead of committing an environment file.
 
 ## 5. Start the container
 
@@ -162,7 +160,8 @@ docker run --detach \
 Binding to `127.0.0.1` assumes that a reverse proxy on the same host accepts external traffic. Change the published
 address to match your network design.
 
-For reproducible deployments, use only released versions of Konifer. Konifer follows Semantic Versioning and releases can be found [here](https://github.com/dmaiken/konifer/releases).
+For reproducible deployments, use only released versions of Konifer. Konifer follows Semantic Versioning; see the
+[Konifer release list](https://github.com/dmaiken/konifer/releases) for available versions.
 
 ```text
 ghcr.io/dmaiken/konifer:<latest-release>
@@ -227,11 +226,11 @@ inference also changes the CPU and memory requirements of the deployment.
 
 Konifer natively supports clustered deployment models. Before adding replicas, confirm that every instance uses:
 
-* The same `konifer.conf` and secrets
-* The same PostgreSQL database
-* The same S3 buckets or shared filesystem
-* The same model files when upload rules are enabled
-* A load balancer that removes instances when `/health` fails
+- The same `konifer.conf` and secrets
+- The same PostgreSQL database
+- The same S3 buckets or shared filesystem
+- The same model files when upload rules are enabled
+- A load balancer that removes instances when `/health` fails
 
 Configuration is loaded at startup, so roll all instances after changing path rules, profiles, storage settings, or URL
 signing configuration.
@@ -256,13 +255,13 @@ returning to an older image.
 
 Before accepting production traffic, verify that:
 
-* `IN_MEMORY` is not enabled. If enabled, Konifer will emit warnings logs.
-* PostgreSQL and object storage are persistent and backed up.
-* The `ltree` extension is installed.
-* Every configured S3 bucket exists.
-* Secrets are supplied outside `konifer.conf` and are not committed to source control.
-* `http.public-url` matches the public origin.
-* TLS and access control are enforced by the surrounding platform.
-* Public transformation URLs are signed when appropriate.
-* Upload-size, CPU, memory, and temporary-storage limits have been tested.
-* `/health`, container restarts, application logs, and dependency failures are monitored.
+- `IN_MEMORY` is not enabled. If enabled, Konifer will emit warnings logs.
+- PostgreSQL and object storage are persistent and backed up.
+- The `ltree` extension is installed.
+- Every configured S3 bucket exists.
+- Secrets are supplied outside `konifer.conf` and are not committed to source control.
+- `http.public-url` matches the public origin.
+- TLS and access control are enforced by the surrounding platform.
+- Public transformation URLs are signed when appropriate.
+- Upload-size, CPU, memory, and temporary-storage limits have been tested.
+- `/health`, container restarts, application logs, and dependency failures are monitored.

@@ -14,15 +14,17 @@ export default function prismIncludeLanguages(PrismObject: typeof PrismNamespace
     // Make Prism global
     globalThis.Prism = PrismObject;
 
-    // 1. Load the standard languages defined in your config
+    // Load the standard languages defined in config
     additionalLanguages.forEach((lang) => {
         // eslint-disable-next-line global-require, import/no-dynamic-require
         require(`prismjs/components/prism-${lang}`);
     });
 
-    // 2. Inject your custom HOCON grammar
+    // Inject custom HOCON grammar
     PrismObject.languages.hocon = hoconGrammar;
 
-    // 3. Cleanup: Remove Prism from global scope to keep things clean
-    delete globalThis.Prism;
+    // Cleanup: Remove Prism from global scope to keep things clean
+    delete (globalThis as Omit<typeof globalThis, 'Prism'> & {
+        Prism?: typeof PrismNamespace;
+    }).Prism;
 }

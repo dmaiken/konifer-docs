@@ -5,8 +5,6 @@ title: Updating Assets
 sidebar_label: "Update"
 ---
 
-# API Overview
-
 Konifer lets you update asset information only. Asset content cannot be updated.
 
 ## Request
@@ -39,7 +37,7 @@ must be supplied, or they are erased.
 
 The entire [asset information response](fetch-assets.md#fetching-asset-information) is returned.
 
-```http 
+```http
 HTTP/1.1 200
 Content-Type: application/json
 
@@ -53,46 +51,46 @@ Content-Type: application/json
   "tags": ["headshot", "team"],
   "source": "upload",
   "variants": [
-	{
+  {
       "isOriginalVariant": false,
-	  "storeBucket": "assets",
-	  "storeKey": "b5050e94-0b05-471a-ae73-6cede8e077bd.webp",
-	  "attributes": {
-	    "height": 1752,
+    "storeBucket": "assets",
+    "storeKey": "b5050e94-0b05-471a-ae73-6cede8e077bd.webp",
+    "attributes": {
+      "height": 1752,
         "width": 2560,
         "format": "webp",
-		"pageCount": 1,
-		"loop": 0,
+    "pageCount": 1,
+    "loop": 0,
         "colorSpace": "srgb"
       },
       "transformation": {
-	    "width": 2560,
+      "width": 2560,
         "height": 1752,
-		"fit": "fit",
-		"gravity": "center",
-		"format": "webp",
-		"rotate": "zero",
-		"flip": "none",
-		"filter": "none",
-		"blur": 150,
-		"quality": 80,
-		"padding": {
-		  "amount": 0,
-		  "color": []
-		},
-		"metadata": {
+    "fit": "fit",
+    "gravity": "center",
+    "format": "webp",
+    "rotate": "zero",
+    "flip": "none",
+    "filter": "none",
+    "blur": 150,
+    "quality": 80,
+    "padding": {
+      "amount": 0,
+      "color": []
+    },
+    "metadata": {
           "strip": [
             "exif", "xmp", "iptc"
           ],
         }
       },
-	  "lqip": {}
-	},
-	{
-	  "isOriginalVariant": true,
-	  "storeBucket": "assets",
-	  "storeKey": "d1caa24e-daba-4398-9fef-68c8b275456b.webp",
-	  "attributes": {
+    "lqip": {}
+  },
+  {
+    "isOriginalVariant": true,
+    "storeBucket": "assets",
+    "storeKey": "d1caa24e-daba-4398-9fef-68c8b275456b.webp",
+    "attributes": {
         "height": 1752,
         "width": 2560,
         "format": "webp",

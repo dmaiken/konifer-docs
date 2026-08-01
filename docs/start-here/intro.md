@@ -7,8 +7,6 @@ description: Learn what Konifer is, how its path-based model works, and why appl
 sidebar_label: "What is Konifer?"
 ---
 
-# Introduction
-
 Konifer is a self-hosted image storage, transformation, and delivery service designed to fit your application’s domain
 model.
 
@@ -187,9 +185,6 @@ Konifer is not:
 * A replacement for your application’s authorization model
 * A complete content-management system
 * Merely a stateless resize proxy
-
-Konifer is image-focused today. It is best suited to systems where images are application resources with an owner,
-purpose, lifecycle, and delivery policy.
 
 ## Where to go next
 

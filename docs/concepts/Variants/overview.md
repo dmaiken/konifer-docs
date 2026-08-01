@@ -85,13 +85,14 @@ is generated from the Original Variant on-demand. The variant is also cached in 
 
 ## On-demand Variant Generation Modes
 
-By default, on-demand variants are allowed to be generated and are cached in your configured object store. You can disable 
-or limit on-demand variants using the `transform.on-demand-variant.mode` Path Configuration. The default setting is `enabled`.
+By default, on-demand variants are allowed to be generated and are cached in your configured object store. You can
+disable or limit on-demand variants using the `transform.on-demand-variant.mode` Path Configuration. The default setting
+is `enabled`.
 
 - **`profile_only`**: Only `profile` can be supplied. This enables you to limit variant transformations to only
 those defined as [variant profiles](variant-profiles.md).
-- **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant has 
-not been generated at the time of request, it can still be generated on-demand.
+- **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant
+has not been generated at the time of request, it can still be generated on-demand.
 
 ## Deleting your Asset
 

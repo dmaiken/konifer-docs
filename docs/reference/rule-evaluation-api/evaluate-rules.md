@@ -1,11 +1,9 @@
 ---
 sidebar_position: 1
 id: rule-evaluation-api
-title: Evaluating Rules
+title: Evaluate Rules
 sidebar_label: "Evaluate"
 ---
-
-# API Overview
 
 The Rule Evaluation API evaluates one or more rule definitions against a single image. It returns an overall score and
 match decision for each definition, along with the score produced by every prompt.
@@ -37,12 +35,12 @@ Both URL and multipart requests use the same definition structure:
 }
 ```
 
-| Field Name              | Type    | Description                                                        | Required | Constraints                          |
-|-------------------------|---------|--------------------------------------------------------------------|----------|--------------------------------------|
-| `definitions`           | Array   | Rule definitions to evaluate against the supplied image.           | Yes      | 1-10 definitions                     |
-| `definitions[].name`    | String  | Name used to identify the definition in the response.              | Yes      | Non-blank; maximum 32 characters     |
-| `definitions[].prompts` | Array   | Visual descriptions compared with the image.                       | Yes      | 1-100 distinct, non-blank strings    |
-| `definitions[].threshold` | Number | Minimum overall score required for the definition to match.        | Yes      | From `0.0` through `1.0`, inclusive  |
+| Field Name                | Type   | Description                                                 | Required | Constraints                         |
+|---------------------------|--------|-------------------------------------------------------------|----------|-------------------------------------|
+| `definitions`             | Array  | Rule definitions to evaluate against the supplied image.    | Yes      | 1-10 definitions                    |
+| `definitions[].name`      | String | Name used to identify the definition in the response.       | Yes      | Non-blank; maximum 32 characters    |
+| `definitions[].prompts`   | Array  | Visual descriptions compared with the image.                | Yes      | 1-100 distinct, non-blank strings   |
+| `definitions[].threshold` | Number | Minimum overall score required for the definition to match. | Yes      | From `0.0` through `1.0`, inclusive |
 
 Each prompt can contain up to 256 characters. Names and prompts are normalized to lowercase; prompts are also trimmed.
 
@@ -82,10 +80,10 @@ The URL host must be present in `source.url.allowed-domains`, and the downloaded
 Send a `multipart/form-data` request with exactly one `metadata` part and one `asset` part. Do not include `url` in the
 metadata.
 
-| Part Name  | Content-Type                         | Purpose                                      | Required |
-|------------|--------------------------------------|----------------------------------------------|----------|
-| `metadata` | `application/json`                   | JSON containing the `definitions` array.     | Yes      |
-| `asset`    | Image MIME type (for example, `image/jpeg`) | Raw image content to evaluate.        | Yes      |
+| Part Name  | Content-Type                                | Purpose                                  | Required |
+|------------|---------------------------------------------|------------------------------------------|----------|
+| `metadata` | `application/json`                          | JSON containing the `definitions` array. | Yes      |
+| `asset`    | Image MIME type (for example, `image/jpeg`) | Raw image content to evaluate.           | Yes      |
 
 For example:
 
@@ -132,23 +130,23 @@ Content-Type: application/json
 }
 ```
 
-| Field Name                | Type    | Description                                                                  |
-|---------------------------|---------|------------------------------------------------------------------------------|
-| `results`                 | Array   | Evaluation result for each supplied definition.                              |
-| `results[].name`          | String  | Normalized name of the evaluated definition.                                 |
-| `results[].threshold`     | Number  | Threshold supplied for the definition.                                       |
-| `results[].score`         | Number  | Highest score from the definition's prompts.                                 |
-| `results[].matched`       | Boolean | Whether `score` is greater than or equal to `threshold`.                      |
-| `results[].promptScores`  | Array   | Score for each normalized prompt in the definition.                          |
-| `results[].promptScores[].prompt` | String | Prompt that was scored.                                               |
-| `results[].promptScores[].score`  | Number | Score produced for that prompt.                                       |
+| Field Name                        | Type    | Description                                              |
+|-----------------------------------|---------|----------------------------------------------------------|
+| `results`                         | Array   | Evaluation result for each supplied definition.          |
+| `results[].name`                  | String  | Normalized name of the evaluated definition.             |
+| `results[].threshold`             | Number  | Threshold supplied for the definition.                   |
+| `results[].score`                 | Number  | Highest score from the definition's prompts.             |
+| `results[].matched`               | Boolean | Whether `score` is greater than or equal to `threshold`. |
+| `results[].promptScores`          | Array   | Score for each normalized prompt in the definition.      |
+| `results[].promptScores[].prompt` | String  | Prompt that was scored.                                  |
+| `results[].promptScores[].score`  | Number  | Score produced for that prompt.                          |
 
 ## Error Responses
 
-| Status | Cause                                                                                   |
-|--------|-----------------------------------------------------------------------------------------|
-| `400 Bad Request` | The request, rule definitions, URL, multipart parts, image format, or size is invalid. |
-| `404 Not Found` | The Rule Evaluation API is disabled.                                                  |
-| `415 Unsupported Media Type` | The request is not `application/json` or `multipart/form-data`.              |
+| Status                       | Cause                                                                                  |
+|------------------------------|----------------------------------------------------------------------------------------|
+| `400 Bad Request`            | The request, rule definitions, URL, multipart parts, image format, or size is invalid. |
+| `404 Not Found`              | The Rule Evaluation API is disabled.                                                   |
+| `415 Unsupported Media Type` | The request is not `application/json` or `multipart/form-data`.                        |
 
 Evaluation accepts the same [supported image formats](../../concepts/Assets/overview.md#content) as asset storage.

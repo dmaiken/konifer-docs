@@ -245,7 +245,7 @@ Upload rules use the SigLIP2 ONNX model pack. Download it from the [Konifer repo
 ```
 
 :::note
-`HF_TOKEN` is respected by the script and can be provided for faster downloads from Hugging Face. 
+`HF_TOKEN` is respected by the script and can be provided for faster downloads from Hugging Face.
 :::
 
 By default, this creates:
