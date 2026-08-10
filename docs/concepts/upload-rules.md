@@ -54,7 +54,7 @@ upload. A ruleset can use three kinds of rule actions:
 
 - `accept-rules` accept matching uploads. They are commonly paired with `default = reject` to create an allow list.
 - `reject-rules` reject matching uploads. They are commonly paired with `default = accept` to create a deny list.
-- `edit-rules` edit the asset when matched without changing whether the upload is accepted or rejected. Currently, only
+- `modify-rules` modify the asset when matched without changing whether the upload is accepted or rejected. Currently, only
 labeling is supported.
 
 ```hocon
@@ -77,7 +77,7 @@ There are three common patterns:
 
 - Deny list: set `default = accept` and add `reject-rules`. Uploads pass unless they match a reject rule.
 - Allow list: set `default = reject` and add `accept-rules`. Uploads fail unless they match an accept rule.
-- Automatic editing: add `edit-rules` to either policy to alter accepted assets when visual content matches.
+- Automatic editing: add `modify-rules` to either policy to alter accepted assets when visual content matches.
 
 For example, an avatar path can require human portrait-like uploads:
 
@@ -130,7 +130,7 @@ paths {
   "/catalog/**" {
     upload-ruleset {
       default = accept
-      edit-rules = [
+      modify-rules = [
         {
           rule = "product-photo"
           labels = {

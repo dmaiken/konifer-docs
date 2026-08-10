@@ -5,25 +5,9 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import styles from './index.module.css';
 
-const transformParams = [
-  'w=1200',
-  'h=630',
-  'fit=crop',
-  'blur=10',
-  'format=webp',
-  'q=82',
-  'r=auto',
-];
+const responseModes = ['content', 'link', 'redirect', 'download', 'info'];
 
-const responseModes = [
-  'content',
-  'link',
-  'redirect',
-  'download',
-  'info',
-];
-
-const orderingModes = [
+const selectionModes = [
   {
     selector: 'new',
     label: 'Most recently created',
@@ -48,16 +32,8 @@ const capabilities = [
     body: 'Store originals, attach metadata, request the newest asset at a path, address a specific entry, or fetch generated variants through the same HTTP surface.',
   },
   {
-    title: 'Transformations without vendor lock-in',
-    body: 'Resize, crop, rotate, blur, pad, strip metadata, manage color space, and convert formats on demand or through named variant profiles.',
-  },
-  {
-    title: 'Content-aware upload policy',
-    body: 'Use zero-shot image rules to accept or reject uploads by path. Customers can define prompt ensembles for their own content standards without training a custom classifier.',
-  },
-  {
-    title: 'CDN-aware by design',
-    body: 'Serve bytes directly, return object-store links, issue redirects, use Cache-Control and ETags, and protect public transformation URLs with HMAC signing.',
+    title: 'Infrastructure under your control',
+    body: 'Choose where Konifer runs, where originals and variants are stored, and how content reaches clients through direct responses, object-store links, redirects, or a CDN.',
   },
 ];
 
@@ -65,32 +41,37 @@ const formats = ['JPEG', 'PNG', 'WebP', 'AVIF', 'JPEG XL', 'HEIC', 'GIF'];
 
 function CodeWindow(): ReactNode {
   return (
-    <div className={styles.codeWindow} aria-label="Konifer API examples">
-      <div className={styles.windowBar}>
-        <span />
-        <span />
-        <span />
+    <figure className={styles.codeFigure}>
+      <div className={styles.codeWindow} aria-label="A stable Konifer asset path">
+        <div className={styles.windowBar}>
+          <span />
+          <span />
+          <span />
+        </div>
+        <pre>
+          <code>
+            <span className={styles.codeComment}>
+              # Store an image where your app already knows it belongs
+            </span>
+            {'\n'}
+            <span className={styles.codeVerb}>POST</span> /assets/users/123/profile-picture
+            {'\n\n'}
+            <span className={styles.codeComment}>
+              # Read the current image from the same stable path
+            </span>
+            {'\n'}
+            <span className={styles.codeVerb}>GET </span>
+            /assets/users/123/profile-picture/-/content
+            {'\n\n'}
+            <span className={styles.codeComment}># Request a reusable transformed variant</span>
+            {'\n'}
+            <span className={styles.codeVerb}>GET </span>
+            /assets/users/123/profile-picture/-/content?profile=thumbnail
+          </code>
+        </pre>
       </div>
-      <pre>
-        <code>
-          <span className={styles.codeComment}># Store where the asset belongs</span>
-          {'\n'}
-          <span className={styles.codeVerb}>POST</span> /assets/users/123/profile-picture
-          {'\n\n'}
-          <span className={styles.codeComment}># Fetch a transformed image</span>
-          {'\n'}
-          <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/content?w=256&amp;format=webp
-          {'\n\n'}
-          <span className={styles.codeComment}># Fetch a transformed image using a defined transformation</span>
-          {'\n'}
-          <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/content?profile=thumbnail
-          {'\n\n'}
-          <span className={styles.codeComment}># Ask for asset information, links, or redirects instead</span>
-          {'\n'}
-          <span className={styles.codeVerb}>GET </span> /assets/users/123/profile-picture/-/info
-        </code>
-      </pre>
-    </div>
+      <figcaption>Replace the image later. Your application keeps the same URL.</figcaption>
+    </figure>
   );
 }
 
@@ -119,18 +100,18 @@ export default function Home(): ReactNode {
         <section className={styles.hero}>
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
-              <div className={styles.brandLine}>
-                <img src="/img/konifer-small.png" alt="" className={styles.logoMark} />
-                <span>Konifer</span>
-              </div>
-              <Heading as="h1">Self-hosted image infrastructure that fits your API.</Heading>
+              <span className={styles.eyebrow}>Self-hosted image infrastructure</span>
+              <Heading as="h1">Image infrastructure for paths your app already knows.</Heading>
               <p className={styles.heroLead}>
-                Konifer stores original images, generates and caches transformed variants, and
-                returns content, links, redirects, downloads, or information from URLs that follow
-                your application&apos;s domain model.
+                Store, transform, and deliver images at URLs like{' '}
+                <code>/assets/users/123/profile-picture</code>—without persisting opaque media IDs
+                in your application.
               </p>
               <div className={styles.heroActions}>
-                <Link className={clsx('button button--primary', styles.primaryButton)} to="/docs/start-here/getting-started">
+                <Link
+                  className={clsx('button button--primary', styles.primaryButton)}
+                  to="/docs/start-here/getting-started"
+                >
                   Get started
                 </Link>
                 <Link className={clsx('button button--secondary', styles.secondaryButton)} to="/docs">
@@ -140,22 +121,17 @@ export default function Home(): ReactNode {
             </div>
             <div className={styles.heroVisual}>
               <CodeWindow />
-              <div className={styles.pipeline} aria-label="Konifer delivery pipeline">
-                <span>Your app</span>
-                <span>Konifer API</span>
-                <span>Object store</span>
-                <span>CDN</span>
-              </div>
             </div>
           </div>
         </section>
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <Heading as="h2">Why teams use it</Heading>
+            <span className={styles.sectionKicker}>Why Konifer</span>
+            <Heading as="h2">One image lifecycle, shaped around your application</Heading>
             <p>
-              Konifer is for products that want Cloudinary- or Imgix-style capabilities while
-              keeping control over storage, routing, processing, and delivery behavior.
+              Konifer brings storage, transformation, replacement, and delivery behind an API
+              that follows the domain model your product already has.
             </p>
           </div>
           <div className={styles.capabilityGrid}>
@@ -165,102 +141,71 @@ export default function Home(): ReactNode {
           </div>
         </section>
 
-        <section className={clsx(styles.section, styles.rulesSection)}>
-          <div className={styles.rulesCopy}>
-            <span className={styles.sectionKicker}>Upload rules</span>
-            <Heading as="h2">Reject the wrong image before it becomes an asset</Heading>
-            <p>
-              Konifer can evaluate uploads with SigLIP2 zero-shot image classification before they
-              are stored. Define rule definitions once, attach upload rulesets to path patterns, and
-              let each part of your product enforce its own visual content policy.
-            </p>
-            <Link to="/docs/concepts/concepts-upload-rules">Explore Upload Rules</Link>
-          </div>
-          <pre className={styles.rulesCode}>
-            <code>{`rule-definitions {
-  "product-photo" {
-    prompts = [
-      "a clean catalog image of a product",
-      "a product photo on a plain background",
-      "a single item photographed for sale"
-    ]
-    threshold = 0.66
-  }
-}
-
-paths {
-  "/catalog/products/**" {
-    upload-ruleset {
-      default = reject
-      accept-rules = [
-        { rule = "product-photo" }
-      ]
-    }
-  }
-}`}</code>
-          </pre>
-        </section>
-
-        <section className={clsx(styles.section, styles.apiSection)}>
+        <section className={clsx(styles.section, styles.pathSection)}>
           <div className={styles.apiCopy}>
-            <Heading as="h2">An API philosophy built around integration</Heading>
+            <span className={styles.sectionKicker}>Stable paths</span>
+            <Heading as="h2">Replace an image without changing its URL</Heading>
             <p>
-              Most media services become a separate source of truth. Konifer is designed so your
-              existing application state can construct useful asset URLs directly.
+              Post a new asset to the same path and the default request resolves to the newest
+              entry. Your app can replace an avatar or publish a new hero image without updating
+              the URL it already knows.
             </p>
             <p>
-              Query selectors live behind the <code>/-/</code> separator, keeping product paths
-              separate from delivery instructions.
+              Select a specific entry when you need history, then choose whether Konifer returns
+              content, a link, a redirect, a download, or structured information.
             </p>
+            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore asset selection</Link>
           </div>
-          <div className={styles.selectorPanel}>
-            <div>
-              <span className={styles.selectorLabel}>Ordering</span>
-              <div className={styles.selectorGrid}>
-                {orderingModes.map((mode) => (
-                  <span key={mode.selector}>
-                    <strong>/-/{mode.selector}</strong>
-                    <small>{mode.label}</small>
-                  </span>
-                ))}
+          <div className={styles.pathPanel}>
+            <div className={styles.stablePath}>
+              <span>Stable application path</span>
+              <code>/assets/products/sku-123/hero</code>
+            </div>
+            <div className={styles.replacementFlow}>
+              <div>
+                <small>Initial upload</small>
+                <code>POST</code>
+              </div>
+              <span aria-hidden="true">→</span>
+              <div>
+                <small>Replacement</small>
+                <code>POST</code>
+              </div>
+              <span aria-hidden="true">→</span>
+              <div className={styles.flowResult}>
+                <small>Default GET</small>
+                <strong>newest asset</strong>
               </div>
             </div>
-            <div>
-              <span className={styles.selectorLabel}>Return format</span>
-              <div className={styles.selectorGrid}>
-                {responseModes.map((mode) => (
-                  <span key={mode}>
-                    <strong>/-/{mode}</strong>
-                  </span>
-                ))}
+            <div className={styles.selectorPanel}>
+              <div>
+                <span className={styles.selectorLabel}>Asset selection</span>
+                <div className={styles.selectorGrid}>
+                  {selectionModes.map((mode) => (
+                    <span key={mode.selector}>
+                      <strong>/-/{mode.selector}</strong>
+                      <small>{mode.label}</small>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <span className={styles.selectorLabel}>Response mode</span>
+                <div className={styles.responseList}>
+                  {responseModes.map((mode) => (
+                    <code key={mode}>/-/{mode}</code>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className={clsx(styles.section, styles.stackSection)}>
-          <div className={styles.stackCopy}>
-            <Heading as="h2">Treat a path like a domain primitive</Heading>
-            <p>
-              Because <code>new</code> is the default ordering selector, fetching a path behaves
-              like reading the top of a stack. Post a new asset to the same path and your app can
-              hot swap an avatar, publish a new hero image, or keep simple version history without
-              changing the URL it already knows.
-            </p>
-            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore query selectors</Link>
-          </div>
-          <div className={styles.stackExample}>
-            <span>POST /assets/products/sku-123/hero</span>
-            <span>POST /assets/products/sku-123/hero</span>
-            <span>GET&nbsp; /assets/products/sku-123/hero</span>
-            <strong>returns the newest asset by default</strong>
           </div>
         </section>
 
         <section className={styles.section}>
           <div className={styles.transformLayout}>
             <div>
-              <Heading as="h2">Transform once, cache for the next request</Heading>
+              <span className={styles.sectionKicker}>Reusable variants</span>
+              <Heading as="h2">Transform once, reuse the result</Heading>
               <p>
                 Request image variants on demand or define named profiles for common outputs.
                 Generated variants are stored and reused, so expensive work does not repeat for
@@ -272,17 +217,25 @@ paths {
                 ))}
               </div>
             </div>
-            <div className={styles.paramPanel}>
-              {transformParams.map((param) => (
-                <span key={param}>{param}</span>
-              ))}
+            <div className={styles.transformPanel}>
+              <span className={styles.panelLabel}>Request</span>
+              <code>/assets/products/sku-123/hero/-/content?profile=social-card</code>
+              <div className={styles.transformArrow} aria-hidden="true">
+                ↓
+              </div>
+              <div className={styles.variantResult}>
+                <span>Generated once</span>
+                <strong>1200 × 630 WebP</strong>
+                <small>Stored and reused on later requests</small>
+              </div>
             </div>
           </div>
         </section>
 
         <section className={clsx(styles.section, styles.configSection)}>
           <div>
-            <Heading as="h2">Path Configuration is where the flexibility compounds</Heading>
+            <span className={styles.sectionKicker}>Policy by path</span>
+            <Heading as="h2">Configure behavior where images belong</Heading>
             <p>
               Configure behavior by path pattern, then let inheritance do the work. Public avatars,
               private user content, CMS images, and generated media can share one service while
@@ -304,6 +257,64 @@ paths {
   }
 }`}</code>
           </pre>
+        </section>
+
+        <section className={clsx(styles.section, styles.rulesSection)}>
+          <div className={styles.rulesCopy}>
+            <span className={styles.sectionKicker}>Content-aware upload rules</span>
+            <Heading as="h2">Reject the wrong image before it becomes an asset</Heading>
+            <p>
+              Evaluate uploads with zero-shot image classification before they are stored. Define
+              reusable rules, attach them to path patterns, and give each area of your product its
+              own visual content policy.
+            </p>
+            <Link to="/docs/concepts/concepts-upload-rules">Explore Upload Rules</Link>
+          </div>
+          <pre className={styles.rulesCode}>
+            <code>{`rule-definitions {
+  "product-photo" {
+    prompts = [
+      "a clean catalog image of a product",
+      "a product photo on a plain background"
+    ]
+    threshold = 0.66
+  }
+}
+
+paths {
+  "/catalog/products/**" {
+    upload-ruleset {
+      default = reject
+      accept-rules = [ { rule = "product-photo" } ]
+    }
+  }
+}`}</code>
+          </pre>
+        </section>
+
+        <section className={clsx(styles.section, styles.finalCta)}>
+          <div>
+            <span className={styles.sectionKicker}>Try Konifer</span>
+            <Heading as="h2">Run your first image workflow locally</Heading>
+            <p>
+              Start Konifer, upload an image to an application-shaped path, and request a cached
+              variant in a few steps.
+            </p>
+          </div>
+          <div className={styles.finalActions}>
+            <Link
+              className={clsx('button button--primary', styles.ctaPrimaryButton)}
+              to="/docs/start-here/getting-started"
+            >
+              Get started
+            </Link>
+            <Link
+              className={clsx('button button--secondary', styles.ctaSecondaryButton)}
+              to="/docs/operate/deployment"
+            >
+              Deployment guide
+            </Link>
+          </div>
         </section>
       </main>
     </Layout>
