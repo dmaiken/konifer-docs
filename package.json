@@ -15,7 +15,10 @@
     "typecheck": "tsc",
     "spellcheck": "cspell --no-progress \"**/*.{md,mdx,ts,tsx}\"",
     "lint:markdown": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#build\"",
-    "check": "npm run typecheck && npm run lint:markdown && npm run spellcheck && npm run build"
+    "lint:bruno:yaml": "prettier --check \"docs/bruno/**/*.yml\"",
+    "lint:bruno:parse": "cd docs/bruno && bru run --tags=__collection_lint_only__",
+    "lint:bruno": "npm run lint:bruno:yaml && npm run lint:bruno:parse",
+    "check": "npm run typecheck && npm run lint:markdown && npm run lint:bruno && npm run spellcheck && npm run build"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
@@ -35,8 +38,10 @@
     "@docusaurus/module-type-aliases": "3.10.2",
     "@docusaurus/tsconfig": "3.10.2",
     "@docusaurus/types": "3.10.2",
+    "@usebruno/cli": "4.0.0",
     "cspell": "10.0.1",
     "markdownlint-cli2": "0.23.2",
+    "prettier": "3.6.2",
     "typescript": "7.0.2"
   },
   "browserslist": {
