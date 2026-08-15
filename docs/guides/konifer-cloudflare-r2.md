@@ -130,7 +130,7 @@ Leave the container running. In Bruno, send the **Health** request and confirm t
 Open the **Store Asset** request, select an image from your computer for the `asset` field in the multipart form body,
 and send the request. Confirm that Konifer returns `201 Created`.
 
-The Bruno requests in this guide use the asset path `users/123abc/profile-pictures`. In the Cloudflare dashboard, 
+The Bruno requests in this guide use the asset path `users/123abc/profile-pictures`. In the Cloudflare dashboard,
 confirm that an object now appears in the `profile-pictures` bucket.
 
 ## 6. Request a variant's content
