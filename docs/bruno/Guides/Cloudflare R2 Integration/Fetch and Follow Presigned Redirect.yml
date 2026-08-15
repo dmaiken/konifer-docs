@@ -1,0 +1,64 @@
+info:
+  name: Fetch and Follow Presigned Redirect
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: localhost:8080/assets/users/123abc/profile-pictures/-/redirect
+  params:
+    - name: w
+      value: "200"
+      type: query
+      description: Width
+      disabled: true
+    - name: h
+      value: ""
+      type: query
+      description: Height
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      disabled: true
+    - name: blur
+      value: ""
+      type: query
+      description: Blur
+      disabled: true
+    - name: q
+      value: ""
+      type: query
+      description: Quality
+      disabled: true
+    - name: fit
+      value: ""
+      type: query
+      disabled: true
+    - name: g
+      value: ""
+      type: query
+      description: Gravity
+      disabled: true
+    - name: r
+      value: ""
+      type: query
+      description: Rotate
+      disabled: true
+    - name: pad
+      value: ""
+      type: query
+      description: Pad border
+      disabled: true
+    - name: pad-c
+      value: ""
+      type: query
+      description: Padding color (#123456)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

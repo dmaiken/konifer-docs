@@ -1,0 +1,15 @@
+info:
+  name: Recursive Delete
+  type: http
+  seq: 3
+
+http:
+  method: DELETE
+  url: localhost:8080/assets/users/123abc/profile-pictures/-/recursive
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

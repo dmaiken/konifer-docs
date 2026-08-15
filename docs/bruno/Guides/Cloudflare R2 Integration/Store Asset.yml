@@ -1,0 +1,25 @@
+info:
+  name: Store Asset
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: localhost:8080/assets/users/123abc/profile-pictures
+  body:
+    type: multipart-form
+    data:
+      - name: metadata
+        type: text
+        value: '{"alt":"an image", "labels": {"type": "image"}}'
+        contentType: application/json
+      - name: asset
+        type: file
+        value: []
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

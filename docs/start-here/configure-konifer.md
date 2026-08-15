@@ -32,7 +32,7 @@ docker run --detach \
   --publish 8080:8080 \
   --env-file ./konifer.env \
   --mount type=bind,source="$(pwd)/konifer.conf",target=/app/config/konifer.conf,readonly \
-  ghcr.io/dmaiken/konifer:latest
+  ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
 Use an absolute path instead of `$(pwd)` when your deployment system does not run from the configuration directory.
