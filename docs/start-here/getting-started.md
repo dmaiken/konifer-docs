@@ -19,7 +19,7 @@ docker run --detach \
   --name konifer-quickstart \
   --publish 8080:8080 \
   --env IN_MEMORY=true \
-  ghcr.io/dmaiken/konifer:latest
+  ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
 This starts Konifer with in-memory dependencies. This mode is for evaluation; its data is discarded when the container

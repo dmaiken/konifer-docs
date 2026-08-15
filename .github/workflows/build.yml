@@ -24,6 +24,10 @@ jobs:
 
       - name: Check and Lint
         run: npm run check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Build Website
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

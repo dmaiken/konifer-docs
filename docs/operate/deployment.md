@@ -148,13 +148,13 @@ its secret-management mechanism instead of committing an environment file.
 Mount the configuration file at `/app/config/konifer.conf`:
 
 ```bash
-docker run --detach \
+docker run \
   --name konifer \
   --restart unless-stopped \
   --publish 127.0.0.1:8080:8080 \
   --env-file /secure/path/konifer.env \
   --mount type=bind,source=/etc/konifer/konifer.conf,target=/app/config/konifer.conf,readonly \
-  ghcr.io/dmaiken/konifer:latest
+  ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
 Binding to `127.0.0.1` assumes that a reverse proxy on the same host accepts external traffic. Change the published
@@ -164,7 +164,7 @@ For reproducible deployments, use only released versions of Konifer. Konifer fol
 [Konifer release list](https://github.com/dmaiken/konifer/releases) for available versions.
 
 ```text
-ghcr.io/dmaiken/konifer:<latest-release>
+ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
 Konifer supports Linux `amd64` and `arm64` container images.

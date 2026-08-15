@@ -1,10 +1,51 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkKoniferVersion from './plugins/remark-konifer-version';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-const config: Config = {
+const latestReleaseUrl = 'https://api.github.com/repos/dmaiken/konifer/releases/latest';
+
+type GitHubRelease = {
+  tag_name?: unknown;
+};
+
+async function fetchLatestKoniferVersion(): Promise<string> {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2026-03-10',
+  };
+
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+
+  const response = await fetch(latestReleaseUrl, {
+    headers,
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) {
+    throw new Error(
+      `Unable to fetch the latest Konifer release from GitHub: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const release = (await response.json()) as GitHubRelease;
+  if (typeof release.tag_name !== 'string') {
+    throw new Error('The latest Konifer release did not contain a tag name.');
+  }
+
+  const match = /^v?(\d+\.\d+\.\d+)$/.exec(release.tag_name);
+  if (!match) {
+    throw new Error(`The latest Konifer release tag is not a stable semantic version: ${release.tag_name}`);
+  }
+
+  // Konifer's Git tags include "v", while its container tags do not.
+  return match[1];
+}
+
+const buildConfig = (koniferVersion: string): Config => ({
   title: 'Konifer',
   tagline: 'Self-hosted image storage, transformation, and delivery',
   favicon: 'img/favicon.png',
@@ -38,6 +79,7 @@ const config: Config = {
         docs: {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
+          remarkPlugins: [[remarkKoniferVersion, {version: koniferVersion}]],
         },
         blog: false,
         theme: {
@@ -125,6 +167,8 @@ const config: Config = {
       ],
     },
   } satisfies Preset.ThemeConfig,
-};
+});
 
-export default config;
+export default async function createConfig(): Promise<Config> {
+  return buildConfig(await fetchLatestKoniferVersion());
+}
