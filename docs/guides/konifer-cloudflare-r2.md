@@ -99,12 +99,6 @@ paths {
 Replace `<ACCESS_KEY_ID>` and `<ACCOUNT_ID>` with your Cloudflare values. The Secret Access Key will be supplied through
 the `S3_SECRET_KEY` environment variable when you start Konifer.
 
-:::caution
-This guide uses an in-memory data store to avoid requiring a database. Asset metadata is lost when Konifer stops, and
-deleting an asset while using this configuration does not currently remove its objects from R2. Do not use this
-configuration in production, and empty the tutorial bucket manually when you finish.
-:::
-
 ## 4. Start Konifer
 
 Start Konifer with your `konifer.conf` file and `S3_SECRET_KEY` environment variable:
@@ -160,14 +154,16 @@ for a `307` response. This is a Bruno redirect-handling message and does not
 mean the Konifer request failed.
 :::
 
-## 8. Clean up
+## 8. Remove assets
+
+Optionally, if you want to delete the asset and variant, open the **Recursive Delete** request and execute it.
+
+Confirm a 204 is received and all variants are removed in your `profile-pictures` bucket in R2.
+
+## 9. Clean up
 
 Stop Konifer with `Ctrl+C`, then remove the secret from your shell environment:
 
 ```bash
 unset S3_SECRET_KEY
 ```
-
-Because of the in-memory data-store limitation described above, do not use the **Recursive Delete** request to clean up
-this tutorial. Instead, use the Cloudflare dashboard to empty the `profile-pictures` bucket. You can then delete the
-bucket and revoke its API token if you created them only for this guide.
