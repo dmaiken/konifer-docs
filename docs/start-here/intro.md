@@ -7,8 +7,8 @@ description: Learn what Konifer is, how its path-based model works, and why appl
 sidebar_label: "What is Konifer?"
 ---
 
-Konifer is a self-hosted image storage, transformation, and delivery service designed to fit your application’s domain
-model.
+Konifer is image infrastructure for applications that need to store, transform, and deliver images using their own
+domain model.
 
 It stores original images, generates and caches transformed variants, and delivers images as content, links, redirects,
 downloads, or structured information. Instead of introducing a separate identity model for media, Konifer lets your
@@ -150,16 +150,17 @@ paths {
 More specific paths inherit and override broader rules. One Konifer deployment can therefore support several
 applications or media workflows without placing every policy decision in application code.
 
-## Storage and delivery remain under your control
+## Fits your existing infrastructure
 
-Konifer is self-hosted. You choose where it runs, where originals and variants are stored, how it is exposed to clients,
-and whether delivery passes through a CDN.
+Konifer runs alongside your application services and integrates with the storage and delivery infrastructure your team
+already uses. You choose where originals and variants are stored, how Konifer is exposed to clients, and whether
+delivery passes through a CDN.
 
 A persistent deployment uses PostgreSQL for asset records and an object-storage or filesystem backend for image content.
 Konifer can deliver image bytes itself or integrate with object storage and CDNs through links, redirects, cache
 headers, ETags, and signed transformation URLs.
 
-Self-hosting does add operational responsibility. In return, your team controls:
+This architecture gives your team control over:
 
 * The infrastructure that processes uploaded images
 * The storage account containing originals and variants
@@ -180,7 +181,6 @@ modes through one service.
 
 Konifer is not:
 
-* A hosted image SaaS
 * A visual digital-asset-management interface
 * A replacement for your application’s authorization model
 * A complete content-management system

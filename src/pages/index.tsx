@@ -32,8 +32,8 @@ const capabilities = [
     body: 'Store originals, attach metadata, request the newest asset at a path, address a specific entry, or fetch generated variants through the same HTTP surface.',
   },
   {
-    title: 'Infrastructure under your control',
-    body: 'Choose where Konifer runs, where originals and variants are stored, and how content reaches clients through direct responses, object-store links, redirects, or a CDN.',
+    title: 'Flexible storage and delivery',
+    body: 'Use S3-compatible or filesystem storage, then deliver content through direct responses, object-store links, redirects, or a CDN. Konifer fits into the infrastructure your application already uses.',
   },
 ];
 
@@ -93,19 +93,18 @@ function CapabilityCard({
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="Self-hosted image storage, transformation, and delivery"
-      description="Konifer is a self-hosted image storage, transformation, and delivery API with application-shaped paths, CDN-friendly responses, and modern format support."
+      title="Image storage, transformation, and delivery"
+      description="Konifer is an image storage, transformation, and delivery API with application-shaped paths, CDN-friendly responses, and modern format support."
     >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
-              <span className={styles.eyebrow}>Self-hosted image infrastructure</span>
-              <Heading as="h1">Image infrastructure for paths your app already knows.</Heading>
+              <span className={styles.eyebrow}>STORE · TRANSFORM · DELIVER</span>
+              <Heading as="h1">Image infrastructure that fits your application.</Heading>
               <p className={styles.heroLead}>
-                Store, transform, and deliver images at URLs like{' '}
-                <code>/assets/users/123/profile-picture</code>—without persisting opaque media IDs
-                in your application.
+                Address your images with stable URLs like{' '}
+                <code>/assets/users/123/profile-picture</code>—no separate identifiers to persist or maintain.
               </p>
               <div className={styles.heroActions}>
                 <Link
