@@ -1,17 +1,20 @@
 export const hoconGrammar = {
     comment: { pattern: /(\/\/|#).*/, greedy: true },
     property: [
-        /(?:[\w\-]|[^:\+. \[\]{}=\"$\s\r\n]+)/,
-        /"(?:\\. |[^"\r\n]*)"/
+        /(?!-?\d)(?:[\w\-]|[^:\+. \[\]{}=\"$\s\r\n]+)/,
+        /"(?:\\.|[^"\\\r\n])*"/
     ].map(r => ({
-        pattern: new RegExp(r.source + '(?=\\s*(?:[\\.:= {]|\\+=))'),
+        pattern: new RegExp(r.source + '(?=\\s*(?:[\\.:={]|\\+=))'),
         lookbehind: true,
         greedy: true,
     })),
     string: [
         { pattern: /"""[\s\S]*?"""/, greedy: true },
-        { pattern: /(^|[^\\\\])"(?:\\. |[^"\\\r\n])*"/, lookbehind: true, greedy: true },
+        { pattern: /(^|[^\\])"(?:\\.|[^"\\\r\n])*"/, lookbehind: true, greedy: true },
     ],
+    number: /(?:\B-|\b)\d+(?:\.\d+)?(?:e[+-]?\d+)?\b/i,
+    boolean: /\b(?:false|true)\b/,
+    null: { pattern: /\bnull\b/, alias: 'keyword' },
     punctuation: /[\${}\[\],]/,
     operator: /[:=]/,
     keyword: {

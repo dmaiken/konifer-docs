@@ -255,13 +255,13 @@ returning to an older image.
 
 Before accepting production traffic, verify that:
 
-- `IN_MEMORY` is not enabled. If enabled, Konifer will emit warnings logs.
-- PostgreSQL and object storage are persistent and backed up.
-- The `ltree` extension is installed.
-- Every configured S3 bucket exists.
-- Secrets are supplied outside `konifer.conf` and are not committed to source control.
-- `http.public-url` matches the public origin.
-- TLS and access control are enforced by the surrounding platform.
-- Public transformation URLs are signed when appropriate.
-- Upload-size, CPU, memory, and temporary-storage limits have been tested.
-- `/health`, container restarts, application logs, and dependency failures are monitored.
+1. `IN_MEMORY` is not enabled. If enabled, Konifer will emit warnings logs.
+2. Data and object storage are persistent and backed up.
+3. The `ltree` extension is installed.
+4. Every configured S3 bucket exists.
+5. Secrets are supplied outside `konifer.conf` and are not committed to source control.
+6. `http.public-url` matches the public origin.
+7. `return-format.redirect` is configured in appropriate paths if redirects are used.
+8. TLS and access control are enforced by the surrounding platform.
+9. Public transformation URLs are signed when appropriate.
+10. Upload-size, CPU, memory, and temporary-storage limits have been tested.

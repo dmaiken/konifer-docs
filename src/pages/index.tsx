@@ -3,33 +3,40 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import {
+  Highlight,
+  Prism,
+  themes as prismThemes,
+  type PrismTheme,
+} from 'prism-react-renderer';
+import {hoconGrammar} from '../prism/prism.hocon';
 import styles from './index.module.css';
+
+Prism.languages.hocon = hoconGrammar;
+
+const hoconTheme: PrismTheme = {
+  ...prismThemes.dracula,
+  plain: {
+    ...prismThemes.dracula.plain,
+    backgroundColor: '#121713',
+  },
+  styles: [
+    ...prismThemes.dracula.styles,
+    {types: ['property'], style: {color: 'rgb(139, 233, 253)'}},
+    {types: ['operator'], style: {color: 'rgb(255, 121, 198)'}},
+  ],
+};
 
 const responseModes = ['content', 'link', 'redirect', 'download', 'info'];
 
-const selectionModes = [
-  {
-    selector: 'new',
-    label: 'Most recently created',
-  },
-  {
-    selector: 'modified',
-    label: 'Most recently modified',
-  },
-  {
-    selector: 'entry/42',
-    label: 'Absolute asset reference',
-  },
-];
-
 const capabilities = [
   {
-    title: 'Application-shaped asset paths',
-    body: 'Use URLs that match your product model, such as users, organizations, listings, posts, and documents. Konifer does not force your app to persist opaque media IDs just to render an asset later.',
+    title: 'Stable application paths',
+    body: 'Address images using paths your application can derive from its own domain model, without persisting separate identifiers for routine requests.',
   },
   {
-    title: 'One API for storage and delivery',
-    body: 'Store originals, attach metadata, request the newest asset at a path, address a specific entry, or fetch generated variants through the same HTTP surface.',
+    title: 'Reusable transformations',
+    body: 'Generate variants on demand or from named profiles, then store and reuse them instead of repeating work for every request.',
   },
   {
     title: 'Flexible storage and delivery',
@@ -90,6 +97,26 @@ function CapabilityCard({
   );
 }
 
+function HoconCodeBlock({code, className}: {code: string; className: string}): ReactNode {
+  return (
+    <Highlight prism={Prism} theme={hoconTheme} code={code} language="hocon">
+      {({className: prismClassName, style, tokens, getLineProps, getTokenProps}) => (
+        <pre className={clsx(className, prismClassName)} style={style} tabIndex={0}>
+          <code>
+            {tokens.map((line, lineIndex) => (
+              <div key={lineIndex} {...getLineProps({line})}>
+                {line.map((token, tokenIndex) => (
+                  <span key={tokenIndex} {...getTokenProps({token})} />
+                ))}
+              </div>
+            ))}
+          </code>
+        </pre>
+      )}
+    </Highlight>
+  );
+}
+
 export default function Home(): ReactNode {
   return (
     <Layout
@@ -103,8 +130,8 @@ export default function Home(): ReactNode {
               <span className={styles.eyebrow}>STORE · TRANSFORM · DELIVER</span>
               <Heading as="h1">Image infrastructure that fits your application.</Heading>
               <p className={styles.heroLead}>
-                Address your images with stable URLs like{' '}
-                <code>/assets/users/123/profile-picture</code>—no separate identifiers to persist or maintain.
+                Manage originals, reusable variants, metadata, and delivery through one API, with
+                storage and policies that adapt to each image workflow.
               </p>
               <div className={styles.heroActions}>
                 <Link
@@ -127,76 +154,16 @@ export default function Home(): ReactNode {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionKicker}>Why Konifer</span>
-            <Heading as="h2">One image lifecycle, shaped around your application</Heading>
+            <Heading as="h2">One API for the complete image lifecycle</Heading>
             <p>
-              Konifer brings storage, transformation, replacement, and delivery behind an API
-              that follows the domain model your product already has.
+              Konifer brings storage, transformation, metadata, policy, caching, and delivery
+              together behind a consistent HTTP API.
             </p>
           </div>
           <div className={styles.capabilityGrid}>
             {capabilities.map((capability) => (
               <CapabilityCard key={capability.title} {...capability} />
             ))}
-          </div>
-        </section>
-
-        <section className={clsx(styles.section, styles.pathSection)}>
-          <div className={styles.apiCopy}>
-            <span className={styles.sectionKicker}>Stable paths</span>
-            <Heading as="h2">Replace an image without changing its URL</Heading>
-            <p>
-              Post a new asset to the same path and the default request resolves to the newest
-              entry. Your app can replace an avatar or publish a new hero image without updating
-              the URL it already knows.
-            </p>
-            <p>
-              Select a specific entry when you need history, then choose whether Konifer returns
-              content, a link, a redirect, a download, or structured information.
-            </p>
-            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore asset selection</Link>
-          </div>
-          <div className={styles.pathPanel}>
-            <div className={styles.stablePath}>
-              <span>Stable application path</span>
-              <code>/assets/products/sku-123/hero</code>
-            </div>
-            <div className={styles.replacementFlow}>
-              <div>
-                <small>Initial upload</small>
-                <code>POST</code>
-              </div>
-              <span aria-hidden="true">→</span>
-              <div>
-                <small>Replacement</small>
-                <code>POST</code>
-              </div>
-              <span aria-hidden="true">→</span>
-              <div className={styles.flowResult}>
-                <small>Default GET</small>
-                <strong>newest asset</strong>
-              </div>
-            </div>
-            <div className={styles.selectorPanel}>
-              <div>
-                <span className={styles.selectorLabel}>Asset selection</span>
-                <div className={styles.selectorGrid}>
-                  {selectionModes.map((mode) => (
-                    <span key={mode.selector}>
-                      <strong>/-/{mode.selector}</strong>
-                      <small>{mode.label}</small>
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className={styles.selectorLabel}>Response mode</span>
-                <div className={styles.responseList}>
-                  {responseModes.map((mode) => (
-                    <code key={mode}>/-/{mode}</code>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -231,31 +198,51 @@ export default function Home(): ReactNode {
           </div>
         </section>
 
-        <section className={clsx(styles.section, styles.configSection)}>
-          <div>
-            <span className={styles.sectionKicker}>Policy by path</span>
-            <Heading as="h2">Configure behavior where images belong</Heading>
+        <section className={clsx(styles.section, styles.pathSection)}>
+          <div className={styles.apiCopy}>
+            <span className={styles.sectionKicker}>Stable paths</span>
+            <Heading as="h2">Replace an image without changing its URL</Heading>
             <p>
-              Configure behavior by path pattern, then let inheritance do the work. Public avatars,
-              private user content, CMS images, and generated media can share one service while
-              using different storage buckets, upload rulesets, eager variants, preprocessing,
-              redirect strategies, caching, and LQIP behavior.
+              Post a new asset to the same path and the default request resolves to the newest
+              entry. Your app can replace an avatar or publish a new hero image without updating
+              the URL it already knows.
             </p>
-            <Link to="/docs/concepts/concepts-path-configuration">Read Path Configuration</Link>
+            <p>
+              Return the asset as content, a link, a redirect, a download, or structured
+              information to match each delivery workflow.
+            </p>
+            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore asset delivery</Link>
           </div>
-          <pre className={styles.configCode}>
-            <code>{`paths {
-  "/public/avatars/**" {
-    transform { eager-variants = [ small, medium, large ] }
-    return-format.redirect.strategy = template
-    cache-control.max-age = 31536000
-  }
-  "/users/*/profile-picture" {
-    bucket = "profile-pictures"
-    allowed-content-types = [ "image/jpeg" ]
-  }
-}`}</code>
-          </pre>
+          <div className={styles.pathPanel}>
+            <div className={styles.stablePath}>
+              <span>Stable application path</span>
+              <code>/assets/products/sku-123/hero</code>
+            </div>
+            <div className={styles.replacementFlow}>
+              <div>
+                <small>Initial upload</small>
+                <code>POST</code>
+              </div>
+              <span aria-hidden="true">→</span>
+              <div>
+                <small>Replacement</small>
+                <code>POST</code>
+              </div>
+              <span aria-hidden="true">→</span>
+              <div className={styles.flowResult}>
+                <small>Default GET</small>
+                <strong>newest asset</strong>
+              </div>
+            </div>
+            <div className={styles.responsePanel}>
+              <span className={styles.responseLabel}>Return format</span>
+              <div className={styles.responseList}>
+                {responseModes.map((mode) => (
+                  <code key={mode}>/-/{mode}</code>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className={clsx(styles.section, styles.rulesSection)}>
@@ -269,8 +256,9 @@ export default function Home(): ReactNode {
             </p>
             <Link to="/docs/concepts/concepts-upload-rules">Explore Upload Rules</Link>
           </div>
-          <pre className={styles.rulesCode}>
-            <code>{`rule-definitions {
+          <HoconCodeBlock
+            className={styles.rulesCode}
+            code={`rule-definitions {
   "product-photo" {
     prompts = [
       "a clean catalog image of a product",
@@ -287,8 +275,36 @@ paths {
       accept-rules = [ { rule = "product-photo" } ]
     }
   }
-}`}</code>
-          </pre>
+}`}
+          />
+        </section>
+
+        <section className={clsx(styles.section, styles.configSection)}>
+          <div>
+            <span className={styles.sectionKicker}>Policy by path</span>
+            <Heading as="h2">Configure behavior where images belong</Heading>
+            <p>
+              Configure behavior by path pattern, then let inheritance do the work. Public avatars,
+              private user content, CMS images, and generated media can share one service while
+              using different storage buckets, upload rulesets, eager variants, preprocessing,
+              redirect strategies, caching, and LQIP behavior.
+            </p>
+            <Link to="/docs/concepts/concepts-path-configuration">Read Path Configuration</Link>
+          </div>
+          <HoconCodeBlock
+            className={styles.configCode}
+            code={`paths {
+  "/public/avatars/**" {
+    transform { eager-variants = [ small, medium, large ] }
+    return-format.redirect.strategy = template
+    cache-control.max-age = 31536000
+  }
+  "/users/*/profile-picture" {
+    bucket = "profile-pictures"
+    allowed-content-types = [ "image/jpeg" ]
+  }
+}`}
+          />
         </section>
 
         <section className={clsx(styles.section, styles.finalCta)}>
@@ -296,8 +312,7 @@ paths {
             <span className={styles.sectionKicker}>Try Konifer</span>
             <Heading as="h2">Run your first image workflow locally</Heading>
             <p>
-              Start Konifer, upload an image to an application-shaped path, and request a cached
-              variant in a few steps.
+              Start Konifer, upload an original image, and request a cached variant in a few steps.
             </p>
           </div>
           <div className={styles.finalActions}>
