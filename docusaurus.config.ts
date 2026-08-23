@@ -151,6 +151,11 @@ const buildConfig = (koniferVersion: string): Config => ({
           label: 'GitHub',
           position: 'right',
         },
+        {
+          href: 'https://dmaiken.github.io/konifer/performance/report/',
+          label: 'Performance',
+          position: 'right',
+        },
       ],
     },
     footer: {
