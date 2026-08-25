@@ -94,6 +94,45 @@ those defined as [variant profiles](variant-profiles.md).
 - **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant
 has not been generated at the time of request, it can still be generated on-demand.
 
+## Transformation Limits
+
+Transformation limits protect Konifer from generating unexpectedly large images. They apply per path to preprocessing,
+eager variants, and on-demand variants.
+
+```hocon
+paths {
+  "/**" {
+    transform {
+      limits {
+        max-width = 8192
+        max-height = 8192
+        max-pixels = 67108864
+      }
+    }
+  }
+}
+```
+
+- `max-width` limits the final output width.
+- `max-height` limits the final output height.
+- `max-pixels` limits the final output width multiplied by its height.
+
+The final dimensions include padding and reflect rotation. An original variant stored without preprocessing is not
+subject to transformation limits because no transformation is being generated.
+
+Konifer rejects configured preprocessing and eager variants during configuration loading when the known dimensions
+already exceed a limit. Transformations with a missing dimension or automatic rotation can depend on the source image,
+so Konifer completes validation after normalization at runtime. An invalid on-demand or preprocessing transformation
+returns `400 Bad Request`; eager generation remains best-effort and does not create the invalid variant.
+
+:::note
+The `max-width` and `max-height` properties inside `transform.preprocessing.image` are resize instructions. The
+properties inside `transform.limits` are safeguards that reject transformed output exceeding the configured limits.
+:::
+
+See the [configuration reference](../../reference/configuration-reference.md#transformation-limits) for the complete
+property list and defaults.
+
 ## Deleting your Asset
 
 Deleting your asset results in all variants belonging to the asset also being deleted.

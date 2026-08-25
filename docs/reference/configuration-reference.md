@@ -220,6 +220,11 @@ paths {
       lqip = []
     }
     transform {
+      limits {
+        max-width = 8192
+        max-height = 8192
+        max-pixels = 67108864
+      }
       preprocessing {
         enabled = false
         image {
@@ -297,6 +302,35 @@ paths {
 | `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
 
 ### Transform
+
+#### Transformation Limits
+
+Transformation limits constrain the final output dimensions of preprocessing, eager variants, and on-demand variants.
+They do not constrain an original variant that is stored without preprocessing.
+
+```hocon
+"/**" {
+  transform {
+    limits {
+      max-width = 8192
+      max-height = 8192
+      max-pixels = 67108864
+    }
+  }
+}
+```
+
+| Property                       | Description                                      | Allowed Input    | Default  |
+|:-------------------------------|:-------------------------------------------------|:-----------------|:---------|
+| `transform.limits.max-width`   | Maximum final output width in pixels             | Positive integer | 8192     |
+| `transform.limits.max-height`  | Maximum final output height in pixels            | Positive integer | 8192     |
+| `transform.limits.max-pixels`  | Maximum final output width multiplied by height  | Positive integer | 67108864 |
+
+Final dimensions include padding and reflect rotation. Konifer validates configured preprocessing and eager variants
+when their output dimensions are known. If a missing dimension or automatic rotation depends on the source image, the
+remaining limits are enforced after the transformation is normalized at runtime.
+
+See [Transformation Limits](../concepts/Variants/overview.md#transformation-limits) for behavior and examples.
 
 #### Preprocessing
 
