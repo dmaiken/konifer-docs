@@ -117,10 +117,10 @@ If `IN_MEMORY=true` is set as an environment variable, both the data store and o
 source {
   url {
     allowed-domains = []
-    max-bytes = 104857600 # 100MB
+    max-bytes = 20971520 # 20MB
   }
   multipart {
-    max-bytes = 104857600 # 100MB
+    max-bytes = 20971520 # 20MB
   }
 }
 ```
@@ -128,8 +128,8 @@ source {
 | Property                     | Description                                                                         | Allowed Input                       | Default   |
 |:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:----------|
 | `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`      |
-| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 104857600 |
-| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 104857600 |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 20971520  |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 20971520  |
 
 ## Variant Profiles
 

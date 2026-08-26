@@ -72,6 +72,13 @@ A request to store an asset using a URL looks like this (omitting all optional i
 }
 ```
 
+Konifer protects against the following when fetching asset content from URL:
+
+1. Too many redirects (> 5)
+2. Redirects to domains not in the `source.url.allowed-domains` configuration
+3. Invalid redirects
+4. Content size too large (configurable through `source.url.max-bytes`)
+
 ## Information
 
 Asset information is supplied as JSON. All information fields are optional, but fields such as `alt` and LQIP(s) are
