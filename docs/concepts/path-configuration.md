@@ -41,13 +41,13 @@ rule-definitions {
 
 paths {
   "/public/avatars/**" {
+    limits {
+      max-height = 300
+      max-width = 500
+      max-pixels = 150KP
+    }
     transform {
       eager-variants = [small, medium, large]
-      preprocessing {
-        enabled = true
-        max-height = 300
-        max-width = 500
-      }
     }
     upload-ruleset {
       default = accept

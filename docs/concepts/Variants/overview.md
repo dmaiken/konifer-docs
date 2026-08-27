@@ -106,7 +106,7 @@ paths {
       limits {
         max-width = 8192
         max-height = 8192
-        max-pixels = 67108864
+        max-pixels = 20MP
       }
     }
   }
@@ -116,6 +116,9 @@ paths {
 - `max-width` limits the final output width.
 - `max-height` limits the final output height.
 - `max-pixels` limits the final output width multiplied by its height.
+
+Pixel counts can be written as exact integers or with the decimal units `P`, `KP`, `MP`, and `GP`. For example, `20MP`
+means 20,000,000 pixels and `8.2944MP` means 8,294,400 pixels.
 
 The final dimensions include padding and reflect rotation. An original variant stored without preprocessing is not
 subject to transformation limits because no transformation is being generated.
@@ -129,6 +132,9 @@ returns `400 Bad Request`; eager generation remains best-effort and does not cre
 The `max-width` and `max-height` properties inside `transform.preprocessing.image` are resize instructions. The
 properties inside `transform.limits` are safeguards that reject transformed output exceeding the configured limits.
 :::
+
+Supplied images have a separate path-level `limits` block, which is checked before preprocessing. See
+[Supplied content limits](../Assets/storing-assets.md#supplied-content-limits).
 
 See the [configuration reference](../../reference/configuration-reference.md#transformation-limits) for the complete
 property list and defaults.

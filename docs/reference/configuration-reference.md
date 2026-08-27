@@ -117,19 +117,23 @@ If `IN_MEMORY=true` is set as an environment variable, both the data store and o
 source {
   url {
     allowed-domains = []
-    max-bytes = 20971520 # 20MB
+    max-bytes = 20MB
   }
   multipart {
-    max-bytes = 20971520 # 20MB
+    max-bytes = 20MB
   }
 }
 ```
 
-| Property                     | Description                                                                         | Allowed Input                       | Default   |
-|:-----------------------------|:------------------------------------------------------------------------------------|:------------------------------------|:----------|
-| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                    | `[]`      |
-| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive integer representing bytes | 20971520  |
-| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive integer representing bytes | 20971520  |
+| Property                     | Description                                                                         | Allowed Input                     | Default |
+|:-----------------------------|:------------------------------------------------------------------------------------|:----------------------------------|:--------|
+| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                  | `[]`    |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive byte size (see below)    | `20MB`  |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive byte size (see below)    | `20MB`  |
+
+Byte sizes can be exact byte counts, such as `20000000`, or strings with a case-insensitive unit. Decimal units are
+`B`, `KB`, `MB`, and `GB`; binary units are `KiB`, `MiB`, and `GiB`. The numeric part must be a positive integer. For
+example, `20MB` is 20,000,000 bytes, while `20MiB` is 20,971,520 bytes.
 
 ## Variant Profiles
 
@@ -219,11 +223,18 @@ paths {
     image {
       lqip = []
     }
+    limits {
+      max-width = 8192
+      max-height = 8192
+      max-pixels = 20MP
+      max-pages = 20
+      max-pixels-per-page = 1MP
+    }
     transform {
       limits {
         max-width = 8192
         max-height = 8192
-        max-pixels = 67108864
+        max-pixels = 20MP
       }
       preprocessing {
         enabled = false
@@ -301,6 +312,40 @@ paths {
 |:------------------------|:--------------------------------------------------------------------------------------------|:-------------------------------|:--------|
 | `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
 
+### Supplied Asset Content Limits
+
+Supplied asset content limits constrain the image received from a multipart upload or URL source. Konifer checks these
+limits before preprocessing and does not store content that exceeds them.
+
+```hocon
+"/**" {
+  limits {
+    max-width = 8192
+    max-height = 8192
+    max-pixels = 20MP
+    max-pages = 20
+    max-pixels-per-page = 1MP
+  }
+}
+```
+
+| Property                     | Description                                                     | Allowed Input                  | Default |
+|:-----------------------------|:----------------------------------------------------------------|:-------------------------------|:--------|
+| `limits.max-width`           | Maximum width of supplied content in pixels                     | Positive integer               | 8192    |
+| `limits.max-height`          | Maximum height of supplied content in pixels                    | Positive integer               | 8192    |
+| `limits.max-pixels`          | Maximum width multiplied by height for single-page content      | Positive pixel count (below)   | `20MP`  |
+| `limits.max-pages`           | Maximum page or frame count for multi-page content              | Positive integer               | 20      |
+| `limits.max-pixels-per-page` | Maximum width multiplied by height for each page or frame       | Positive pixel count (below)   | `1MP`   |
+
+For single-page content, Konifer applies `max-pixels` and ignores `max-pixels-per-page`. For multi-page content, it
+applies `max-pixels-per-page` and `max-pages` instead of `max-pixels`. Width and height limits apply to both.
+
+Pixel counts can be exact counts, such as `20000000`, or strings with the case-insensitive units `P`, `KP`, `MP`, and
+`GP`. These use decimal multipliers. Decimals are accepted when they resolve to a whole number of pixels; for example,
+`8.2944MP` is 8,294,400 pixels. This format is also accepted by `transform.limits.max-pixels`.
+
+See [Storing Assets](../concepts/Assets/storing-assets.md#supplied-content-limits) for usage guidance.
+
 ### Transform
 
 #### Transformation Limits
@@ -314,21 +359,25 @@ They do not constrain an original variant that is stored without preprocessing.
     limits {
       max-width = 8192
       max-height = 8192
-      max-pixels = 67108864
+      max-pixels = 20MP
     }
   }
 }
 ```
 
-| Property                       | Description                                      | Allowed Input    | Default  |
-|:-------------------------------|:-------------------------------------------------|:-----------------|:---------|
-| `transform.limits.max-width`   | Maximum final output width in pixels             | Positive integer | 8192     |
-| `transform.limits.max-height`  | Maximum final output height in pixels            | Positive integer | 8192     |
-| `transform.limits.max-pixels`  | Maximum final output width multiplied by height  | Positive integer | 67108864 |
+| Property                      | Description                                     | Allowed Input                | Default |
+|:------------------------------|:------------------------------------------------|:-----------------------------|:--------|
+| `transform.limits.max-width`  | Maximum final output width in pixels            | Positive integer             | 8192    |
+| `transform.limits.max-height` | Maximum final output height in pixels           | Positive integer             | 8192    |
+| `transform.limits.max-pixels` | Maximum final output width multiplied by height | Positive pixel count         | `20MP`  |
 
 Final dimensions include padding and reflect rotation. Konifer validates configured preprocessing and eager variants
 when their output dimensions are known. If a missing dimension or automatic rotation depends on the source image, the
 remaining limits are enforced after the transformation is normalized at runtime.
+
+See [Supplied Asset Content Limits](#supplied-asset-content-limits) for accepted pixel-count formats. Supplied content
+limits and transformation limits are independent: the former validate input, while the latter validate generated
+output.
 
 See [Transformation Limits](../concepts/Variants/overview.md#transformation-limits) for behavior and examples.
 
