@@ -9,13 +9,12 @@ Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying tran
 demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does
 not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
 
-This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a tiny memory footprint and
-extremely low latency.
+This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a small memory footprint and
+relatively low latency.
 
 :::caution
 Libvips buffers the entire image if it is progressively rendered JPEGs (image content is interlaced to provide a
-progressively improving
-display quality as the image is downloaded). Avoid ingestion of these images.
+progressively improving display quality as the image is downloaded). Avoid ingestion of these images.
 :::
 
 ## Memory Management

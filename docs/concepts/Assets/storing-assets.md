@@ -72,6 +72,50 @@ A request to store an asset using a URL looks like this (omitting all optional i
 }
 ```
 
+Konifer protects against the following when fetching asset content from URL:
+
+1. Too many redirects (> 5)
+2. Redirects to domains not in the `source.url.allowed-domains` configuration
+3. Invalid redirects
+4. Content size too large (configurable through `source.url.max-bytes`)
+
+The multipart and URL source size limits accept an exact byte count or a readable value such as `20MB` or `20MiB`.
+Configure them globally under `source.multipart.max-bytes` and `source.url.max-bytes`. See the
+[Source configuration reference](../../reference/configuration-reference.md#source) for the supported units.
+
+## Supplied content limits
+
+Path-level `limits` protect Konifer from decoding and processing unexpectedly large supplied images. They apply to the
+content received from either a multipart upload or URL source and are checked before preprocessing.
+
+```hocon
+paths {
+  "/public/avatars/**" {
+    limits {
+      max-width = 4096
+      max-height = 4096
+      max-pixels = 12MP
+      max-pages = 1
+      max-pixels-per-page = 1MP
+    }
+  }
+}
+```
+
+- `max-width` and `max-height` limit the supplied image dimensions.
+- `max-pixels` limits width multiplied by height for single-page content.
+- `max-pages` limits the frame or page count of multi-page content.
+- `max-pixels-per-page` limits width multiplied by height for each frame or page of multi-page content.
+
+For single-page content, Konifer uses `max-pixels` and ignores `max-pixels-per-page`. For multi-page content, it uses
+`max-pixels-per-page` and `max-pages` instead of `max-pixels`. The width and height limits always apply. An image that
+exceeds a configured limit is rejected and is not stored.
+
+Pixel counts accept exact integers or readable decimal strings such as `500KP`, `12MP`, or `1.5GP`. These input limits
+are separate from `transform.limits`, which constrain the output of preprocessing and variant generation. See the
+[configuration reference](../../reference/configuration-reference.md#supplied-asset-content-limits) for all defaults
+and accepted pixel-count formats.
+
 ## Information
 
 Asset information is supplied as JSON. All information fields are optional, but fields such as `alt` and LQIP(s) are
