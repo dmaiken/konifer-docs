@@ -304,7 +304,7 @@ parameter, or `-1` for all assets within the path:
 GET /assets/users/123/profile-picture/-/new/link?limit=3
 ```
 
-### Entry ID
+## Entry ID
 
 When an asset is stored within your path, it is assigned a unique `entryId`. This ID is an absolute reference to the
 asset
