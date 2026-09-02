@@ -220,9 +220,7 @@ By default, nothing is configured within `paths`. If nothing is configured, the 
 paths {
   # Match everything greedily after /
   "/**" {
-    image {
-      lqip = []
-    }
+    lqip = []
     limits {
       max-width = 8192
       max-height = 8192
@@ -238,10 +236,8 @@ paths {
       }
       preprocessing {
         enabled = false
-        image {
-          # Preprocessing disabled by default
-          # Populate with URL manipulation parameters i.e. w = 100, h = 200, r = 90, etc.
-        }
+        # Preprocessing disabled by default
+        # Populate with URL manipulation parameters i.e. w = 100, h = 200, r = 90, etc.
       }
       eager-variants = []
       on-demand-variant {
@@ -286,19 +282,17 @@ paths {
 }
 ```
 
-### Image
+### LQIP
 
 ```hocon
 "/**" {
-  image {
-    lqip = []
-  }
+  lqip = []
 }
 ```
 
-| Property     | Description             | Allowed Input            | Default |
-|:-------------|:------------------------|:-------------------------|:--------|
-| `image.lqip` | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
+| Property | Description             | Allowed Input            | Default |
+|:---------|:------------------------|:-------------------------|:--------|
+| `lqip`   | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
 
 ### Allowed Content Types
 
@@ -388,9 +382,7 @@ See [Transformation Limits](../concepts/Variants/overview.md#transformation-limi
   transform {
     preprocessing {
       enabled = false
-      image {
-        # Preprocessing disabled by default
-      }
+      # Preprocessing disabled by default
     }
   }
 }
@@ -400,13 +392,13 @@ See [Transformation Limits](../concepts/Variants/overview.md#transformation-limi
 |:----------------------------------|:---------------------|:--------------|:--------|
 | `transform.preprocessing.enabled` | Enable preprocessing | Boolean       | `false` |
 
-All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within the
-`image` block as well as:
+All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used directly
+within the `preprocessing` block, as well as:
 
-| Property                                   | Description    | Allowed Input | Default |
-|:-------------------------------------------|:---------------|:--------------|:--------|
-| `transform.preprocessing.image.max-height` | Maximum height | Integer       | None    |
-| `transform.preprocessing.image.max-width`  | Maximum width  | Integer       | None    |
+| Property                                 | Description    | Allowed Input | Default |
+|:-----------------------------------------|:---------------|:--------------|:--------|
+| `transform.preprocessing.max-height`     | Maximum height | Integer       | None    |
+| `transform.preprocessing.max-width`      | Maximum width  | Integer       | None    |
 
 :::note
 `h` and `w` take precedence over `max-height` and `max-width` respectively, if both are specified.

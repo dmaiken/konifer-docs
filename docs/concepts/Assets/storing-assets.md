@@ -150,10 +150,8 @@ paths {
     transform {
       preprocessing {
         enabled = true
-        image {
-          format = "image/avif"
-          w = 1024
-        }
+        format = "image/avif"
+        w = 1024
       }
     }
   }
@@ -161,7 +159,7 @@ paths {
 ```
 
 All [image transformation parameters](../../reference/image-transformation-reference.md#parameter-reference) can be used
-within the `image` block.
+directly within the `preprocessing` block.
 
 ### Max Width/Height
 
@@ -177,11 +175,9 @@ paths {
     transform {
       preprocessing {
         enabled = true
-        image {
-          max-height = 1024
-          max-width = 1024
-          fit = fit # Optional - defaults to: fit
-        }
+        max-height = 1024
+        max-width = 1024
+        fit = fit # Optional - defaults to: fit
       }
     }
   }
@@ -199,11 +195,9 @@ paths {
     transform {
       preprocessing {
         enabled = true
-        image {
-          max-height = 1024
-          max-width = 1024
-          w = 2048
-        }
+        max-height = 1024
+        max-width = 1024
+        w = 2048
       }
     }
   }

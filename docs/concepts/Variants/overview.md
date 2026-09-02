@@ -129,7 +129,7 @@ so Konifer completes validation after normalization at runtime. An invalid on-de
 returns `400 Bad Request`; eager generation remains best-effort and does not create the invalid variant.
 
 :::note
-The `max-width` and `max-height` properties inside `transform.preprocessing.image` are resize instructions. The
+The `max-width` and `max-height` properties inside `transform.preprocessing` are resize instructions. The
 properties inside `transform.limits` are safeguards that reject transformed output exceeding the configured limits.
 :::
 
