@@ -161,11 +161,10 @@ paths {
 All [image transformation parameters](../../reference/image-transformation-reference.md#parameter-reference) can be used
 directly within the `preprocessing` block.
 
-### Max Width/Height
+### Clamp Width/Height
 
-In addition to all image transformation parameters, you can also specify `max-height` and `max-width`. If the source
-content's
-height or width exceeds their respective maximums, they are down-scaled.
+In addition to all image transformation parameters, you can specify `clamp-height` and `clamp-width`. If the source
+content's height or width exceeds the corresponding clamp, it is down-scaled.
 
 The following configuration will downscale any image larger than 1024x1024 down to 1024x1024 using a fit mode of `fit`.
 
@@ -175,8 +174,8 @@ paths {
     transform {
       preprocessing {
         enabled = true
-        max-height = 1024
-        max-width = 1024
+        clamp-height = 1024
+        clamp-width = 1024
         fit = fit # Optional - defaults to: fit
       }
     }
@@ -185,9 +184,8 @@ paths {
 ```
 
 :::note
-`h` and `w` take precedence over `max-height` and `max-width` respectively. This configuration will result in images
-being
-scaled to 2048x1024. Avoid mixing height/width and `max-height`/`max-width`.
+`h` and `w` take precedence over `clamp-height` and `clamp-width` respectively. This configuration will result in images
+being scaled to 2048x1024. Avoid mixing height/width and `clamp-height`/`clamp-width`.
 
 ```hocon
 paths {
@@ -195,8 +193,8 @@ paths {
     transform {
       preprocessing {
         enabled = true
-        max-height = 1024
-        max-width = 1024
+        clamp-height = 1024
+        clamp-width = 1024
         w = 2048
       }
     }

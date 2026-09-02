@@ -395,13 +395,13 @@ See [Transformation Limits](../concepts/Variants/overview.md#transformation-limi
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used directly
 within the `preprocessing` block, as well as:
 
-| Property                                 | Description    | Allowed Input | Default |
-|:-----------------------------------------|:---------------|:--------------|:--------|
-| `transform.preprocessing.max-height`     | Maximum height | Integer       | None    |
-| `transform.preprocessing.max-width`      | Maximum width  | Integer       | None    |
+| Property                               | Description    | Allowed Input | Default |
+|:---------------------------------------|:---------------|:--------------|:--------|
+| `transform.preprocessing.clamp-height` | Maximum height | Integer       | None    |
+| `transform.preprocessing.clamp-width`  | Maximum width  | Integer       | None    |
 
 :::note
-`h` and `w` take precedence over `max-height` and `max-width` respectively, if both are specified.
+`h` and `w` take precedence over `clamp-height` and `clamp-width` respectively, if both are specified.
 :::
 
 #### Eager Variants

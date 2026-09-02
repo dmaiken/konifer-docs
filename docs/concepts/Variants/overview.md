@@ -19,7 +19,7 @@ A variant is composed of:
 The Original Variant is the physical representation of the asset content supplied during the Store Assets request.
 **All other variants for this asset are transformed *from* the Original Variant.**
 
-Only pre-processing defined in your configuration (e.g., applying a global `max-width` limit or file format conversion)
+Only pre-processing defined in your configuration (e.g., applying a global `clamp-width` or file format conversion)
 can transform the supplied content into the Original Variant. If no pre-processing is configured or applied, the
 Original Variant is the exact representation of the supplied content.
 
@@ -129,7 +129,7 @@ so Konifer completes validation after normalization at runtime. An invalid on-de
 returns `400 Bad Request`; eager generation remains best-effort and does not create the invalid variant.
 
 :::note
-The `max-width` and `max-height` properties inside `transform.preprocessing` are resize instructions. The
+The `clamp-width` and `clamp-height` properties inside `transform.preprocessing` are resize instructions. The
 properties inside `transform.limits` are safeguards that reject transformed output exceeding the configured limits.
 :::
 
