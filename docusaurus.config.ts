@@ -47,7 +47,7 @@ async function fetchLatestKoniferVersion(): Promise<string> {
 
 const buildConfig = (koniferVersion: string): Config => ({
   title: 'Konifer',
-  tagline: 'Image storage, transformation, and delivery',
+  tagline: 'Backend image management for application-owned media',
   favicon: 'img/favicon.png',
   trailingSlash: false,
 

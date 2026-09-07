@@ -1,16 +1,16 @@
-import type {ReactNode} from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import Layout from '@theme/Layout';
-import Heading from '@theme/Heading';
+import type { ReactNode } from "react";
+import clsx from "clsx";
+import Link from "@docusaurus/Link";
+import Layout from "@theme/Layout";
+import Heading from "@theme/Heading";
 import {
   Highlight,
   Prism,
   themes as prismThemes,
   type PrismTheme,
-} from 'prism-react-renderer';
-import {hoconGrammar} from '../prism/prism.hocon';
-import styles from './index.module.css';
+} from "prism-react-renderer";
+import { hoconGrammar } from "../prism/prism.hocon";
+import styles from "./index.module.css";
 
 Prism.languages.hocon = hoconGrammar;
 
@@ -18,95 +18,110 @@ const hoconTheme: PrismTheme = {
   ...prismThemes.dracula,
   plain: {
     ...prismThemes.dracula.plain,
-    backgroundColor: '#121713',
+    backgroundColor: "#121713",
   },
   styles: [
     ...prismThemes.dracula.styles,
-    {types: ['property'], style: {color: 'rgb(139, 233, 253)'}},
-    {types: ['operator'], style: {color: 'rgb(255, 121, 198)'}},
+    { types: ["property"], style: { color: "rgb(139, 233, 253)" } },
+    { types: ["operator"], style: { color: "rgb(255, 121, 198)" } },
   ],
 };
 
-const responseModes = ['content', 'link', 'redirect', 'download', 'info'];
-
-const capabilities = [
+const responsibilities = [
   {
-    title: 'Stable application paths',
-    body: 'Address images using paths your application can derive from its own domain model, without persisting separate identifiers for routine requests.',
+    number: "01",
+    title: "Ingest",
+    body: "Accept multipart uploads or fetch remote images from an explicit domain allowlist.",
   },
   {
-    title: 'Reusable transformations',
-    body: 'Generate variants on demand or from named profiles, then store and reuse them instead of repeating work for every request.',
+    number: "02",
+    title: "Validate",
+    body: "Enforce byte, dimension, pixel, content-type, and optional content-classification rules.",
   },
   {
-    title: 'Flexible storage and delivery',
-    body: 'Use S3-compatible or filesystem storage, then deliver content through direct responses, object-store links, redirects, or a CDN. Konifer fits into the infrastructure your application already uses.',
+    number: "03",
+    title: "Persist",
+    body: "Keep image content, metadata, path history, and generated variants under one API.",
+  },
+  {
+    number: "04",
+    title: "Maintain",
+    body: "Replace assets at stable paths, update metadata, and address individual entries when needed.",
+  },
+  {
+    number: "05",
+    title: "Retire",
+    body: "Delete one image, a complete path, or an application subtree with recursive operations.",
   },
 ];
 
-const formats = ['JPEG', 'PNG', 'WebP', 'AVIF', 'JPEG XL', 'HEIC', 'GIF'];
+const infrastructure = [
+  {
+    label: "Binary content",
+    value: "S3-compatible object storage or a filesystem",
+  },
+  {
+    label: "Asset records",
+    value: "PostgreSQL for paths, metadata, and variant state",
+  },
+  {
+    label: "Delivery",
+    value: "Links, redirects, direct responses, and the CDN you choose",
+  },
+];
 
-function CodeWindow(): ReactNode {
+function ApiExample(): ReactNode {
   return (
-    <figure className={styles.codeFigure}>
-      <div className={styles.codeWindow} aria-label="A stable Konifer asset path">
-        <div className={styles.windowBar}>
-          <span />
-          <span />
-          <span />
-        </div>
-        <pre>
-          <code>
-            <span className={styles.codeComment}>
-              # Store an image where your app already knows it belongs
-            </span>
-            {'\n'}
-            <span className={styles.codeVerb}>POST</span> /assets/users/123/profile-picture
-            {'\n\n'}
-            <span className={styles.codeComment}>
-              # Read the current image from the same stable path
-            </span>
-            {'\n'}
-            <span className={styles.codeVerb}>GET </span>
-            /assets/users/123/profile-picture/-/content
-            {'\n\n'}
-            <span className={styles.codeComment}># Request a reusable transformed variant</span>
-            {'\n'}
-            <span className={styles.codeVerb}>GET </span>
-            /assets/users/123/profile-picture/-/content?profile=thumbnail
-          </code>
-        </pre>
-      </div>
-      <figcaption>Replace the image later. Your application keeps the same URL.</figcaption>
-    </figure>
+    <div
+      className={styles.apiExample}
+      aria-label="Example Konifer asset API requests"
+    >
+      <div className={styles.codeLabel}>Asset API</div>
+      <pre>
+        <code>
+          <span className={styles.codeComment}>
+            # Store at an application-owned path
+          </span>
+          {"\n"}
+          <span className={styles.codeVerb}>POST</span>{" "}
+          /assets/users/123/profile-picture
+          {"\n\n"}
+          <span className={styles.codeComment}>
+            # Read information or get a delivery link
+          </span>
+          {"\n"}
+          <span className={styles.codeVerb}>GET </span>{" "}
+          /assets/users/123/profile-picture/-/info
+          {"\n"}
+          <span className={styles.codeVerb}>GET </span>{" "}
+          /assets/users/123/profile-picture/-/redirect
+          {"\n\n"}
+          <span className={styles.codeComment}>
+            # Remove the user&apos;s complete image subtree
+          </span>
+          {"\n"}
+          <span className={styles.codeVerb}>DELETE</span>{" "}
+          /assets/users/123/-/recursive
+        </code>
+      </pre>
+    </div>
   );
 }
 
-function CapabilityCard({
-  title,
-  body,
-}: {
-  title: string;
-  body: string;
-}): ReactNode {
-  return (
-    <article className={styles.capabilityCard}>
-      <Heading as="h3">{title}</Heading>
-      <p>{body}</p>
-    </article>
-  );
-}
-
-function HoconCodeBlock({code, className}: {code: string; className: string}): ReactNode {
+function HoconCodeBlock({ code }: { code: string }): ReactNode {
   return (
     <Highlight prism={Prism} theme={hoconTheme} code={code} language="hocon">
-      {({className: prismClassName, style, tokens, getLineProps, getTokenProps}) => (
-        <pre className={clsx(className, prismClassName)} style={style} tabIndex={0}>
+      {({ className, style, tokens, getLineProps, getTokenProps }) => (
+        <pre
+          className={clsx(styles.configCode, className)}
+          style={style}
+          tabIndex={0}
+        >
           <code>
             {tokens.map((line, lineIndex) => (
-              <div key={lineIndex} {...getLineProps({line})}>
+              <div key={lineIndex} {...getLineProps({ line })}>
                 {line.map((token, tokenIndex) => (
-                  <span key={tokenIndex} {...getTokenProps({token})} />
+                  <span key={tokenIndex} {...getTokenProps({ token })} />
                 ))}
               </div>
             ))}
@@ -120,214 +135,185 @@ function HoconCodeBlock({code, className}: {code: string; className: string}): R
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="Image storage, transformation, and delivery"
-      description="Konifer is an image storage, transformation, and delivery API with application-shaped paths, CDN-friendly responses, and modern format support."
+      title="Backend image management"
+      description="Konifer is a self-hosted backend service for ingesting, validating, storing, and managing application-owned images."
     >
       <main className={styles.page}>
         <section className={styles.hero}>
-          <div className={styles.heroInner}>
-            <div className={styles.heroCopy}>
-              <span className={styles.eyebrow}>STORE · TRANSFORM · DELIVER</span>
-              <Heading as="h1">Image infrastructure that fits your application.</Heading>
-              <p className={styles.heroLead}>
-                Manage originals, reusable variants, metadata, and delivery through one API, with
-                storage and policies that adapt to each image workflow.
-              </p>
-              <div className={styles.heroActions}>
-                <Link
-                  className={clsx('button button--primary', styles.primaryButton)}
-                  to="/docs/start-here/getting-started"
-                >
-                  Get started
-                </Link>
-                <Link className={clsx('button button--secondary', styles.secondaryButton)} to="/docs">
-                  Read the docs
-                </Link>
-              </div>
-            </div>
-            <div className={styles.heroVisual}>
-              <CodeWindow />
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionKicker}>Why Konifer</span>
-            <Heading as="h2">One API for the complete image lifecycle</Heading>
-            <p>
-              Konifer brings storage, transformation, metadata, policy, caching, and delivery
-              together behind a consistent HTTP API.
+          <div className={styles.heroCopy}>
+            <Heading as="h1">Image management for backend teams.</Heading>
+            <p className={styles.heroLead}>
+              Konifer handles ingestion, validation, storage, metadata,
+              replacement, and deletion for every image your application owns.
+              Address images with paths your backend already understands, then
+              serve them through the delivery layer you choose.
             </p>
-          </div>
-          <div className={styles.capabilityGrid}>
-            {capabilities.map((capability) => (
-              <CapabilityCard key={capability.title} {...capability} />
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.transformLayout}>
-            <div>
-              <span className={styles.sectionKicker}>Reusable variants</span>
-              <Heading as="h2">Transform once, reuse the result</Heading>
-              <p>
-                Request image variants on demand or define named profiles for common outputs.
-                Generated variants are stored and reused, so expensive work does not repeat for
-                every viewer.
-              </p>
-              <div className={styles.formatList}>
-                {formats.map((format) => (
-                  <span key={format}>{format}</span>
-                ))}
-              </div>
-            </div>
-            <div className={styles.transformPanel}>
-              <span className={styles.panelLabel}>Request</span>
-              <code>/assets/products/sku-123/hero/-/content?profile=social-card</code>
-              <div className={styles.transformArrow} aria-hidden="true">
-                ↓
-              </div>
-              <div className={styles.variantResult}>
-                <span>Generated once</span>
-                <strong>1200 × 630 WebP</strong>
-                <small>Stored and reused on later requests</small>
-              </div>
+            <div className={styles.heroActions}>
+              <Link
+                className={clsx("button button--primary", styles.primaryButton)}
+                to="/docs/start-here/getting-started"
+              >
+                Get started
+              </Link>
+              <Link className={styles.textLink} to="/docs">
+                Read the overview <span aria-hidden="true">→</span>
+              </Link>
             </div>
           </div>
+          <ApiExample />
         </section>
 
         <section className={clsx(styles.section, styles.pathSection)}>
-          <div className={styles.apiCopy}>
-            <span className={styles.sectionKicker}>Stable paths</span>
-            <Heading as="h2">Replace an image without changing its URL</Heading>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Domain-aligned API</span>
+            <Heading as="h2">Make the image path part of your model.</Heading>
             <p>
-              Post a new asset to the same path and the default request resolves to the newest
-              entry. Your app can replace an avatar or publish a new hero image without updating
-              the URL it already knows.
+              A profile picture belongs to a user. A listing photo belongs to a
+              listing. Konifer lets your backend encode that relationship
+              directly instead of managing another <code>imageId</code>. Want to use
+              an <code>imageId</code>? That's fine too.
             </p>
+            <div className={styles.pathExamples}>
+              <code>/assets/users/123/profile-picture</code>
+              <code>/assets/listings/ca-90210/gallery</code>
+              <code>/assets/claims/456/evidence</code>
+              <code>/assets/358e0754-0c12-4541-891a-3e135c3b49c5</code>
+            </div>
             <p>
-              Return the asset as content, a link, a redirect, a download, or structured
-              information to match each delivery workflow.
+              Path configuration applies storage, validation, preprocessing, and
+              delivery policy to the same hierarchy. Broader rules are
+              inherited; the most specific rule wins.
             </p>
-            <Link to="/docs/concepts/Assets/concepts-fetching-assets">Explore asset delivery</Link>
+            <Link
+              className={styles.textLink}
+              to="/docs/concepts/concepts-path-configuration"
+            >
+              Read about path configuration <span aria-hidden="true">→</span>
+            </Link>
           </div>
-          <div className={styles.pathPanel}>
-            <div className={styles.stablePath}>
-              <span>Stable application path</span>
-              <code>/assets/products/sku-123/hero</code>
-            </div>
-            <div className={styles.replacementFlow}>
-              <div>
-                <small>Initial upload</small>
-                <code>POST</code>
-              </div>
-              <span aria-hidden="true">→</span>
-              <div>
-                <small>Replacement</small>
-                <code>POST</code>
-              </div>
-              <span aria-hidden="true">→</span>
-              <div className={styles.flowResult}>
-                <small>Default GET</small>
-                <strong>newest asset</strong>
-              </div>
-            </div>
-            <div className={styles.responsePanel}>
-              <span className={styles.responseLabel}>Return format</span>
-              <div className={styles.responseList}>
-                {responseModes.map((mode) => (
-                  <code key={mode}>/-/{mode}</code>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className={clsx(styles.section, styles.rulesSection)}>
-          <div className={styles.rulesCopy}>
-            <span className={styles.sectionKicker}>Content-aware upload rules</span>
-            <Heading as="h2">Reject the wrong image before it becomes an asset</Heading>
-            <p>
-              Evaluate uploads with zero-shot image classification before they are stored. Define
-              reusable rules, attach them to path patterns, and give each area of your product its
-              own visual content policy.
-            </p>
-            <Link to="/docs/concepts/concepts-upload-rules">Explore Upload Rules</Link>
-          </div>
-          <HoconCodeBlock
-            className={styles.rulesCode}
-            code={`rule-definitions {
-  "product-photo" {
-    prompts = [
-      "a clean catalog image of a product",
-      "a product photo on a plain background"
-    ]
-    threshold = 0.66
-  }
-}
-
-paths {
-  "/catalog/products/**" {
-    upload-ruleset {
-      default = reject
-      accept-rules = [ { rule = "product-photo" } ]
+          <div className={styles.codeColumn}>
+            <div className={styles.codeLabel}>konifer.conf</div>
+            <HoconCodeBlock
+              code={`paths {
+  "/users/**" {
+    limits {
+      max-bytes = 20MB
+      max-pixels = 15MP
     }
   }
-}`}
-          />
-        </section>
 
-        <section className={clsx(styles.section, styles.configSection)}>
-          <div>
-            <span className={styles.sectionKicker}>Policy by path</span>
-            <Heading as="h2">Configure behavior where images belong</Heading>
-            <p>
-              Configure behavior by path pattern, then let inheritance do the work. Public avatars,
-              private user content, CMS images, and generated media can share one service while
-              using different storage buckets, upload rulesets, eager variants, preprocessing,
-              redirect strategies, caching, and LQIP behavior.
-            </p>
-            <Link to="/docs/concepts/concepts-path-configuration">Read Path Configuration</Link>
-          </div>
-          <HoconCodeBlock
-            className={styles.configCode}
-            code={`paths {
-  "/public/avatars/**" {
-    transform { eager-variants = [ small, medium, large ] }
-    return-format.redirect.strategy = template
-    cache-control.max-age = 31536000
-  }
   "/users/*/profile-picture" {
     bucket = "profile-pictures"
-    allowed-content-types = [ "image/jpeg" ]
+    allowed-content-types = [
+      "image/jpeg",
+      "image/png"
+    ]
   }
 }`}
-          />
+            />
+          </div>
         </section>
 
-        <section className={clsx(styles.section, styles.finalCta)}>
-          <div>
-            <span className={styles.sectionKicker}>Try Konifer</span>
-            <Heading as="h2">Run your first image workflow locally</Heading>
+        <section className={clsx(styles.section, styles.lifecycleSection)}>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Lifecycle management</span>
+            <Heading as="h2">
+              One service owns image state from upload to deletion.
+            </Heading>
             <p>
-              Start Konifer, upload an original image, and request a cached variant in a few steps.
+              Image handling often grows into separate upload endpoints, bucket
+              conventions, validation jobs, and cleanup scripts. Konifer brings
+              those responsibilities behind one consistent API and policy model.
+            </p>
+            <Link
+              className={styles.textLink}
+              to="/docs/concepts/Assets/concepts-assets"
+            >
+              Explore the asset model <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <ol className={styles.responsibilityList}>
+            {responsibilities.map((responsibility) => (
+              <li key={responsibility.number}>
+                <span>{responsibility.number}</span>
+                <div>
+                  <Heading as="h3">{responsibility.title}</Heading>
+                  <p>{responsibility.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className={clsx(styles.section, styles.infrastructureSection)}>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Infrastructure neutral</span>
+            <Heading as="h2">
+              Own image management. Keep your storage and CDN.
+            </Heading>
+            <p>
+              Konifer manages assets and serves links to them. It can return
+              image content when useful, but it does not need to replace the
+              edge delivery system that already works for your application.
+            </p>
+            <p>
+              Run it with a filesystem or any S3-compatible object store. Put
+              the CDN you already operate in front, use redirects to object
+              storage, or combine both approaches by path.
+            </p>
+            <div className={styles.infrastructureLinks}>
+              <Link
+                className={styles.textLink}
+                to="/docs/reference/reference-variant-storage"
+              >
+                Storage architecture <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                className={styles.textLink}
+                to="/docs/reference/http-caching"
+              >
+                HTTP caching <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
+          <dl className={styles.infrastructureList}>
+            {infrastructure.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className={styles.finalCta}>
+          <div>
+            <span className={styles.sectionLabel}>Start locally</span>
+            <Heading as="h2">Try the complete API with one container.</Heading>
+            <p>
+              In-memory mode is built for local evaluation. Add PostgreSQL and
+              durable storage when you deploy.
             </p>
           </div>
-          <div className={styles.finalActions}>
-            <Link
-              className={clsx('button button--primary', styles.ctaPrimaryButton)}
-              to="/docs/start-here/getting-started"
-            >
-              Get started
-            </Link>
-            <Link
-              className={clsx('button button--secondary', styles.ctaSecondaryButton)}
-              to="/docs/operate/deployment"
-            >
-              Deployment guide
-            </Link>
+          <div className={styles.startPanel}>
+            <code>
+              docker run -e IN_MEMORY=true -p 8080:8080
+              ghcr.io/dmaiken/konifer:latest
+            </code>
+            <div>
+              <Link
+                className={clsx("button button--primary", styles.primaryButton)}
+                to="/docs/start-here/getting-started"
+              >
+                Follow the guide
+              </Link>
+              <Link
+                className={styles.darkTextLink}
+                to="/docs/operate/deployment"
+              >
+                Deployment reference <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </section>
       </main>
