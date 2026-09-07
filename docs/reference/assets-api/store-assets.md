@@ -123,9 +123,11 @@ Content-Type: application/json
 }
 ```
 
-Additionally, a `Location` header is returned containing an absolute URL to the asset's link return format.
-> Note: the entryId query selector is supplied, so the URL is absolute and can be used for later GET and PUT
-> operations.
+Additionally, a `Location` header is returned containing an absolute, entry-specific asset URL. Konifer uses
+`http.public-url` as its base when configured and otherwise uses the incoming request's scheme, host, and port.
+
+> Note: The `entryId` query selector is supplied, so the URL identifies this asset within the path and can be used for
+> later GET and PUT operations.
 
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|

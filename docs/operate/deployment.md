@@ -120,8 +120,10 @@ paths {
 }
 ```
 
-Set `http.public-url` to the externally visible origin. Konifer uses it when it creates asset links; it does not need to
-match the internal container address.
+Set `http.public-url` to the externally visible origin when it differs from the origin Konifer sees on incoming requests.
+Konifer uses it for service delivery URLs and absolute asset `Location` headers. You may omit it when the incoming
+request already has the correct public scheme, host, and port. Konifer does not use forwarded headers to reconstruct the
+external origin.
 
 `force-path-style` is required by some S3-compatible providers, including the MinIO configuration in the repository.
 Omit the custom endpoint and static access key when your runtime supplies AWS credentials through its workload identity.
@@ -260,8 +262,8 @@ Before accepting production traffic, verify that:
 3. The `ltree` extension is installed.
 4. Every configured S3 bucket exists.
 5. Secrets are supplied outside `konifer.conf` and are not committed to source control.
-6. `http.public-url` matches the public origin.
-7. `return-format.redirect` is configured in appropriate paths if redirects are used.
+6. `http.public-url` matches the public origin when the request origin cannot be used directly.
+7. `delivery` is configured in appropriate paths when clients should use presigned or template URLs.
 8. TLS and access control are enforced by the surrounding platform.
 9. Public transformation URLs are signed when appropriate.
 10. Upload-size, CPU, memory, and temporary-storage limits have been tested.
