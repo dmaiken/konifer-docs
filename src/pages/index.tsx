@@ -94,7 +94,7 @@ function ApiExample(): ReactNode {
           /assets/users/123/profile-picture/-/info
           {"\n"}
           <span className={styles.codeVerb}>GET </span>{" "}
-          /assets/users/123/profile-picture/-/redirect
+          /assets/users/123/profile-picture/-/link
           {"\n\n"}
           <span className={styles.codeComment}>
             # Remove the user&apos;s complete image subtree

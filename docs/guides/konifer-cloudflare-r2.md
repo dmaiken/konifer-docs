@@ -83,13 +83,11 @@ paths {
     object-store {
       bucket = "profile-pictures"
     }
-    return-format {
-      redirect {
-        strategy = presigned
+    delivery {
+      strategy = presigned
 
-        presigned {
-          ttl = 30m
-        }
+      presigned {
+        ttl = 30m
       }
     }
   }
@@ -141,9 +139,12 @@ Bruno 4.0.0 may crash while previewing JXL responses.
 Open the **Fetch Presigned Redirect** request. Enable any transformations you want under **Params**, then send the
 request.
 
-Konifer returns `307 Temporary Redirect` because the path uses the `presigned` redirect strategy. This request disables
+Konifer returns `307 Temporary Redirect` because the path uses the `presigned` delivery strategy. This request disables
 automatic redirect following so you can inspect the intermediate response. Confirm that the `Location` response header
 contains an R2 URL with `X-Amz-Algorithm`, `X-Amz-Expires`, and `X-Amz-Signature` query parameters.
+
+The same strategy controls the `url` in a `link` response, so requesting the path without a return-format selector also
+returns a presigned R2 URL in JSON.
 
 To follow the redirect and retrieve the image from R2, send the **Fetch and Follow Presigned Redirect** request. Confirm
 that the final response is `200 OK` and contains the image.

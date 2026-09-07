@@ -35,9 +35,8 @@ If no format is acceptable using either method, a `400 Bad Request` is returned.
 
 ## Fetching Link (`/link`)
 
-Fetches an absolute link to the asset as well as any [LQIP](../../concepts/lqip.md) and `alt` fields. If no return
-format
-selector is supplied, `link` is the default.
+Fetches the asset's resolved delivery URL as well as any [LQIP](../../concepts/lqip.md) and `alt` fields. If no return
+format selector is supplied, `link` is the default.
 
 ### Request
 
@@ -70,9 +69,12 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 
 | Field Name | Type   | Description                                                                  |
 |------------|--------|------------------------------------------------------------------------------|
-| `url`      | String | The absolute URL (using `/entry`) to the `content` API                       |
+| `url`      | String | The URL resolved by the path's `delivery.strategy`                           |
 | `lqip`     | LQIP   | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
 | `alt`      | String | The `alt` supplied when storing the asset                                    |
+
+The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
+URL in the same field.
 
 ## Fetching Redirect (`/redirect`)
 
@@ -88,24 +90,13 @@ Returns a **`Temporary Redirect 307`**:
 
 ```http
 HTTP/1.1 307
-Location: https://assets.mycdn.com/d905170f-defd-47e4-b606-d01993ba7b42
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content
 ```
 
-If [redirection strategy](../../concepts/Assets/fetching-assets.md#redirect-strategies) is `none` (default), then no
-redirect is returned:
-
-```http
-HTTP/1.1 200 OK
-Content-Type: image/jpeg
-Content-Length: 45123
-Etag: 123456
-K-Alt: "Your defined alt, if any"
-K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
-K-LQIP-Blurhash: "BASE64 BlurHash, if enabled"
-K-LQIP-Thumbhash: "BASE64 ThumbHash, if enabled"
-
-<image bytes>
-```
+The `Location` value is resolved with the same path-level
+[delivery strategy](../../concepts/Assets/fetching-assets.md#delivery-strategies) used by `link`. The default `service`
+strategy redirects to the selected entry's `/content` endpoint; `presigned` and `template` can redirect directly to
+object storage or a CDN.
 
 ## Fetching Asset Information
 

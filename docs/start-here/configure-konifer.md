@@ -40,7 +40,7 @@ Use an absolute path instead of `$(pwd)` when your deployment system does not ru
 ## Start with a small configuration
 
 This example describes the essential persistent deployment settings: PostgreSQL for asset information, S3-compatible
-storage for image content, a public URL for generated links, and a default bucket for every asset path.
+storage for image content, and a default bucket for every asset path.
 
 ```hocon title="konifer.conf"
 data-store {
@@ -64,10 +64,6 @@ object-store {
   }
 }
 
-http {
-  public-url = "https://images.example.com"
-}
-
 paths {
   "/**" {
     object-store {
@@ -77,8 +73,18 @@ paths {
 }
 ```
 
-Replace the hostnames, public URL, and bucket with values for your environment. Create every configured bucket before
-starting Konifer.
+Replace the hostnames and bucket with values for your environment. Create every configured bucket before starting
+Konifer.
+
+The default delivery strategy sends clients through Konifer's `/content` endpoint. Its absolute URL uses the incoming
+request's scheme, host, and port, so `http.public-url` is not required for local use. In a deployment where the public
+origin differs from the incoming request origin, set it explicitly:
+
+```hocon
+http {
+  public-url = "https://images.example.com"
+}
+```
 
 The `paths` block is where image behavior becomes application-specific. Start with a default rule, then add more
 specific paths as your needs grow:
@@ -116,7 +122,8 @@ Konifer supports singular `*` and greedy `**` wildcards.
 ## Keep secrets out of `konifer.conf`
 
 Use `konifer.conf` for non-secret settings: provider choices, hostnames, bucket names, path rules, transformation
-profiles, and public URLs. Supply secrets through your platform's secret mechanism or supported environment variables:
+profiles, and an optional public URL. Supply secrets through your platform's secret mechanism or supported environment
+variables:
 
 ```dotenv title="konifer.env"
 PG_USER=konifer

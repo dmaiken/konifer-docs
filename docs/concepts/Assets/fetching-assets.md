@@ -77,7 +77,7 @@ You can return your asset in one of five different return formats:
 
 ### `link` (default)
 
-Returns a link to the asset in your object store. If you have any LQIPs enabled, these are returned as well.
+Returns the asset's resolved delivery URL. If you have any LQIPs enabled, these are returned as well.
 
 ```http
 GET /assets/users/123/profile-picture/-/link
@@ -100,9 +100,12 @@ Returns:
 
 | Field Name | Type   | Description                                                                  |
 |------------|--------|------------------------------------------------------------------------------|
-| `url`      | String | The absolute URL (using `/entry`) to the `content` API                       |
+| `url`      | String | The URL resolved by the path's `delivery.strategy`                           |
 | `lqip`     | LQIP   | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
 | `alt`      | String | The `alt` supplied when storing the asset                                    |
+
+The default `service` delivery strategy produces an absolute URL to the selected entry's `/content` endpoint, as shown
+above. The `presigned` and `template` strategies can instead produce an object-store or CDN URL.
 
 ### `content`
 
@@ -144,11 +147,7 @@ Content-Disposition: attachment; filename*=UTF-8''profile-picture.jpeg
 
 ### `redirect`
 
-By default, redirection is disabled and using the redirect selector returns asset content just like the `content`
-selector does.
-To enable, a redirect strategy must be defined within your path configuration.
-
-If enabled,
+Returns a `307 Temporary Redirect` to the same resolved delivery URL that the `link` response places in its `url` field.
 
 ```http
 GET /assets/users/123/profile-picture/-/redirect
@@ -158,75 +157,77 @@ Returns a **`Temporary Redirect 307`**:
 
 ```http
 Code: 307
-Location: https://assets.mydomain.com/d905170f-defd-47e4-b606-d01993ba7b42
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content
 ```
 
-#### Redirect Strategies
+With the default `service` strategy, the location is the selected entry's `/content` endpoint. This keeps the redirect
+selector useful with no delivery configuration.
 
-Redirect strategies are defined within Path Configuration. The default strategy is `none`.
+#### Delivery Strategies
+
+Delivery strategies are defined within Path Configuration and apply equally to `link` and `redirect`. The default
+strategy is `service`.
 
 ```hocon
 paths {
   "/**" {
-    return-format {
-      redirect {
-        strategy = "none|presigned|template"
-      }
+    delivery {
+      strategy = "service|presigned|template"
     }
   }
 }
 ```
 
-##### Presigned Redirection
+##### Service Delivery
+
+The `service` strategy returns an absolute URL to the selected entry's `content` representation. Konifer uses
+`http.public-url` as the base when configured; otherwise it uses the incoming request's scheme, host, and port.
+
+##### Presigned Delivery
 
 Setting strategy to `presigned` causes a presigned URL from your configured object store to be generated and used
-as the redirection URL in the `Location` response header. This strategy is only available for S3 and S3-compatible
-object stores;
-however, you must ensure your S3-compatible object store supports the Presigned API (most do).
+in either the `link` response or the redirect `Location` header. This strategy is available for S3 and S3-compatible
+object stores that support presigned requests.
 
-This strategy is not available for in-memory or filesystem object stores. If `presigned` is used for these object store
-implementations,
-no error is thrown, but redirection remains disabled.
+The in-memory and filesystem providers cannot generate presigned URLs. When either provider is used with `presigned`,
+Konifer falls back to the service delivery URL.
 
 To set the TTL for the presigned URL, specify it within the `presigned` configuration block.
 
 ```hocon
 paths {
   "/**" {
-    return-format {
-      redirect {
-        strategy = presigned
-        presigned {
-          ttl = 30m # default value
-        }
+    delivery {
+      strategy = presigned
+      presigned {
+        ttl = 30m # default value
       }
     }
   }
 }
 ```
 
-##### Template Redirection
+##### Template Delivery
 
-Template redirection gives you a powerful way to redirect to a proxy or expose your bucket directly. Define a
-template string, and Konifer uses that to resolve your redirection URL.
+Template delivery lets you route clients through a CDN or expose a bucket directly. Define a template string, and
+Konifer uses it to resolve the delivery URL.
 
 ```hocon
 paths {
   "/**" {
-    return-format {
-      redirect {
-        strategy = template
-        template {
-          string = "https://{bucket}.mydomain.com/{key}"
-        }
+    delivery {
+      strategy = template
+      template {
+        string = "https://{bucket}.mydomain.com/{key}"
       }
     }
   }
 }
 ```
 
-Konifer uses the `{bucket}` and `{key}` variables in your template to populate a URL string. Any protocol is permitted
-except for executable protocols such as `javascript:`, `vbscript:`, and `data:`.
+Konifer substitutes the selected variant's stored `{bucket}` and `{key}` values. This remains correct when path
+configuration changes after an asset is stored. Any protocol is permitted except executable protocols such as
+`javascript:`, `vbscript:`, and `data:`.
 
 ### `info`
 
@@ -301,7 +302,7 @@ query
 parameter, or `-1` for all assets within the path:
 
 ```http
-GET /assets/users/123/profile-picture/-/new/link?limit=3
+GET /assets/users/123/profile-picture/-/new/info?limit=3
 ```
 
 ## Entry ID

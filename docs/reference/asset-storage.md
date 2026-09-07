@@ -119,9 +119,11 @@ When using the Filesystem implementation, the `bucket` is the top-level director
 does not exist.
 Similar to the S3 implementation, the `key` represents the generated filename.
 
-### Redirection
+### Presigned delivery
 
-When using the filesystem or in-memory object store implementations, the `presigned` strategy is not supported.
+When using the filesystem or in-memory object store implementations, the `presigned` delivery strategy falls back to
+the service URL because these providers cannot generate presigned URLs. The S3 provider returns a temporary URL using
+the selected variant's stored bucket, key, and configured TTL.
 
 ## Metadata Store (PostgreSQL)
 
