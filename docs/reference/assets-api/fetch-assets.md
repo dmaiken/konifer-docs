@@ -67,11 +67,12 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 }
 ```
 
-| Field Name | Type   | Description                                                                  |
-|------------|--------|------------------------------------------------------------------------------|
-| `url`      | String | The URL resolved by the path's `delivery.strategy`                           |
-| `lqip`     | LQIP   | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`      | String | The `alt` supplied when storing the asset                                    |
+| Field Name   | Type      | Description                                                                  |
+|--------------|-----------|------------------------------------------------------------------------------|
+| `url`        | String    | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt`  | ISO 8601  | Populated for presigned URLs                                                 |
+| `lqip`       | LQIP      | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`        | String    | The `alt` supplied when storing the asset                                    |
 
 The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
 URL in the same field.

@@ -98,11 +98,12 @@ Returns:
 
 #### Asset Link Response
 
-| Field Name | Type   | Description                                                                  |
-|------------|--------|------------------------------------------------------------------------------|
-| `url`      | String | The URL resolved by the path's `delivery.strategy`                           |
-| `lqip`     | LQIP   | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`      | String | The `alt` supplied when storing the asset                                    |
+| Field Name  | Type     | Description                                                                  |
+|-------------|----------|------------------------------------------------------------------------------|
+| `url`       | String   | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt` | ISO 8601 | Populated for presigned URLs                                                 |
+| `lqip`      | LQIP     | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`       | String   | The `alt` supplied when storing the asset                                    |
 
 The default `service` delivery strategy produces an absolute URL to the selected entry's `/content` endpoint, as shown
 above. The `presigned` and `template` strategies can instead produce an object-store or CDN URL.
