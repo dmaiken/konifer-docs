@@ -130,11 +130,11 @@ source {
 }
 ```
 
-| Property                     | Description                                                                         | Allowed Input                     | Default |
-|:-----------------------------|:------------------------------------------------------------------------------------|:----------------------------------|:--------|
-| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain                  | `[]`    |
-| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL.                  | Positive byte size (see below)    | `20MB`  |
-| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive byte size (see below)    | `20MB`  |
+| Property                     | Description                                                                         | Allowed Input                  | Default |
+|:-----------------------------|:------------------------------------------------------------------------------------|:-------------------------------|:--------|
+| `source.url.allowed-domains` | Domains Konifer may access for asset storage and rule evaluation from a URL source. | Any valid domain               | `[]`    |
+| `source.url.max-bytes`       | Maximum asset or rule evaluation image size downloaded from a URL .                 | Positive byte size (see below) | `20MB`  |
+| `source.multipart.max-bytes` | Maximum asset or rule evaluation image size supplied as multipart content.          | Positive byte size (see below) | `20MB`  |
 
 Byte sizes can be exact byte counts, such as `20000000`, or strings with a case-insensitive unit. Decimal units are
 `B`, `KB`, `MB`, and `GB`; binary units are `KiB`, `MiB`, and `GiB`. The numeric part must be a positive integer. For

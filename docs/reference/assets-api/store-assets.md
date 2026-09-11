@@ -6,12 +6,13 @@ sidebar_label: "Store"
 ---
 
 When you store an asset, the asset and its metadata are stored in your object store and database, respectively.
-There are two ways to store an asset:
+There are three ways to store an asset:
 
 1. **Multipart Upload:** Use this when the asset content is available locally.
 2. **URL Source:** Use this when the asset content must be downloaded by Konifer from an external URL.
+3. **Amazon S3 ARN Source:** Use this when the asset is already stored in Amazon S3.
 
-The URL structure for both is:
+The request path for all three methods is:
 
 ```http
 POST /assets/{your/defined/path}
@@ -22,6 +23,9 @@ The difference is how the content is supplied. Only one method is allowed per re
 ## Multipart Upload
 
 A multipart upload lets you specify the asset content and metadata in the same request.
+
+Do not include `source.http.url`, `source.s3.arn`, or the deprecated top-level `url` field when supplying multipart
+content.
 
 | Part Name  | Content-Type                         | Purpose                                                          | Required?                  |
 |------------|--------------------------------------|------------------------------------------------------------------|----------------------------|
@@ -55,11 +59,15 @@ The structure for the `metadata` part is (no fields are required):
 ## URL Source
 
 Instead of supplying the file contents directly, you can specify a URL that Konifer downloads the asset content from.
-The request is identical to the multipart `metadata`, but you must add a `url` to the request:
+The request is identical to the multipart `metadata`, but you must add `source.http.url` to the request:
 
 ```json
 {
-    "url": "https://yoururl.com/image.jpeg",
+    "source": {
+        "http": {
+            "url": "https://yoururl.com/image.jpeg"
+        }
+    },
     "alt": "The alt text for an image",
     "labels": {
         "label-key": "label-value",
@@ -72,14 +80,57 @@ The request is identical to the multipart `metadata`, but you must add a `url` t
 }
 ```
 
-| Field Name | Type   | Description                                                                          | Required |
-|------------|--------|--------------------------------------------------------------------------------------|----------|
-| `alt`      | String | The supplied alt text of your asset                                                  | No       |
-| `labels`   | Object | Supplied key-value pairs associated with the asset                                   | No       |
-| `tags`     | Array  | Supplied attributes associated with the asset                                        | No       |
-| `url`      | String | URL source of content. Domain must be allowed within `allowed-domains` configuration | Yes      |
+| Field Name        | Type   | Description                                                                          | Required |
+|-------------------|--------|--------------------------------------------------------------------------------------|----------|
+| `alt`             | String | The supplied alt text of your asset                                                  | No       |
+| `labels`          | Object | Supplied key-value pairs associated with the asset                                   | No       |
+| `tags`            | Array  | Supplied attributes associated with the asset                                        | No       |
+| `source.http.url` | String | URL source of content. Domain must be allowed within `allowed-domains` configuration | Yes      |
 
 Since there is only JSON in the request, the `Content-Type` is `application/json`.
+
+The top-level `url` field is deprecated. Konifer continues to use it as a fallback when `source.http.url` is absent.
+
+## Amazon S3 ARN Source
+
+To import an object from Amazon S3, send an `application/json` request with a conventional S3 object ARN in
+`source.s3.arn`:
+
+```json
+{
+    "source": {
+        "s3": {
+            "arn": "arn:aws:s3:::asset-imports/customers/123/profile.jpeg"
+        }
+    },
+    "alt": "The alt text for an image",
+    "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+    },
+    "tags": [
+        "cold",
+        "verified"
+    ]
+}
+```
+
+| Field Name       | Type   | Description                                                       | Required |
+|------------------|--------|-------------------------------------------------------------------|----------|
+| `alt`            | String | The supplied alt text of your asset                               | No       |
+| `labels`         | Object | Supplied key-value pairs associated with the asset                | No       |
+| `tags`           | Array  | Supplied attributes associated with the asset                     | No       |
+| `source.s3.arn`  | String | Amazon S3 object ARN in the form `arn:partition:s3:::bucket/key`  | Yes      |
+
+The ARN must contain a bucket and a non-empty object key. S3 access point ARNs and ARNs containing an account or region
+are not accepted.
+
+Konifer looks for the presence of AWS S3 credentials using the default provider chain. If credentials exist, then S3 ARN
+uploads are enabled. Configuration under `object-store.s3` controls the _destination_ object store and does not configure
+this _source_ client, so ARN sources also work when the configured object store is a filesystem or S3-compatible service.
+
+Both URL and ARN downloads are limited by `source.url.max-bytes`. See the
+[Source configuration reference](../configuration-reference.md#source).
 
 ## Store Asset Response
 
@@ -100,7 +151,7 @@ Content-Type: application/json
     "phone": "Android"
   },
   "tags": [ "cold", "verified" ],
-  "source": "url", // or "upload" if using multipart upload
+  "source": "url",
   "sourceUrl": "https://yoururl.com/image.jpeg",
   "variants": [
     {
@@ -129,18 +180,21 @@ Additionally, a `Location` header is returned containing an absolute, entry-spec
 > Note: The `entryId` query selector is supplied, so the URL identifies this asset within the path and can be used for
 > later GET and PUT operations.
 
-| Field Name   | Type         | Description                                                          |
-|--------------|--------------|----------------------------------------------------------------------|
-| `class`      | String       | The type of the asset, currently always `image`                      |
-| `alt`        | String       | The supplied alt text of your asset                                  |
-| `entryId`    | Long         | System-generated unique identifier of asset within path              |
-| `labels`     | Object       | Supplied key-value pairs associated with the asset                   |
-| `tags`       | Array        | Supplied attributes associated with the asset                        |
-| `source`     | String       | Either `url` or `upload` depending on how you provided asset content |
-| `sourceUrl`  | String       | If URL source was used, then this is the supplied URL                |
-| `variants`   | AssetVariant | Will only contain the original variant - the one supplied            |
-| `createdAt`  | ISO 8601     | Date asset was stored                                                |
-| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
+| Field Name   | Type         | Description                                                                       |
+|--------------|--------------|-----------------------------------------------------------------------------------|
+| `class`      | String       | The type of the asset, currently always `image`                                   |
+| `alt`        | String       | The supplied alt text of your asset                                               |
+| `entryId`    | Long         | System-generated unique identifier of asset within path                           |
+| `labels`     | Object       | Supplied key-value pairs associated with the asset                                |
+| `tags`       | Array        | Supplied attributes associated with the asset                                     |
+| `source`     | String       | `upload`, `url`, or `arn`, according to how the asset content was supplied        |
+| `sourceUrl`  | String       | Supplied URL or ARN for an external source; absent for multipart content          |
+| `variants`   | AssetVariant | Will only contain the original variant - the one supplied                         |
+| `createdAt`  | ISO 8601     | Date asset was stored                                                             |
+| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)                         |
+
+For compatibility, the response field containing the external source is named `sourceUrl` even when its value is an
+S3 object ARN. For example, an ARN import returns `"source": "arn"` and the supplied ARN in `sourceUrl`.
 
 ### AssetVariant
 
