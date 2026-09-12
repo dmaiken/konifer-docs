@@ -30,34 +30,34 @@ const hoconTheme: PrismTheme = {
 const responsibilities = [
   {
     number: "01",
-    title: "Ingest",
-    body: "Accept multipart uploads or fetch remote images from an explicit domain allowlist.",
+    title: "Upload",
+    body: "Upload images as multipart requests or fetch them from domains you allow.",
   },
   {
     number: "02",
     title: "Validate",
-    body: "Enforce byte, dimension, pixel, content-type, and optional content-classification rules.",
+    body: "Set limits on file size, dimensions, and pixel count. Restrict content types or add content-classification rules.",
   },
   {
     number: "03",
-    title: "Persist",
-    body: "Keep image content, metadata, path history, and generated variants under one API.",
+    title: "Store",
+    body: "Store originals and generated variants with metadata and a history of uploads at each path.",
   },
   {
     number: "04",
-    title: "Maintain",
-    body: "Replace assets at stable paths, update metadata, and address individual entries when needed.",
+    title: "Update",
+    body: "Upload a replacement at the same path and retrieve earlier entries by ID. Edit metadata without uploading another image.",
   },
   {
     number: "05",
-    title: "Retire",
-    body: "Delete one image, a complete path, or an application subtree with recursive operations.",
+    title: "Delete",
+    body: "Delete a single entry, the images at a path, or a path and its children.",
   },
 ];
 
 const infrastructure = [
   {
-    label: "Binary content",
+    label: "Image files",
     value: "S3-compatible object storage or a filesystem",
   },
   {
@@ -66,7 +66,7 @@ const infrastructure = [
   },
   {
     label: "Delivery",
-    value: "Links, redirects, direct responses, and the CDN you choose",
+    value: "Image links, redirects, or image content, with optional CDN delivery",
   },
 ];
 
@@ -80,14 +80,14 @@ function ApiExample(): ReactNode {
       <pre>
         <code>
           <span className={styles.codeComment}>
-            # Store at an application-owned path
+            # Upload a profile picture
           </span>
           {"\n"}
           <span className={styles.codeVerb}>POST</span>{" "}
           /assets/users/123/profile-picture
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Read information or get a delivery link
+            # Get metadata or an image link
           </span>
           {"\n"}
           <span className={styles.codeVerb}>GET </span>{" "}
@@ -97,7 +97,7 @@ function ApiExample(): ReactNode {
           /assets/users/123/profile-picture/-/link
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Remove the user&apos;s complete image subtree
+            # Delete the images under this user&apos;s path
           </span>
           {"\n"}
           <span className={styles.codeVerb}>DELETE</span>{" "}
@@ -136,17 +136,16 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Backend image management"
-      description="Konifer is a self-hosted backend service for ingesting, validating, storing, and managing application-owned images."
+      description="Use Konifer to upload, validate, and manage images through a self-hosted API. Organize images by application path and choose your storage and CDN."
     >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
             <Heading as="h1">Image management for backend teams.</Heading>
             <p className={styles.heroLead}>
-              Konifer handles ingestion, validation, storage, metadata,
-              replacement, and deletion for every image your application owns.
-              Address images with paths your backend already understands, then
-              serve them through the delivery layer you choose.
+              Use Konifer to upload, validate, and manage images through a
+              self-hosted API. Organize them by user or listing, replace a photo
+              at the same URL, and choose how you store and serve it.
             </p>
             <div className={styles.heroActions}>
               <Link
@@ -165,13 +164,12 @@ export default function Home(): ReactNode {
 
         <section className={clsx(styles.section, styles.pathSection)}>
           <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Domain-aligned API</span>
-            <Heading as="h2">Make the image path part of your model.</Heading>
+            <span className={styles.sectionLabel}>Image paths</span>
+            <Heading as="h2">Organize images around your application.</Heading>
             <p>
-              A profile picture belongs to a user. A listing photo belongs to a
-              listing. Konifer lets your backend encode that relationship
-              directly instead of managing another <code>imageId</code>. Want to use
-              an <code>imageId</code>? That's fine too.
+              Choose paths that match your application, such as a user&apos;s
+              profile picture or a listing&apos;s gallery. You can use an{" "}
+              <code>imageId</code> as the path if you prefer.
             </p>
             <div className={styles.pathExamples}>
               <code>/assets/users/123/profile-picture</code>
@@ -180,9 +178,11 @@ export default function Home(): ReactNode {
               <code>/assets/358e0754-0c12-4541-891a-3e135c3b49c5</code>
             </div>
             <p>
-              Path configuration applies storage, validation, preprocessing, and
-              delivery policy to the same hierarchy. Broader rules are
-              inherited; the most specific rule wins.
+              Configure storage, validation, preprocessing, and delivery by path.
+              Set shared defaults on a parent path and override individual
+              settings on more specific paths. In this example, you cap user
+              uploads at 20 MB and 15 megapixels, then restrict profile pictures
+              to JPEG and PNG in a dedicated bucket.
             </p>
             <Link
               className={styles.textLink}
@@ -216,14 +216,14 @@ export default function Home(): ReactNode {
 
         <section className={clsx(styles.section, styles.lifecycleSection)}>
           <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Lifecycle management</span>
+            <span className={styles.sectionLabel}>Asset operations</span>
             <Heading as="h2">
-              One service owns image state from upload to deletion.
+              Manage images from upload to deletion.
             </Heading>
             <p>
-              Image handling often grows into separate upload endpoints, bucket
-              conventions, validation jobs, and cleanup scripts. Konifer brings
-              those responsibilities behind one consistent API and policy model.
+              Use the asset API to manage uploads and their metadata. You can
+              keep earlier profile pictures after a replacement, retrieve a
+              specific entry, or delete a user&apos;s images in one request.
             </p>
             <Link
               className={styles.textLink}
@@ -247,19 +247,18 @@ export default function Home(): ReactNode {
 
         <section className={clsx(styles.section, styles.infrastructureSection)}>
           <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Infrastructure neutral</span>
+            <span className={styles.sectionLabel}>Storage and delivery</span>
             <Heading as="h2">
-              Own image management. Keep your storage and CDN.
+              Choose your storage and CDN.
             </Heading>
             <p>
-              Konifer manages assets and serves links to them. It can return
-              image content when useful, but it does not need to replace the
-              edge delivery system that already works for your application.
+              Store image files on a filesystem or in S3-compatible object
+              storage, and keep asset records in PostgreSQL.
             </p>
             <p>
-              Run it with a filesystem or any S3-compatible object store. Put
-              the CDN you already operate in front, use redirects to object
-              storage, or combine both approaches by path.
+              Serve images through your CDN, redirect requests to object
+              storage, or return image content from the API. Configure delivery
+              for each path to suit your application.
             </p>
             <div className={styles.infrastructureLinks}>
               <Link
@@ -288,11 +287,11 @@ export default function Home(): ReactNode {
 
         <section className={styles.finalCta}>
           <div>
-            <span className={styles.sectionLabel}>Start locally</span>
-            <Heading as="h2">Try the complete API with one container.</Heading>
+            <span className={styles.sectionLabel}>Try Konifer</span>
+            <Heading as="h2">Run Konifer in one container.</Heading>
             <p>
-              In-memory mode is built for local evaluation. Add PostgreSQL and
-              durable storage when you deploy.
+              Use in-memory mode to try the API on your machine. Add PostgreSQL
+              and persistent image storage for deployment.
             </p>
           </div>
           <div className={styles.startPanel}>
