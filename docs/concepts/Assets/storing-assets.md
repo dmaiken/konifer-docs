@@ -8,7 +8,8 @@ sidebar_label: "Storing"
 When storing an asset, the content must be supplied as well as any optional metadata. The content can be supplied as:
 
 - a multipart upload if you possess the binary asset content
-- a URL supplied alongside any metadata
+- an HTTP or HTTPS URL that Konifer downloads
+- an Amazon S3 object ARN that Konifer reads with its AWS identity
 
 When asset content is stored, it is referred to as the `originalVariant`. When fetching asset information,
 `isOriginalVariant` is
@@ -44,7 +45,8 @@ Content-Type: image/jpeg
 -----------------------------974767299852498929531610575--
 ```
 
-Only one image and one form multipart can be supplied.
+Only one image and one metadata multipart can be supplied. Do not include an external source in the metadata when
+supplying multipart content.
 
 ## URL upload
 
@@ -68,9 +70,15 @@ A request to store an asset using a URL looks like this (omitting all optional i
 
 ```json
 {
-  "url": "your-domain.com/your-image.jpeg"
+  "source": {
+    "http": {
+      "url": "https://your-domain.com/your-image.jpeg"
+    }
+  }
 }
 ```
+
+The top-level `url` field is deprecated but remains available as a fallback when `source.http.url` is absent.
 
 Konifer protects against the following when fetching asset content from URL:
 
@@ -79,14 +87,41 @@ Konifer protects against the following when fetching asset content from URL:
 3. Invalid redirects
 4. Content size too large (configurable through `source.url.max-bytes`)
 
-The multipart and URL source size limits accept an exact byte count or a readable value such as `20MB` or `20MiB`.
-Configure them globally under `source.multipart.max-bytes` and `source.url.max-bytes`. See the
+## Amazon S3 ARN upload
+
+You can supply a conventional Amazon S3 object ARN instead of uploading the content or exposing it through an HTTP
+server. The ARN must identify both a bucket and an object key:
+
+```json
+{
+  "source": {
+    "s3": {
+      "arn": "arn:aws:s3:::asset-imports/customers/123/profile.jpeg"
+    }
+  }
+}
+```
+
+Konifer creates a separate Amazon S3 client only when an ARN source is used. The client obtains its credentials and
+region from the AWS default provider chains. There is no setting that enables ARN sources. The runtime AWS identity
+must have `s3:GetObject` permission for the referenced object.
+
+The source client is independent of the configured object store. An ARN can therefore be used when Konifer stores its
+assets in a filesystem, Amazon S3, or an S3-compatible service. ARN sources always refer to Amazon S3; endpoint and
+credentials under `object-store.s3` do not configure the source client.
+
+Anyone who can submit a store request can ask Konifer to read any S3 object available to its runtime AWS identity. Use
+least-privilege IAM permissions scoped to the source buckets and prefixes the application needs, and protect the store
+endpoint with the authentication and authorization appropriate for your deployment.
+
+The source size limits accept an exact byte count or a readable value such as `20MB` or `20MiB`. Configure multipart
+content under `source.multipart.max-bytes`. Both URL and S3 ARN downloads use `source.url.max-bytes`. See the
 [Source configuration reference](../../reference/configuration-reference.md#source) for the supported units.
 
 ## Supplied content limits
 
 Path-level `limits` protect Konifer from decoding and processing unexpectedly large supplied images. They apply to the
-content received from either a multipart upload or URL source and are checked before preprocessing.
+content received from multipart, URL, and S3 ARN sources and are checked before preprocessing.
 
 ```hocon
 paths {
