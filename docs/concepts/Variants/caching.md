@@ -39,6 +39,43 @@ but equivalent in output.
 If no cached variant matches the normalized request, Konifer generates the variant from the Original Variant and stores
 it in the object store.
 
+## Cache Size Limit
+
+By default, Konifer caches up to 16 generated variants per asset. The Original Variant does not count toward this
+limit.
+
+Set `transform.retention.cache.max-variants` in Path Configuration to change the limit:
+
+```hocon
+paths {
+  "/**" {
+    transform {
+      retention {
+        cache {
+          max-variants = 16
+          access-score-half-life = 1h
+        }
+      }
+    }
+  }
+}
+```
+
+`max-variants` must be a positive integer and must exceed the number of eager variants configured for the path.
+
+### Eviction Policy
+
+Konifer checks the limit after it finishes generating and uploading a variant. If the new variant would exceed the
+limit, Konifer keeps it and evicts existing generated variants until the cache returns to the configured size. Konifer
+does not count the Original Variant or variants whose uploads remain pending.
+
+With PostgreSQL, Konifer evicts the variant with the lowest access score first. Each access increases a variant's score,
+and the score decays over time. The `access-score-half-life` property controls the decay rate: a variant's score falls
+by half after one half-life without another access. The default half-life is 1 hour.
+
+If you request an evicted variant, Konifer registers a cache miss, regenerates the variant, and may evict another cached
+variant to stay within the limit.
+
 ## Expiration
 
 Cached variants can also expire depending on your Path Configuration. See [Variant Expiration](expiration.md).
