@@ -32,7 +32,7 @@ curl --fail \
   --retry 10 \
   --retry-connrefused \
   --retry-delay 1 \
-  'http://localhost:8080/health'
+  'http://localhost:8080/health/ready'
 ```
 
 :::note
