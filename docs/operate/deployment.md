@@ -173,18 +173,22 @@ Konifer supports Linux `amd64` and `arm64` container images.
 
 ## 6. Check application health
 
-The health endpoint returns `200 OK` after the application has started:
+Check that the HTTP process is live:
 
 ```bash
-curl --fail 'http://127.0.0.1:8080/health'
+curl --fail 'http://127.0.0.1:8080/health/live'
 ```
 
-```json
-{"status":"okay"}
+Check that Konifer and its configured dependencies are ready to serve traffic:
+
+```bash
+curl --fail 'http://127.0.0.1:8080/health/ready'
 ```
 
-Use `/health` for container and load-balancer checks. It reports the Konifer application lifecycle; it is not a
-continuous probe of PostgreSQL or object-storage health.
+Both endpoints return an empty body. Configure container liveness checks with `/health/live` and load-balancer or
+readiness checks with `/health/ready`. See [Configure health probes](./health-checks.md) for Kubernetes configuration
+and
+dependency-check behavior.
 
 ## 7. Expose Konifer safely
 
@@ -232,7 +236,7 @@ Konifer natively supports clustered deployment models. Before adding replicas, c
 - The same PostgreSQL database
 - The same S3 buckets or shared filesystem
 - The same model files when upload rules are enabled
-- A load balancer that removes instances when `/health` fails
+- A load balancer that removes instances when `/health/ready` fails
 
 Configuration is loaded at startup, so roll all instances after changing path rules, profiles, storage settings, or URL
 signing configuration.
@@ -247,7 +251,7 @@ Konifer applies database migrations when it starts. For an upgrade:
 1. Read the release notes and record the currently deployed image digest.
 2. Back up PostgreSQL and the object store.
 3. Start the new version with one instance and allow its migrations to finish.
-4. Check `/health`, logs, uploads, original-image retrieval, and transformed-image retrieval.
+4. Check `/health/live`, `/health/ready`, logs, uploads, original-image retrieval, and transformed-image retrieval.
 5. Complete the rollout only after those checks pass.
 
 Do not assume that rolling the container back also reverses a database migration. Confirm schema compatibility before
