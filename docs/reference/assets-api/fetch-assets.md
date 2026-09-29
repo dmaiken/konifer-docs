@@ -35,8 +35,8 @@ If no format is acceptable using either method, a `400 Bad Request` is returned.
 
 ## Fetching Link (`/link`)
 
-Fetches the asset's resolved delivery URL as well as any [LQIP](../../concepts/lqip.md) and `alt` fields. If no return
-format selector is supplied, `link` is the default.
+Fetches the asset's resolved delivery URL, the selected variant's attributes, and any [LQIP](../../concepts/lqip.md)
+and `alt` fields. If no return format selector is supplied, `link` is the default.
 
 ### Request
 
@@ -63,16 +63,24 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
   },
-  "alt": "Your alt"
+  "alt": "Your alt",
+  "attributes": {
+    "height": 100,
+    "width": 200,
+    "format": "jpg",
+    "colorSpace": "srgb",
+    "pageCount": 1
+  }
 }
 ```
 
-| Field Name   | Type      | Description                                                                  |
-|--------------|-----------|------------------------------------------------------------------------------|
-| `url`        | String    | The URL resolved by the path's `delivery.strategy`                           |
-| `expiresAt`  | ISO 8601  | Populated for presigned URLs                                                 |
-| `lqip`       | LQIP      | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`        | String    | The `alt` supplied when storing the asset                                    |
+| Field Name   | Type       | Description                                                                  |
+|--------------|------------|------------------------------------------------------------------------------|
+| `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
+| `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`        | String     | The `alt` supplied when storing the asset                                    |
+| `attributes` | Attributes | [Attributes](#attributes) of the selected variant                            |
 
 The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
 URL in the same field.
