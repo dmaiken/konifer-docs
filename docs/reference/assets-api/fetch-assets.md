@@ -115,14 +115,6 @@ object storage or a CDN.
 GET /assets/users/123/profile-picture/-/info
 ```
 
-#### Limit
-
-Metadata is the only return format where multiple assets can be returned. Specify limit using the `limit` query
-parameter.
-
-- **Default**: 1
-- **Fetch all at path**: -1
-
 #### Variant Generation
 
 Transformation parameters cannot be supplied (i.e. `h`, `r`, `blur`, etc.) when requesting asset metadata. A
@@ -269,6 +261,97 @@ image transformations.
 | Field Name | Type | Description                                 | Allowed Values        |
 |------------|------|---------------------------------------------|-----------------------|
 | `strip`    | List | Which metadata was removed from the variant | `exif`, `xmp`, `iptc` |
+
+## Fetching Asset Entry Information
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/entries
+```
+
+#### Limit
+
+`entries` is the only return format where multiple assets can be returned. Specify limit using the `limit` query
+parameter.
+
+- **Default**: 20
+- **Fetch all at path**: -1
+
+### Response
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+{
+  "entries": [
+    {
+      "class": "image",
+      "alt": "The alt text for an image",
+      "entryId": 1049,
+      "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+      },
+      "tags": [ "cold", "verified" ],
+      "source": "url",
+      "sourceUrl": "https://yoururl.com/image.jpeg",
+      "variants": [
+        {
+          "isOriginalVariant": true,
+          "storeBucket": "assets",
+          "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
+          "imageAttributes": {
+            "height": 100,
+            "width": 200,
+            "mimeType": "image/jpeg"
+          },
+          "lqip": {
+            "blurhash": "BASE64",
+            "thumbhash": "BASE64"
+          }
+        },
+        {
+          "isOriginalVariant": false,
+          "storeBucket": "assets",
+          "storeKey": "64fffa7e-85d2-42db-a081-354c91ec7ef9.webp",
+          "attributes": {
+            "height": 2560,
+            "width": 1752,
+            "format": "webp",
+            "pageCount": 1,
+            "loop": 0,
+            "colorSpace": "srgb"
+          },
+          "transformation": {
+            "width": 2560,
+            "height": 1752,
+            "fit": "fit",
+            "gravity": "center",
+            "format": "webp",
+            "rotate": "ninety",
+            "flip": "none",
+            "filter": "none",
+            "blur": 0,
+            "quality": 80,
+            "padding": {
+              "amount": 0,
+              "color": []
+            },
+            "metadata": {
+              "strip": [
+                "exif", "xmp", "iptc"
+              ],
+            }
+          },
+          "lqip": {}
+        }
+      ],
+      "createdAt": "2025-11-12T01:20:55"
+    }
+  ]
+}
+```
 
 ## Fetching Content
 

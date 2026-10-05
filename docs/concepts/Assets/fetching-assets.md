@@ -292,7 +292,7 @@ Returns:
 }
 ```
 
-#### Asset Metadata Response
+#### Asset Info Response
 
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|
@@ -307,14 +307,13 @@ Returns:
 | `createdAt`  | ISO 8601     | Date asset was stored                                                |
 | `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
-## Limit
+### `entries`
 
-For `info` return formats, you can return more than one. To return the three most-recent assets, specify the `limit`
-query
-parameter, or `-1` for all assets within the path:
+Similar to `info`, but for information about multiple assets at the path. Defaults to 20 assets within the path.
+Specify more or less with the `limit` query parameter. Returns a list of asset `info`.
 
 ```http
-GET /assets/users/123/profile-picture/-/new/info?limit=3
+GET /assets/users/123/profile-picture/-/new/entries?limit=10
 ```
 
 ## Entry ID

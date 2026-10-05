@@ -136,13 +136,13 @@ it differs.
 
 ## 8. View information for every profile picture
 
-The `info` selector can return information for every entry at the path when `limit` is `-1`:
+The `entries` selector can return information for every entry at the path when `limit` is `-1`:
 
 ```bash
 curl --fail-with-body \
   --request GET \
   --output profile-pictures.json \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/info?limit=-1'
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/entries?limit=-1'
 ```
 
 ## 9. Stop Konifer
