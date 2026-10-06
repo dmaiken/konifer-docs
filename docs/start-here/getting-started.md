@@ -155,6 +155,8 @@ Because the container was started with `--rm`, Docker removes it after it stops.
 
 ## Next steps
 
+To use Konifer from your application, see [Konifer Client](using-the-client.mdx).
+
 The quickstart uses ephemeral in-memory storage. To configure persistent storage, path policies, variant profiles, and
 delivery behavior, continue to [Configure Konifer](configure-konifer.md).
 

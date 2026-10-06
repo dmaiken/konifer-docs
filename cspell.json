@@ -16,6 +16,10 @@
   ],
   "patterns": [
     {
+      "name": "mdx-component-tag",
+      "pattern": "/<\\/?(?:Tabs|TabItem|ClientExampleSetup)\\b[^>]*>/g"
+    },
+    {
       "name": "markdown-code-block",
       "pattern": "/^[ \\t]*(`{3,}|~{3,})[^\\r\\n]*\\r?\\n[\\s\\S]*?^[ \\t]*\\1[ \\t]*$/gm"
     },
@@ -30,9 +34,10 @@
   ],
   "languageSettings": [
     {
-      "languageId": "markdown",
+      "languageId": "markdown,mdx",
       "caseSensitive": true,
       "ignoreRegExpList": [
+        "mdx-component-tag",
         "markdown-code-block",
         "docusaurus-front-matter-identifier",
         "markdown-inline-code"

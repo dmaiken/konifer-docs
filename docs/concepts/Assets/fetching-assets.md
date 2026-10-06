@@ -114,7 +114,7 @@ Returns:
 | `alt`        | String     | The `alt` supplied when storing the asset                                    |
 | `attributes` | Attributes | Image properties of the selected variant                                     |
 
-See the [Attributes fields](../../reference/assets-api/fetch-assets.md#attributes) in the Fetch Assets reference.
+See the [Attributes fields](../../reference/assets-api/fetch-assets.mdx#attributes) in the Fetch Assets reference.
 
 The default `service` delivery strategy produces an absolute URL to the selected entry's `/content` endpoint, as shown
 above. The `presigned` and `template` strategies can instead produce an object-store or CDN URL.
