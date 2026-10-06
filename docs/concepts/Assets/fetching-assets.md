@@ -77,7 +77,8 @@ You can return your asset in one of five different return formats:
 
 ### `link` (default)
 
-Returns the asset's resolved delivery URL. If you have any LQIPs enabled, these are returned as well.
+Returns the asset's resolved delivery URL and the selected variant's attributes. If you have any LQIPs enabled, these
+are returned as well. The attributes reflect the image delivered at the URL, including any requested transformations.
 
 ```http
 GET /assets/users/123/profile-picture/-/link
@@ -92,18 +93,28 @@ Returns:
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
   },
-  "alt": "Your alt"
+  "alt": "Your alt",
+  "attributes": {
+    "height": 100,
+    "width": 200,
+    "format": "jpg",
+    "colorSpace": "srgb",
+    "pageCount": 1
+  }
 }
 ```
 
 #### Asset Link Response
 
-| Field Name  | Type     | Description                                                                  |
-|-------------|----------|------------------------------------------------------------------------------|
-| `url`       | String   | The URL resolved by the path's `delivery.strategy`                           |
-| `expiresAt` | ISO 8601 | Populated for presigned URLs                                                 |
-| `lqip`      | LQIP     | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`       | String   | The `alt` supplied when storing the asset                                    |
+| Field Name   | Type       | Description                                                                  |
+|--------------|------------|------------------------------------------------------------------------------|
+| `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
+| `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`        | String     | The `alt` supplied when storing the asset                                    |
+| `attributes` | Attributes | Image properties of the selected variant                                     |
+
+See the [Attributes fields](../../reference/assets-api/fetch-assets.mdx#attributes) in the Fetch Assets reference.
 
 The default `service` delivery strategy produces an absolute URL to the selected entry's `/content` endpoint, as shown
 above. The `presigned` and `template` strategies can instead produce an object-store or CDN URL.
@@ -281,7 +292,7 @@ Returns:
 }
 ```
 
-#### Asset Metadata Response
+#### Asset Info Response
 
 | Field Name   | Type         | Description                                                          |
 |--------------|--------------|----------------------------------------------------------------------|
@@ -296,14 +307,13 @@ Returns:
 | `createdAt`  | ISO 8601     | Date asset was stored                                                |
 | `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
 
-## Limit
+### `entries`
 
-For `info` return formats, you can return more than one. To return the three most-recent assets, specify the `limit`
-query
-parameter, or `-1` for all assets within the path:
+Similar to `info`, but for information about multiple assets at the path. Defaults to 20 assets within the path.
+Specify more or less with the `limit` query parameter. Returns a list of asset `info`.
 
 ```http
-GET /assets/users/123/profile-picture/-/new/info?limit=3
+GET /assets/users/123/profile-picture/-/new/entries?limit=10
 ```
 
 ## Entry ID

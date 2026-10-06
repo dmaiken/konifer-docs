@@ -6,12 +6,18 @@ import remarkKoniferVersion from './plugins/remark-konifer-version';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const latestReleaseUrl = 'https://api.github.com/repos/dmaiken/konifer/releases/latest';
+const clientTagsUrl = 'https://api.github.com/repos/dmaiken/konifer/git/matching-refs/tags/client-v';
+const defaultClientVersion = '0.1.0';
 
 type GitHubRelease = {
   tag_name?: unknown;
 };
 
-async function fetchLatestKoniferVersion(): Promise<string> {
+type GitHubReference = {
+  ref?: unknown;
+};
+
+function getGitHubHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2026-03-10',
@@ -21,8 +27,12 @@ async function fetchLatestKoniferVersion(): Promise<string> {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
+  return headers;
+}
+
+async function fetchLatestKoniferVersion(): Promise<string> {
   const response = await fetch(latestReleaseUrl, {
-    headers,
+    headers: getGitHubHeaders(),
     signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) {
@@ -45,7 +55,42 @@ async function fetchLatestKoniferVersion(): Promise<string> {
   return match[1];
 }
 
-const buildConfig = (koniferVersion: string): Config => ({
+async function fetchLatestKoniferClientVersion(): Promise<string> {
+  const response = await fetch(clientTagsUrl, {
+    headers: getGitHubHeaders(),
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) {
+    throw new Error(
+      `Unable to fetch Konifer client tags from GitHub: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const references = (await response.json()) as GitHubReference[];
+  if (!Array.isArray(references)) {
+    throw new Error('The Konifer client tags response was not an array.');
+  }
+
+  const versions = references.flatMap(({ref}) => {
+    const match = typeof ref === 'string' && /^refs\/tags\/client-v(\d+\.\d+\.\d+)$/.exec(ref);
+    return match ? [match[1]] : [];
+  });
+
+  // Compare version components numerically; GitHub's reference order is not release order.
+  versions.sort((left, right) => {
+    const leftParts = left.split('.').map(Number);
+    const rightParts = right.split('.').map(Number);
+    for (let index = 0; index < leftParts.length; index++) {
+      const difference = rightParts[index] - leftParts[index];
+      if (difference !== 0) return difference;
+    }
+    return 0;
+  });
+
+  return versions[0] ?? defaultClientVersion;
+}
+
+const buildConfig = (koniferVersion: string, koniferClientVersion: string): Config => ({
   title: 'Konifer',
   tagline: 'Backend image management for application-owned media',
   favicon: 'img/favicon.png',
@@ -79,7 +124,7 @@ const buildConfig = (koniferVersion: string): Config => ({
         docs: {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
-          remarkPlugins: [[remarkKoniferVersion, {version: koniferVersion}]],
+          remarkPlugins: [[remarkKoniferVersion, {version: koniferVersion, clientVersion: koniferClientVersion}]],
         },
         blog: false,
         theme: {
@@ -168,12 +213,18 @@ const buildConfig = (koniferVersion: string): Config => ({
       additionalLanguages: [
         'http',
         'json',
-        'bash'
+        'bash',
+        'kotlin',
+        'java'
       ],
     },
   } satisfies Preset.ThemeConfig,
 });
 
 export default async function createConfig(): Promise<Config> {
-  return buildConfig(await fetchLatestKoniferVersion());
+  const [koniferVersion, koniferClientVersion] = await Promise.all([
+    fetchLatestKoniferVersion(),
+    fetchLatestKoniferClientVersion(),
+  ]);
+  return buildConfig(koniferVersion, koniferClientVersion);
 }

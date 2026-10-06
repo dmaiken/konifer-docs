@@ -1,0 +1,179 @@
+---
+sidebar_position: 5
+id: asset-deleting
+title: Deleting Assets
+sidebar_label: "Delete"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+When the asset is deleted, the asset information and reference are deleted synchronously. All variant content is
+removed from the object store asynchronously, however, the variant references are deleted synchronously, and the asset
+is no longer accessible using Konifer APIs.
+
+:::warning
+Deleting an asset is unrecoverable. There is no way to reverse deletes, and there is no soft-delete mechanism!
+:::
+
+## Request
+
+Request options are similar to fetching an asset. Order selectors and limits are available.
+
+### Delete Specific Asset
+
+Delete a specific asset by specifying its entryId.
+
+```http
+DELETE /assets/users/123/-/entry/0
+```
+
+### Example: delete a specific entry
+
+Replace `0` in the URL with the `entryId` returned by your upload.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).entry(entryId).deleteFirst().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).entry(entryId).deleteFirst().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Ordering
+
+Ordering is specified using the `order` [query selector](../../concepts/Assets/fetching-assets.md#ordering).
+
+| Order      | Description                             | Default if not supplied |
+|------------|-----------------------------------------|-------------------------|
+| `new`      | Order by last-created (stack semantics) | Yes                     |
+| `modified` | Order by last-modified                  |                         |
+
+### Limit
+
+Multiple assets can be deleted using limits. Specify limit using the `limit` query parameter.
+
+- **Default**: 1
+- **Delete all at path**: -1
+
+### Example: delete the most recently modified entries
+
+Delete at most two entries at this exact path, ordered by modification time. Use `deleteFirst()` without a limit
+to delete only the first selected entry.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/modified?limit=2'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).orderBy(Order.MODIFIED).deleteFirst(2).valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).orderBy(Order.MODIFIED).deleteFirst(2).valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Example: delete all entries at this path
+
+A limit of `-1` deletes every entry at this exact path without deleting descendants.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture?limit=-1'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).deleteFirst(-1).valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).deleteFirst(-1).valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+## Deleting Recursively
+
+By using the `recursive` selector, you can delete all assets in a path as well as all sub-paths.
+
+```http
+DELETE /assets/users/123/-/recursive
+```
+
+### Example
+
+This removes entries at the example path and every descendant path. Run it only for a path whose assets you intend
+to delete.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/recursive'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).deleteRecursively().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).deleteRecursively().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+## Response
+
+A `204 No Content` is always returned regardless of whether an asset was actually deleted or not.

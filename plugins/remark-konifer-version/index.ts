@@ -6,15 +6,19 @@ type MarkdownNode = {
 
 type Options = {
   version: string;
+  clientVersion: string;
 };
 
 const versionToken = '{{koniferVersion}}';
+const clientVersionToken = '{{koniferClientVersion}}';
 
-export default function remarkKoniferVersion({version}: Options) {
+export default function remarkKoniferVersion({version, clientVersion}: Options) {
   return (tree: MarkdownNode): void => {
     function replaceVersionToken(node: MarkdownNode): void {
       if ((node.type === 'code' || node.type === 'inlineCode') && node.value) {
-        node.value = node.value.replaceAll(versionToken, version);
+        node.value = node.value
+          .replaceAll(versionToken, version)
+          .replaceAll(clientVersionToken, clientVersion);
       }
 
       node.children?.forEach(replaceVersionToken);

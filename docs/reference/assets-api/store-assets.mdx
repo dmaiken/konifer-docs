@@ -5,6 +5,9 @@ title: Storing Assets
 sidebar_label: "Store"
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 When you store an asset, the asset and its metadata are stored in your object store and database, respectively.
 There are three ways to store an asset:
 
@@ -31,6 +34,53 @@ content.
 |------------|--------------------------------------|------------------------------------------------------------------|----------------------------|
 | `metadata` | `application/json`                   | A JSON body containing custom, user-defined data about the asset | Yes (but may be empty`{}`) |
 | `asset`    | Image MIME type (e.g., `image/jpeg`) | The raw binary content of the file being stored.                 | Yes                        |
+
+### Example
+
+Run the curl upload from this documentation repository, or replace `static/img/konifer-small.png` with your own PNG.
+The client examples buffer the PNG in memory; use a streaming source for larger files.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request POST \
+  'http://localhost:8080/assets/user/123/profile-picture' \
+  --form 'metadata={"alt":"Konifer logo","labels":{"purpose":"docs"},"tags":["example"]};type=application/json' \
+  --form 'asset=@static/img/konifer-small.png;type=image/png'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .newAsset()
+  .fromBytes(Files.readAllBytes(imageFile), ImageFormat.PNG)
+  .withAlt("Konifer logo")
+  .withLabel("purpose", "docs")
+  .withTag("example")
+  .store()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .newAsset()
+  .fromBytes(Files.readAllBytes(imageFile), ImageFormat.PNG)
+  .withAlt("Konifer logo")
+  .withLabel("purpose", "docs")
+  .withTag("example")
+  .store()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ### Metadata JSON structure
 
@@ -89,6 +139,55 @@ The request is identical to the multipart `metadata`, but you must add `source.h
 
 Since there is only JSON in the request, the `Content-Type` is `application/json`.
 
+### Example
+
+Allow `konifer.io` in `source.url.allowed-domains`, or replace the example URL with an image on an allowed host.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request POST \
+  'http://localhost:8080/assets/user/123/profile-picture' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "source": {
+    "http": {
+      "url": "https://konifer.io/img/konifer-small.png"
+    }
+  },
+  "alt": "Konifer logo"
+}'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .newAsset()
+  .fromUrl(sourceUrl)
+  .withAlt("Konifer logo")
+  .store()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .newAsset()
+  .fromUrl(sourceUrl)
+  .withAlt("Konifer logo")
+  .store()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
 The top-level `url` field is deprecated. Konifer continues to use it as a fallback when `source.http.url` is absent.
 
 ## Amazon S3 ARN Source
@@ -131,6 +230,56 @@ this _source_ client, so ARN sources also work when the configured object store 
 
 Both URL and ARN downloads are limited by `source.url.max-bytes`. See the
 [Source configuration reference](../configuration-reference.md#source).
+
+### Example
+
+Replace `arn:aws:s3:::your-bucket/konifer-small.png` with an existing object's ARN.
+The server needs AWS credentials with permission to read it.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request POST \
+  'http://localhost:8080/assets/user/123/profile-picture' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "source": {
+    "s3": {
+      "arn": "arn:aws:s3:::your-bucket/konifer-small.png"
+    }
+  },
+  "alt": "Konifer logo"
+}'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .newAsset()
+  .fromS3Arn(sourceArn)
+  .withAlt("Konifer logo")
+  .store()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .newAsset()
+  .fromS3Arn(sourceArn)
+  .withAlt("Konifer logo")
+  .store()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ## Store Asset Response
 

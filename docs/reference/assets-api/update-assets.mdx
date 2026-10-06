@@ -5,6 +5,9 @@ title: Updating Assets
 sidebar_label: "Update"
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 Konifer lets you update asset information only. Asset content cannot be updated.
 
 ## Request
@@ -33,9 +36,66 @@ PUT is a complete replacement of the asset's information. Even if updating one f
 must be supplied, or they are erased.
 :::
 
+### Example
+
+Replace `0` in the curl URL with the `entryId` returned by your upload. The request replaces all editable fields.
+The client examples first fetch that entry's current metadata, then replace its fields; modifiers return new requests.
+Retain fields you want to preserve, or replace them explicitly as shown here.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request PUT \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "alt": "Profile Picture",
+  "labels": {
+    "department": "engineering"
+  },
+  "tags": [
+    "headshot",
+    "team"
+  ]
+}'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+val assets = client.assets(path)
+val current = assets.entry(entryId).fetchInfo().valueOrThrow()
+assets.updateAsset(current)
+  .withAlt("Profile Picture")
+  .replaceLabels(mapOf("department" to "engineering"))
+  .replaceTags(setOf("headshot", "team"))
+  .update()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+var assets = client.assets(path);
+var current = assets.entry(entryId).fetchInfo().valueOrThrow();
+assets.updateAsset(current)
+  .withAlt("Profile Picture")
+  .replaceLabels(Map.of("department", "engineering"))
+  .replaceTags(Set.of("headshot", "team"))
+  .update()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
 ## Response
 
-The entire [asset information response](fetch-assets.md#fetching-asset-information) is returned.
+The entire [asset information response](fetch-assets.mdx#fetching-asset-information) is returned.
 
 ```http
 HTTP/1.1 200

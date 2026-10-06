@@ -32,7 +32,7 @@ curl --fail \
   --retry 10 \
   --retry-connrefused \
   --retry-delay 1 \
-  'http://localhost:8080/health'
+  'http://localhost:8080/health/ready'
 ```
 
 :::note
@@ -136,13 +136,13 @@ it differs.
 
 ## 8. View information for every profile picture
 
-The `info` selector can return information for every entry at the path when `limit` is `-1`:
+The `entries` selector can return information for every entry at the path when `limit` is `-1`:
 
 ```bash
 curl --fail-with-body \
   --request GET \
   --output profile-pictures.json \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/info?limit=-1'
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/entries?limit=-1'
 ```
 
 ## 9. Stop Konifer
@@ -154,6 +154,8 @@ docker stop konifer-quickstart
 Because the container was started with `--rm`, Docker removes it after it stops.
 
 ## Next steps
+
+To use Konifer from your application, see [Konifer Client](using-the-client.mdx).
 
 The quickstart uses ephemeral in-memory storage. To configure persistent storage, path policies, variant profiles, and
 delivery behavior, continue to [Configure Konifer](configure-konifer.md).

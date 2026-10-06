@@ -8,25 +8,28 @@ sidebar_label: "Expiration"
 Variant expiration controls how long cached variants are retained in your object store before Konifer treats them as
 expired and purges them. Expiration applies to both eager and on-demand variants.
 
-Expiration is configured in [Path Configuration](../path-configuration.md) using `transform.expire`. Since path
-configuration is inherited, expiration rules defined on a parent path apply to child paths unless they are overridden
-by a more-specific path.
+Configure expiration in [Path Configuration](../path-configuration.md) using `transform.retention.expire`. Child paths
+inherit expiration rules from their parent path unless a more-specific path overrides them.
 
 ```hocon
 paths {
   "/**" {
     transform {
-      expire {
-        strategy = ttl
-        ttl = 7d
+      retention {
+        expire {
+          strategy = ttl
+          ttl = 7d
+        }
       }
     }
   }
 
   "/users/**" {
     transform {
-      expire {
-        ttl = 30d
+      retention {
+        expire {
+          ttl = 30d
+        }
       }
     }
   }

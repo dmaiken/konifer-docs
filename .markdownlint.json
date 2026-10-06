@@ -1,4 +1,7 @@
 {
+  "MD033": {
+    "allowed_elements": ["Tabs", "TabItem", "ClientExampleSetup", "details", "summary"]
+  },
   "MD013": {
     "line_length": 120,
     "heading_line_length": 120,

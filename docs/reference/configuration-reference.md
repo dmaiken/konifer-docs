@@ -248,9 +248,15 @@ paths {
       on-demand-variant {
         mode = enabled
       }
-      expire {
-        strategy = never
-        ttl = [no default]
+      retention {
+        cache {
+          max-variants = 16
+          access-score-half-life = 1h
+        }
+        expire {
+          strategy = never
+          ttl = [no default]
+        }
       }
     }
     object-store {
@@ -437,23 +443,49 @@ within the `preprocessing` block, as well as:
 |:-----------------------------------|:----------------------------------|:--------------------------------------|:----------|
 | `transform.on-demand-variant.mode` | On-demand variant generation mode | `enabled`, `profile_only`, `disabled` | `enabled` |
 
-#### Expiration
+#### Variant Cache
 
 ```hocon
 "/**" {
   transform {
-    expire {
-      strategy = never
-      ttl = [no default]
+    retention {
+      cache {
+        max-variants = 16
+        access-score-half-life = 1h
+      }
     }
   }
 }
 ```
 
-| Property                    | Description                                                                                                   | Allowed Input                    | Default    |
-|:----------------------------|:--------------------------------------------------------------------------------------------------------------|:---------------------------------|:-----------|
-| `transform.expire.strategy` | The variant expiry strategy to use                                                                            | `never`, `ttl`, `idle`           | `never`    |
-| `transform.expire.ttl`      | The time-to-live (in `Duration` format) used in `idle` or `ttl` strategies. Ignored when strategy is `never`. | Duration e.g. `24h`, `7d`, `10m` | No default |
+| Property                                               | Description                                                                                     | Allowed Input | Default |
+|:-------------------------------------------------------|:------------------------------------------------------------------------------------------------|:--------------|:--------|
+| `transform.retention.cache.max-variants`               | Maximum number of generated variants cached per asset. The Original Variant does not count.     | Integer > 0   | 16      |
+| `transform.retention.cache.access-score-half-life`     | Time for an unused variant's access score to decay by half for PostgreSQL eviction ranking.     | Duration      | `1h`    |
+
+Konifer keeps the generated variant that triggered the limit, then evicts existing variants with the lowest decayed
+access scores. See [Variant Caching](../concepts/Variants/caching.md#eviction-policy) for eviction behavior and
+configuration constraints.
+
+#### Expiration
+
+```hocon
+"/**" {
+  transform {
+    retention {
+      expire {
+        strategy = never
+        ttl = [no default]
+      }
+    }
+  }
+}
+```
+
+| Property                              | Description                                                                                                   | Allowed Input                    | Default    |
+|:--------------------------------------|:--------------------------------------------------------------------------------------------------------------|:---------------------------------|:-----------|
+| `transform.retention.expire.strategy` | The variant expiry strategy to use                                                                            | `never`, `ttl`, `idle`           | `never`    |
+| `transform.retention.expire.ttl`      | The time-to-live (in `Duration` format) used in `idle` or `ttl` strategies. Ignored when strategy is `never`. | Duration e.g. `24h`, `7d`, `10m` | No default |
 
 ##### Duration
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 id: configure-konifer
 title: Configure Konifer
 sidebar_label: "Configure Konifer"

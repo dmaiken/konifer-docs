@@ -53,14 +53,14 @@ For guidance on writing prompt ensembles, see [Prompt Ensembles](upload-rules.md
 
 ## Supplying Images
 
-The API accepts either an image URL in a JSON request or image bytes in a multipart request. URL sources must use a host
-listed in `source.url.allowed-domains`. URL downloads and multipart uploads also use their respective `source` size
-limits.
+The API accepts an image URL or S3 object ARN in a JSON request, or image bytes in a multipart request. URL sources
+must use a host listed in `source.url.allowed-domains`; S3 sources require server credentials with read access.
+External downloads and multipart uploads also use their respective `source` size limits.
 
 Up to 10 definitions can be evaluated in one request, with up to 100 prompts in each definition. Konifer embeds the
 image once and evaluates all supplied definitions against that embedding.
 
-See the [Rule Evaluation API reference](../reference/rule-evaluation-api/evaluate-rules.md) for request and response
+See the [Rule Evaluation API reference](../reference/rule-evaluation-api/evaluate-rules.mdx) for request and response
 formats.
 
 ## Enabling the API

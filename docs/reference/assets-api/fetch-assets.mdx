@@ -5,6 +5,9 @@ title: Fetching Assets
 sidebar_label: "Fetch"
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways
 using
 query selectors.
@@ -35,8 +38,8 @@ If no format is acceptable using either method, a `400 Bad Request` is returned.
 
 ## Fetching Link (`/link`)
 
-Fetches the asset's resolved delivery URL as well as any [LQIP](../../concepts/lqip.md) and `alt` fields. If no return
-format selector is supplied, `link` is the default.
+Fetches the asset's resolved delivery URL, the selected variant's attributes, and any [LQIP](../../concepts/lqip.md)
+and `alt` fields. If no return format selector is supplied, `link` is the default.
 
 ### Request
 
@@ -49,6 +52,33 @@ or
 ```http
 GET /assets/users/123/profile-picture
 ```
+
+### Example
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/link'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).originalVariant().fetchLink().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).originalVariant().fetchLink().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ### Response
 
@@ -63,16 +93,24 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
   },
-  "alt": "Your alt"
+  "alt": "Your alt",
+  "attributes": {
+    "height": 100,
+    "width": 200,
+    "format": "jpg",
+    "colorSpace": "srgb",
+    "pageCount": 1
+  }
 }
 ```
 
-| Field Name   | Type      | Description                                                                  |
-|--------------|-----------|------------------------------------------------------------------------------|
-| `url`        | String    | The URL resolved by the path's `delivery.strategy`                           |
-| `expiresAt`  | ISO 8601  | Populated for presigned URLs                                                 |
-| `lqip`       | LQIP      | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
-| `alt`        | String    | The `alt` supplied when storing the asset                                    |
+| Field Name   | Type       | Description                                                                  |
+|--------------|------------|------------------------------------------------------------------------------|
+| `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
+| `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`        | String     | The `alt` supplied when storing the asset                                    |
+| `attributes` | Attributes | [Attributes](#attributes) of the selected variant                            |
 
 The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
 URL in the same field.
@@ -84,6 +122,51 @@ URL in the same field.
 ```http
 GET /assets/users/123/profile-picture/-/redirect
 ```
+
+### Example
+
+The curl example shows the redirect headers without following the redirect, as in the Bruno request.
+The clients follow the redirect and save its content using `ContentDelivery.FOLLOW_REDIRECT`.
+To obtain the delivery URL without downloading content, use `fetchLink()` from the Link example.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --dump-header - \
+  --output /dev/null \
+  'http://localhost:8080/assets/user/123/profile-picture/-/redirect'
+
+# Follow the redirect and save the image instead:
+curl --fail-with-body \
+  --location \
+  --output profile-picture.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/redirect'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .originalVariant()
+  .fetchContentBytes(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .originalVariant()
+  .fetchContentBytes(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ### Response
 
@@ -107,13 +190,32 @@ object storage or a CDN.
 GET /assets/users/123/profile-picture/-/info
 ```
 
-#### Limit
+### Example
 
-Metadata is the only return format where multiple assets can be returned. Specify limit using the `limit` query
-parameter.
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
 
-- **Default**: 1
-- **Fetch all at path**: -1
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/info'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).fetchInfo().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).fetchInfo().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 #### Variant Generation
 
@@ -262,6 +364,126 @@ image transformations.
 |------------|------|---------------------------------------------|-----------------------|
 | `strip`    | List | Which metadata was removed from the variant | `exif`, `xmp`, `iptc` |
 
+## Fetching Asset Entry Information
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/entries
+```
+
+### Example
+
+Fetch up to 20 entries. The client accepts only positive limits; HTTP's `limit=-1` has no client equivalent.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entries?limit=20'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).fetchEntries(20).valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).fetchEntries(20).valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+#### Limit
+
+`entries` is the only return format where multiple assets can be returned. Specify limit using the `limit` query
+parameter.
+
+- **Default**: 20
+- **Fetch all at path**: -1
+
+### Response
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+{
+  "entries": [
+    {
+      "class": "image",
+      "alt": "The alt text for an image",
+      "entryId": 1049,
+      "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+      },
+      "tags": [ "cold", "verified" ],
+      "source": "url",
+      "sourceUrl": "https://yoururl.com/image.jpeg",
+      "variants": [
+        {
+          "isOriginalVariant": true,
+          "storeBucket": "assets",
+          "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
+          "imageAttributes": {
+            "height": 100,
+            "width": 200,
+            "mimeType": "image/jpeg"
+          },
+          "lqip": {
+            "blurhash": "BASE64",
+            "thumbhash": "BASE64"
+          }
+        },
+        {
+          "isOriginalVariant": false,
+          "storeBucket": "assets",
+          "storeKey": "64fffa7e-85d2-42db-a081-354c91ec7ef9.webp",
+          "attributes": {
+            "height": 2560,
+            "width": 1752,
+            "format": "webp",
+            "pageCount": 1,
+            "loop": 0,
+            "colorSpace": "srgb"
+          },
+          "transformation": {
+            "width": 2560,
+            "height": 1752,
+            "fit": "fit",
+            "gravity": "center",
+            "format": "webp",
+            "rotate": "ninety",
+            "flip": "none",
+            "filter": "none",
+            "blur": 0,
+            "quality": 80,
+            "padding": {
+              "amount": 0,
+              "color": []
+            },
+            "metadata": {
+              "strip": [
+                "exif", "xmp", "iptc"
+              ],
+            }
+          },
+          "lqip": {}
+        }
+      ],
+      "createdAt": "2025-11-12T01:20:55"
+    }
+  ]
+}
+```
+
 ## Fetching Content
 
 ### Request
@@ -269,6 +491,125 @@ image transformations.
 ```http
 GET /assets/users/123/profile-picture/-/content
 ```
+
+### Example: original content
+
+These examples buffer the original image before saving it locally.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/content'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).originalVariant().fetchContentBytes().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).originalVariant().fetchContentBytes().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Example: WebP thumbnail
+
+Request a 256×256 thumbnail, cropping around the most important part of the image.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture.webp \
+  'http://localhost:8080/assets/user/123/profile-picture/-/content?w=256&h=256&format=webp&fit=fill&g=attention'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+val transformation = requestedTransformation {
+  width = 256
+  height = 256
+  format = ImageFormat.WEBP
+  fit = Fit.FILL
+  gravity = Gravity.ATTENTION
+}
+client.assets(path)
+  .variant(transformation)
+  .fetchContentBytes()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+var transformation = new RequestedTransformation.Builder()
+  .width(256)
+  .height(256)
+  .format(ImageFormat.WEBP)
+  .fit(Fit.FILL)
+  .gravity(Gravity.ATTENTION)
+  .build();
+client.assets(path)
+  .variant(transformation)
+  .fetchContentBytes()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Example: a specific entry
+
+Use the `entryId` returned by an upload to fetch that entry even after a newer image is stored at the same path.
+Replace `0` in the curl URL with that entry ID.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture-entry.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .entry(entryId)
+  .originalVariant()
+  .fetchContentBytes()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .entry(entryId)
+  .originalVariant()
+  .fetchContentBytes()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ### Response
 
@@ -298,6 +639,43 @@ Same behavior as Content but with the addition of a `Content-Disposition: attach
 ```http
 GET /assets/users/123/profile-picture/-/download
 ```
+
+### Example
+
+The curl request uses `/download`, which adds an attachment header. The clients save bytes from `/content`;
+they do not expose a separate `/download` operation. These examples buffer the image in memory.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture-download.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/download'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .originalVariant()
+  .fetchContentBytes()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .originalVariant()
+  .fetchContentBytes()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
 
 ### Response
 
