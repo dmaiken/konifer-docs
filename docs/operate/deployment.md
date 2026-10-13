@@ -77,7 +77,7 @@ Filesystem storage is suitable when the content directory is mounted persistentl
 instance that serves the same PostgreSQL database must see the same files at the configured mount path.
 
 For multiple replicas, shared object storage is usually the simpler model. See
-[Storing assets and variants](../reference/asset-storage.md) for provider-specific configuration.
+[Storage Configuration](storage-configuration.md) for provider-specific configuration.
 
 ## 3. Create `konifer.conf`
 
@@ -213,7 +213,7 @@ temporary volume or appropriately sized `tmpfs` is preferable for sustained or h
 require disk-backed temporary storage rather than RAM.
 
 Start with conservative request limits and variant-worker concurrency, then load-test with representative source images
-and transformations. See [Image processing architecture](../reference/image-processing.md) for memory regions, temporary
+and transformations. See [Resource Tuning](resource-tuning.md) for memory regions, temporary
 storage, and worker configuration.
 
 ## 9. Add upload rules when needed

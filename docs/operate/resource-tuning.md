@@ -1,8 +1,9 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 id: image-processing-reference
-title: Image Processing Architecture
-sidebar_label: "Image Processing"
+slug: /reference/image-processing-reference
+title: Resource Tuning
+sidebar_label: "Resource Tuning"
 ---
 
 Konifer uses **[libvips](https://www.libvips.org/)** to transform images. Libvips processes images through a

@@ -1,8 +1,9 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 id: reference-variant-storage
-title: Storing Assets and Variants
-sidebar_label: "Storing Assets"
+slug: /reference/reference-variant-storage
+title: Storage Configuration
+sidebar_label: "Storage Configuration"
 ---
 
 ## Storage Architecture

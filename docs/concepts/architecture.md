@@ -56,6 +56,15 @@ required to be enabled on the configured Postgres database.
 The Ltree extension must be enabled within Postgres. Enabling extensions generally requires superuser privileges.
 :::
 
+## Image Processing
+
+Konifer uses [libvips](https://www.libvips.org/) to transform images. Libvips processes images through a demand-driven
+pipeline, reading pixels in chunks to limit the memory needed for large images. Some inputs, including progressive
+JPEGs, require buffering the full image.
+
+See [Resource Tuning](../operate/resource-tuning.md) for memory regions, temporary storage, variant workers, and
+scheduling.
+
 ## Temporary Files
 
 To keep memory pressure low when storing assets and generating variants, temporary files are used extensively.

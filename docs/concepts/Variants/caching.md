@@ -34,6 +34,10 @@ cached variant.
 This normalization reduces unnecessary storage and avoids repeated work for transformations that are different in form
 but equivalent in output.
 
+For [pixel variants](../pixels.md), channel order and layout form part of the normalized request. RGB and BGR output
+use separate cached variants, as do interleaved and planar color buffers. Grayscale output normalizes to interleaved
+layout, so requesting `gray` with either layout reuses the same variant when the other transformations match.
+
 ## Cache Misses
 
 If no cached variant matches the normalized request, Konifer generates the variant from the original variant and stores

@@ -135,7 +135,23 @@ selection objects; keep the returned value or continue the chain. You send the r
 such as `store()`, `fetchInfo()`, `fetchLink()`, `update()`, or `deleteFirst()`.
 
 For rule evaluation, start with `client.ruleEvaluation()`, choose an image source and definitions, then call
-`evaluate()`. See the [Rule Evaluation API](../reference/rule-evaluation-api/evaluate-rules.mdx) for examples.
+`evaluate()`. See the [Rule Evaluation API](../reference/api/rule-evaluation.mdx) for examples.
+
+## Request pixel transformations
+
+Both clients support raw pixel variants. Select `ImageFormat.PIXELS`, set `pixelChannels` to a string such as `RGB`,
+`BGRA`, or `gray`, and choose `PixelLayout.INTERLEAVED` or `PixelLayout.PLANAR` from
+`io.konifer.common.image.pixel`. Kotlin's `requestedTransformation` DSL exposes `pixelChannels` and `pixelLayout`;
+Java's `RequestedTransformation.Builder` exposes `pixelChannels(...)` and `pixelLayout(...)`.
+
+Pass the transformation to `client.assets(path).entry(entryId).variant(transformation)`. Use `fetchLink()` to read
+dimensions and `attributes.pixels`, and `fetchContentBytes()` for the raw buffer. The pixel attributes expose the
+channel order, layout, and `PixelDataType.UINT8` data type. On the JVM, convert signed bytes to unsigned sample values
+with `byte.toInt() and 0xff` in Kotlin or `Byte.toUnsignedInt(byte)` in Java.
+
+See the [raw pixel examples](../reference/api/assets/fetch-assets.mdx#example-raw-pixels) for Kotlin and Java code,
+including resizing and color-space conversion. Pixel output requires an encoded source image; `ImageFormat.PIXELS`
+does not enable raw-buffer uploads.
 
 ## Handle results
 
@@ -209,8 +225,8 @@ configuration, the client keeps the HTTP engine's timeout defaults and has no ov
 
 Use the API reference's Kotlin and Java tabs for endpoint examples:
 
-- [Store assets](../reference/assets-api/store-assets.mdx)
-- [Fetch assets](../reference/assets-api/fetch-assets.mdx)
-- [Update metadata](../reference/assets-api/update-assets.mdx)
-- [Delete assets](../reference/assets-api/delete-assets.mdx)
-- [Evaluate rules](../reference/rule-evaluation-api/evaluate-rules.mdx)
+- [Store assets](../reference/api/assets/store-assets.mdx)
+- [Fetch assets](../reference/api/assets/fetch-assets.mdx)
+- [Update metadata](../reference/api/assets/update-assets.mdx)
+- [Delete assets](../reference/api/assets/delete-assets.mdx)
+- [Evaluate rules](../reference/api/rule-evaluation.mdx)
