@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 5
 id: configuration-reference
 title: Configuration Reference
 sidebar_label: "Configuration Properties"
@@ -84,6 +84,9 @@ When disabled, the rule evaluation route is not registered and returns `404 Not 
 rule inference even when `rule-definitions` is empty, so the model files must be installed. See
 [Rule Evaluation](../concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
 
+Konifer also registers Swagger UI at `/api/docs` and its generated JSON specification at `/api/docs/openapi.json`
+without an enablement flag. See [OpenAPI](api/openapi.md).
+
 ## Object Store
 
 Properties for configuring the datastore.
@@ -156,6 +159,27 @@ variant-profiles {
 
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a variant
 profile object.
+
+For example, define a raw pixel profile for a 224×224 BGR input with one plane per channel:
+
+```hocon
+variant-profiles {
+  vision-input {
+    format = pixels
+    w = 224
+    h = 224
+    fit = fill
+    cs = srgb
+    pixel-channels = BGR
+    pixel-layout = planar
+  }
+}
+```
+
+Request it with `?profile=vision-input`, or reference it in `transform.eager-variants`. The same `format`,
+`pixel-channels`, and `pixel-layout` properties work in `transform.preprocessing` when `enabled = true`. The defaults
+are `RGB` and `interleaved`; `gray` uses one channel and normalizes to `interleaved`. See
+[Raw Pixels](../concepts/pixels.md) for preprocessing behavior and color-space constraints.
 
 ## Rule Definitions
 
@@ -311,9 +335,12 @@ paths {
 }
 ```
 
-| Property                | Description                                                                                 | Allowed Input                  | Default |
-|:------------------------|:--------------------------------------------------------------------------------------------|:-------------------------------|:--------|
-| `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
+| Property                | Description                                                                              | Allowed Input            | Default |
+| :---------------------- | :--------------------------------------------------------------------------------------- | :----------------------- | :------ |
+| `allowed-content-types` | Content types allowed for uploads and generated output. Omit to allow supported formats. | Supported MIME type list | None    |
+
+To permit pixel variants with an allowlist, include `application/octet-stream` alongside your accepted encoded image
+types. Raw pixel uploads remain unsupported. See [Raw Pixels](../concepts/pixels.md).
 
 ### Supplied Asset Content Limits
 

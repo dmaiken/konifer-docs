@@ -1,6 +1,7 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 id: asset-storing
+slug: /reference/assets-api/asset-storing
 title: Storing Assets
 sidebar_label: "Store"
 ---
@@ -22,6 +23,9 @@ POST /assets/{your/defined/path}
 ```
 
 The difference is how the content is supplied. Only one method is allowed per request.
+
+Raw pixel buffers are output-only. Supply an encoded image even if your path's preprocessing converts it to
+`format=pixels`. See [Raw Pixels](../../../concepts/pixels.md#pixel-variants-and-preprocessing).
 
 ## Multipart Upload
 
@@ -229,7 +233,7 @@ uploads are enabled. Configuration under `object-store.s3` controls the _destina
 this _source_ client, so ARN sources also work when the configured object store is a filesystem or S3-compatible service.
 
 Both URL and ARN downloads are limited by `source.url.max-bytes`. See the
-[Source configuration reference](../configuration-reference.md#source).
+[Source configuration reference](../../configuration-reference.md#source).
 
 ### Example
 

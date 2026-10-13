@@ -1,6 +1,7 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 id: asset-fetching
+slug: /reference/assets-api/asset-fetching
 title: Fetching Assets
 sidebar_label: "Fetch"
 ---
@@ -14,31 +15,33 @@ query selectors.
 
 ## Ordering
 
-Ordering is specified using the `order` [query selector](../../concepts/Assets/fetching-assets.md#ordering).
+Ordering is specified using the `order` [query selector](../../../concepts/Assets/fetching-assets.md#ordering).
 
 | Order      | Description                             | Default if not supplied |
-|------------|-----------------------------------------|-------------------------|
+| ---------- | --------------------------------------- | ----------------------- |
 | `new`      | Order by last-created (stack semantics) | Yes                     |
 | `modified` | Order by last-modified                  |                         |
 
 ## Content Negotiation
 
-Content format is specified in two ways, resolved in this order:
+Konifer resolves the output format in this order:
 
 1. The `format` query parameter
-2. The Accept header
+2. The `format` defined in a requested variant profile
+3. A recognized image MIME type in the `Accept` header
 
-Accept header is ignored completely if `format` is used. If no `format` is specified, Konifer selects the return format
-using Accept header values. Prioritization is respected. See the
+The `Accept` header does not override an explicit or profile format. Otherwise, Konifer selects a recognized image
+format using the header's priorities. See the
 [MDN Accept header documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept). If
 `Accept: image/*` is used,
 the original variant's format is returned.
 
-If no format is acceptable using either method, a `400 Bad Request` is returned.
+If none of these selects a format, Konifer retains the original variant's format. Request raw pixels with
+`format=pixels` or a profile that defines it; `Accept: application/octet-stream` does not select pixel output.
 
 ## Fetching Link (`/link`)
 
-Fetches the asset's resolved delivery URL, the selected variant's attributes, and any [LQIP](../../concepts/lqip.md)
+Fetches the asset's resolved delivery URL, the selected variant's attributes, and any [LQIP](../../../concepts/lqip.md)
 and `alt` fields. If no return format selector is supplied, `link` is the default.
 
 ### Request
@@ -105,7 +108,7 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 ```
 
 | Field Name   | Type       | Description                                                                  |
-|--------------|------------|------------------------------------------------------------------------------|
+| ------------ | ---------- | ---------------------------------------------------------------------------- |
 | `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
 | `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
 | `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
@@ -178,7 +181,7 @@ Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/conten
 ```
 
 The `Location` value is resolved with the same path-level
-[delivery strategy](../../concepts/Assets/fetching-assets.md#delivery-strategies) used by `link`. The default `service`
+[delivery strategy](../../../concepts/Assets/fetching-assets.md#delivery-strategies) used by `link`. The default `service`
 strategy redirects to the selected entry's `/content` endpoint; `presigned` and `template` can redirect directly to
 object storage or a CDN.
 
@@ -296,7 +299,7 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 ```
 
 | Field Name   | Type         | Description                                                          |
-|--------------|--------------|----------------------------------------------------------------------|
+| ------------ | ------------ | -------------------------------------------------------------------- |
 | `class`      | String       | The type of the asset, currently always `image`                      |
 | `alt`        | String       | The supplied alt text of your asset                                  |
 | `entryId`    | Long         | System-generated unique identifier of asset within path              |
@@ -311,7 +314,7 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 #### AssetVariant
 
 | Field Name          | Type           | Description                                                                     |
-|---------------------|----------------|---------------------------------------------------------------------------------|
+| ------------------- | -------------- | ------------------------------------------------------------------------------- |
 | `isOriginalVariant` | Boolean        | Whether the variant is the original variant. Only one is `true`                 |
 | `storeBucket`       | String         | The S3 bucket the asset is stored in - defined in path configuration            |
 | `storeKey`          | String         | The key of the asset in the object store                                        |
@@ -322,21 +325,33 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 ##### Attributes
 
 | Field Name   | Type    | Description                                                                                                                                      |
-|--------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `height`     | Integer | Height of variant                                                                                                                                |
 | `width`      | Integer | Width of variant                                                                                                                                 |
 | `format`     | Format  | Format of variant                                                                                                                                |
 | `pageCount`  | Integer | Number of pages in image (0 unless image is animated)                                                                                            |
 | `loop`       | Integer | For multi-paged images, specifies the amount of animated repetitions. Defaults to 0, -1 is continuous looping                                    |
 | `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
+| `pixels`     | Object  | Pixel attributes for `format=pixels`; absent or null for encoded image formats                                                                   |
+
+###### Pixel attributes
+
+| Field Name | Type   | Description                                               |
+| :--------- | :----- | :-------------------------------------------------------- |
+| `channels` | String | Lowercase channel order, such as `rgb`, `bgra`, or `gray` |
+| `layout`   | String | `interleaved` or `planar`; `gray` reports `interleaved`   |
+| `dataType` | String | `uint8`: one unsigned byte (0–255) per sample             |
+
+These fields also appear under `attributes.pixels` in a pixel variant's `link` response. Use the selected variant's
+width and height to interpret the raw body. Pixel output has no file header containing this information.
 
 ##### Transformation
 
-Refer to the [Image Transformation Reference](../image-transformation-reference.md) for greater detail about available
+Refer to the [Image Transformation Reference](../../image-transformation-reference.md) for greater detail about available
 image transformations.
 
 | Field Name   | Type       | Description                                      | Allowed Values                              |
-|--------------|------------|--------------------------------------------------|---------------------------------------------|
+| ------------ | ---------- | ------------------------------------------------ | ------------------------------------------- |
 | `height`     | Integer    | Height of variant in pixels                      | > 0                                         |
 | `width`      | Integer    | Width of variant in pixels                       | > 0                                         |
 | `fit`        | Attributes | Fit                                              | `fit`, `fill`, `stretch`                    |
@@ -346,7 +361,7 @@ image transformations.
 | `flip`       | Flip       | Whether variant is flipped and across which axis | `none`, `h`, `v`                            |
 | `filter`     | Filter     | Filter                                           | `none`, `black_white`, `grayscale`, `sepia` |
 | `blur`       | Integer    | Blur                                             | 0-150                                       |
-| `quality`    | Integer    | Compression quality (ignored for PNG)            | 1-100                                       |
+| `quality`    | Integer    | Compression quality (ignored for PNG and pixels) | 1-100                                       |
 | `colorSpace` | ColorSpace | Color space                                      | `grayscale`, `srgb`, `p3`                   |
 | `padding`    | Padding    | Padding                                          |                                             |
 | `metadata`   | Metadata   | Image metadata                                   |                                             |
@@ -354,14 +369,14 @@ image transformations.
 ###### Padding
 
 | Field Name | Type      | Description                               | Allowed Values |
-|------------|-----------|-------------------------------------------|----------------|
+| ---------- | --------- | ----------------------------------------- | -------------- |
 | `amount`   | Integer   | Amount of padding in pixels               | >= 0           |
 | `color`    | Integer[] | Color pf padding in [R, G, B, A] integers |                |
 
 ###### Metadata
 
 | Field Name | Type | Description                                 | Allowed Values        |
-|------------|------|---------------------------------------------|-----------------------|
+| ---------- | ---- | ------------------------------------------- | --------------------- |
 | `strip`    | List | Which metadata was removed from the variant | `exif`, `xmp`, `iptc` |
 
 ## Fetching Asset Entry Information
@@ -571,6 +586,113 @@ client.assets(path)
 
 </TabItem>
 </Tabs>
+
+### Example: raw pixels
+
+Fetch a 224×224 BGR buffer in planar layout for an image-processing input. This produces 150,528 unsigned 8-bit samples.
+The curl example uses entry `0`; replace it with the `entryId` returned by your upload. The client examples use the
+same `entryId` for content and attributes so a newer upload cannot change the selected source between requests.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+# Inspect dimensions, channel order, layout, and data type:
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/link?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
+
+# Download the same variant:
+curl --fail-with-body \
+  --output profile-picture.bin \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+import io.konifer.client.assets.fetch.requestedTransformation
+import io.konifer.common.image.Fit
+import io.konifer.common.image.ImageFormat
+import io.konifer.common.image.TransformableColorSpace
+import io.konifer.common.image.pixel.PixelLayout
+
+val transformation = requestedTransformation {
+  width = 224
+  height = 224
+  fit = Fit.FILL
+  format = ImageFormat.PIXELS
+  colorSpace = TransformableColorSpace.SRGB
+  pixelChannels = "BGR"
+  pixelLayout = PixelLayout.PLANAR
+}
+val variant = client.assets(path).entry(entryId).variant(transformation)
+val attributes = variant.fetchLink().valueOrThrow().attributes
+val pixels = variant.fetchContentBytes().valueOrThrow()
+val channels = requireNotNull(attributes.pixels).channels
+val channelCount = if (channels == "gray") 1 else channels.length
+check(pixels.size.toLong() == attributes.width.toLong() * attributes.height * channelCount)
+
+// Kotlin bytes are signed; interpret each sample as an unsigned value.
+val firstSample = pixels[0].toInt() and 0xff
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+import io.konifer.client.assets.fetch.RequestedTransformation;
+import io.konifer.common.image.Fit;
+import io.konifer.common.image.ImageFormat;
+import io.konifer.common.image.TransformableColorSpace;
+import io.konifer.common.image.pixel.PixelLayout;
+
+var transformation = new RequestedTransformation.Builder()
+  .width(224)
+  .height(224)
+  .fit(Fit.FILL)
+  .format(ImageFormat.PIXELS)
+  .colorSpace(TransformableColorSpace.SRGB)
+  .pixelChannels("BGR")
+  .pixelLayout(PixelLayout.PLANAR)
+  .build();
+var variant = client.assets(path).entry(entryId).variant(transformation);
+var attributes = variant.fetchLink().valueOrThrow().getAttributes();
+var pixels = variant.fetchContentBytes().valueOrThrow();
+var channels = attributes.getPixels().getChannels();
+int channelCount = channels.equals("gray") ? 1 : channels.length();
+long expectedBytes = (long) attributes.getWidth() * attributes.getHeight() * channelCount;
+if (pixels.length != expectedBytes) {
+  throw new IllegalStateException("Unexpected pixel buffer length");
+}
+int firstSample = Byte.toUnsignedInt(pixels[0]);
+```
+
+</TabItem>
+</Tabs>
+
+The `link` response includes the following attributes:
+
+```json
+{
+  "width": 224,
+  "height": 224,
+  "format": "pixels",
+  "colorSpace": "srgb",
+  "pixels": {
+    "channels": "bgr",
+    "layout": "planar",
+    "dataType": "uint8"
+  }
+}
+```
+
+Content responses use `Content-Type: application/octet-stream`. The body contains pixel bytes without a header; the download
+selector uses a `.bin` filename. `fetchContentBytes()` buffers the whole response. For larger buffers, use
+`fetchAndWriteContentTo()` with a Kotlin `ByteWriteChannel` or a Java `OutputStream`.
+
+See [Raw Pixel Output](../../image-transformation-reference.md#raw-pixel-output) for channel validation, color space,
+alpha handling, and grayscale behavior.
 
 ### Example: a specific entry
 

@@ -1,16 +1,13 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 id: image-processing-reference
-title: Image Processing Architecture
-sidebar_label: "Image Processing"
+slug: /reference/image-processing-reference
+title: Resource Tuning
+sidebar_label: "Resource Tuning"
 ---
 
-Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a
-demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does
-not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
-
-This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a small memory footprint and
-relatively low latency.
+Size memory, temporary storage, and variant workers for your image-processing workload. See
+[Architecture](../concepts/architecture.md#image-processing) for how Konifer processes images with libvips.
 
 :::caution
 Libvips buffers the entire image if it is progressively rendered JPEGs (image content is interlaced to provide a

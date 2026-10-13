@@ -17,6 +17,7 @@ Pimcore
 konifer.conf
 EXIF
 RGBA
+CMYK
 RDBMS
 Etags
 HMAC

@@ -34,6 +34,10 @@ curl --fail \
   'http://localhost:8080/health/ready'
 ```
 
+Open [Swagger UI](http://localhost:8080/api/docs) to explore the running server's asset API. The generated OpenAPI
+specification is available at `http://localhost:8080/api/docs/openapi.json`. See the
+[OpenAPI reference](../reference/api/openapi.md).
+
 :::note
 Use Docker to run Konifer with its required libvips configuration. We do not provide standalone JARs or binary releases.
 :::
@@ -422,6 +426,28 @@ This excerpt shows the two entry IDs. Expand the full response to inspect each e
 ```
 
 </details>
+
+## Optional: fetch raw pixels
+
+For image-processing code, request a 224×224 RGB buffer in planar layout:
+
+```bash
+curl --fail-with-body \
+  --output profile-picture.bin \
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=RGB&pixel-layout=planar'
+```
+
+Konifer returns 150,528 unsigned 8-bit samples as `application/octet-stream`. This buffer contains the red plane,
+then the green plane, then the blue plane. It has no image header. Fetch `link` with the same transformation to inspect
+the dimensions and `attributes.pixels`:
+
+```bash
+curl --fail-with-body \
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/link?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=RGB&pixel-layout=planar'
+```
+
+See [Raw Pixels](../concepts/pixels.md) for channel order, grayscale, and preprocessing, and the
+[Fetch Assets reference](../reference/api/assets/fetch-assets.mdx#example-raw-pixels) for client examples.
 
 ## 9. Stop Konifer
 

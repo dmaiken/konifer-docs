@@ -196,6 +196,11 @@ paths {
 All [image transformation parameters](../../reference/image-transformation-reference.md#parameter-reference) can be used
 directly within the `preprocessing` block.
 
+Use `format = pixels` with `pixel-channels` and `pixel-layout` to store an uploaded image as a raw pixel Original
+Variant. Konifer keeps its dimensions and pixel attributes so you can generate resized or encoded variants later.
+You must still supply an encoded image when storing the asset. See [Raw Pixels](../pixels.md#pixel-variants-and-preprocessing)
+for a configuration example and the effects on frames, sample depth, and transparency.
+
 ### Clamp Width/Height
 
 In addition to all image transformation parameters, you can specify `clamp-height` and `clamp-width`. If the source
