@@ -69,4 +69,4 @@ change may take up to one refresh interval to appear.
 
 Konifer logs a warning when a cached indicator first becomes unhealthy and an informational message when it recovers.
 
-See the [Health API reference](../reference/health-api.md) for the API reference.
+See the [Health API reference](../reference/api/health.md) for the API reference.

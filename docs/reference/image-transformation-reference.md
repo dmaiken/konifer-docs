@@ -1,8 +1,8 @@
 ---
 sidebar_position: 2
 id: image-transformation-reference
-title: Image Transformation
-sidebar_label: "Image Transformation"
+title: Image Transformations
+sidebar_label: "Image Transformations"
 ---
 
 Use transformations to resize, crop, convert, or adjust an image. Supply the parameters below when you:
@@ -14,27 +14,29 @@ Use transformations to resize, crop, convert, or adjust an image. Supply the par
 
 ## Parameter Reference
 
-| Parameter        | Name           | Description                                                              | Allowed Input                               | Default                                |
-|:-----------------|:---------------|:-------------------------------------------------------------------------|:--------------------------------------------|:---------------------------------------|
-| `h`              | Height         | The target height of the image                                           | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
-| `w`              | Width          | The target width of the image                                            | Integer `> 0`                               | `null` (Preserves aspect ratio)        |
-| `fit`            | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`            | `fit`                                  |
-| `g`              | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`            | `center`                               |
-| `format`         | Format         | The output format of the image                                           | Format                                      | Original format                        |
-| `r`              | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`             | `0`                                    |
-| `f`              | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`    | `none`                                 |
-| `filter`         | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `grayscale`, `sepia` | `none`                                 |
-| `blur`           | Blur           | Applies a Gaussian blur                                                  | `0` - `150`                                 | `0`                                    |
-| `q`              | Quality        | Compression level for lossy formats                                      | `1` - `100`                                 | Format dependent (e.g., 80)            |
-| `pad`            | Padding        | Adds padding pixels to the image boundaries                              | Integer `> 0`                               | `0`                                    |
-| `pad-c`          | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)   | Transparent / White (Format dependent) |
-| `strip`          | Strip Metadata | Comma-separated list of metadata fields to remove                        | `exif`, `iptc`, `xmp` (e.g., `exif,xmp`)    | None                                   |
-| `cs`             | Color Space    | Transforms the image color space                                         | `origin`, `grayscale`, `srgb`, `p3`         | `origin`                               |
+| Parameter        | Name           | Description                                                              | Allowed Input                                                    | Default                                |
+|:-----------------|:---------------|:-------------------------------------------------------------------------|:-----------------------------------------------------------------|:---------------------------------------|
+| `h`              | Height         | The target height of the image                                           | Integer `> 0`                                                    | `null` (Preserves aspect ratio)        |
+| `w`              | Width          | The target width of the image                                            | Integer `> 0`                                                    | `null` (Preserves aspect ratio)        |
+| `fit`            | Fit Mode       | Controls how the image fits into the bounding box defined by `h` and `w` | `fit`, `fill`, `stretch`, `crop`                                 | `fit`                                  |
+| `g`              | Gravity        | When cropping occurs, determines which part of the image is retained     | `center`, `entropy`, `attention`                                 | `center`                               |
+| `format`         | Format         | The output format of the image                                           | Format                                                           | Original format                        |
+| `r`              | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`                                  | `0`                                    |
+| `f`              | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`                         | `none`                                 |
+| `filter`         | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `grayscale`, `sepia`                      | `none`                                 |
+| `blur`           | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                                      | `0`                                    |
+| `q`              | Quality        | Compression level for lossy formats                                      | `1` - `100`                                                      | Format dependent (e.g., 80)            |
+| `pad`            | Padding        | Adds padding pixels to the image boundaries                              | Integer `> 0`                                                    | `0`                                    |
+| `pad-c`          | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)                        | Transparent / White (Format dependent) |
+| `strip`          | Strip Metadata | Comma-separated list of metadata fields to remove                        | `exif`, `iptc`, `xmp` (e.g., `exif,xmp`)                         | None                                   |
+| `cs`             | Color Space    | Transforms the image color space                                         | `origin`, `grayscale`, `srgb`, `p3`                              | `origin`                               |
+| `pixel-channels` | Pixel Channels | Channel selection and order for raw pixel output                         | Any permutation of `RGB` or `RGBA`, or `gray` (case-insensitive) | `RGB`                                  |
+| `pixel-layout`   | Pixel Layout   | Sample arrangement for raw pixel output                                  | `interleaved`, `planar`                                          | `interleaved`                          |
 
 ### Format
 
 | Format   | Name       | File Extension | Content Type             |
-|:---------|:-----------|:---------------|:-------------------------|
+| :------- | :--------- | :------------- | :----------------------- |
 | `png`    | PNG        | .png           | image/png                |
 | `jpg`    | JPEG       | .jpeg          | image/jpeg               |
 | `webp`   | WEBP       | .webp          | image/webp               |
@@ -42,6 +44,10 @@ Use transformations to resize, crop, convert, or adjust an image. Supply the par
 | `jxl`    | JPEG XL    | .jxl           | image/jxl                |
 | `heic`   | HEIC       | .heic          | image/heic               |
 | `gif`    | GIF        | .gif           | image/gif                |
+| `pixels` | Raw Pixels | .bin           | application/octet-stream |
+
+`pixels` supports output only. Upload an encoded image and request a pixel variant, or convert the upload to pixels
+through preprocessing. See [Raw Pixels](../concepts/pixels.md).
 
 ## Image Resizing
 
@@ -194,20 +200,23 @@ Konifer can return variants in these formats:
 - **HEIC**
 - **GIF** (single and multi-page)
 
+For raw image buffers, Konifer also supports **Pixels** (`format=pixels`).
+
 ### Quality (`q`)
 
 The `q` parameter controls compression for lossy formats. Lower values reduce file size and discard more image detail.
 Higher values preserve more detail and require more storage and network bandwidth.
 
-| Format         | Default Quality | Notes                                                          |
-|:---------------|:----------------|:---------------------------------------------------------------|
-| **JPEG**       | 80              | Good balance for photos.                                       |
-| **WEBP**       | 80              | Generally 30% smaller than JPEG at equivalent quality.         |
-| **AVIF**       | 50              | Superior compression, but computationally expensive to encode. |
-| **PNG**        | N/A             | PNG is lossless. The `q` parameter is ignored.                 |
-| **JPEG XL**    | 90              | High-efficiency modern standard.                               |
-| **HEIC**       | 50              | Standard for iOS captures.                                     |
-| **GIF**        | 100             | Images are generally small due to a limited color palette.     |
+| Format      | Default Quality | Notes                                                          |
+| :---------- | :-------------- | :------------------------------------------------------------- |
+| **JPEG**    | 80              | Good balance for photos.                                       |
+| **WEBP**    | 80              | Generally 30% smaller than JPEG at equivalent quality.         |
+| **AVIF**    | 50              | Superior compression, but computationally expensive to encode. |
+| **PNG**     | N/A             | PNG is lossless. The `q` parameter is ignored.                 |
+| **JPEG XL** | 90              | High-efficiency modern standard.                               |
+| **HEIC**    | 50              | Standard for iOS captures.                                     |
+| **GIF**     | 100             | Images are generally small due to a limited color palette.     |
+| **Pixels**  | N/A             | Raw samples have no compression; Konifer ignores `q`.          |
 
 Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) library recommendations.
 
@@ -233,6 +242,48 @@ Compare the fur around the eyes: `q=10` loses fine detail in exchange for a smal
     <figcaption><a href="/image-transformations/quality/cheetah-quality-80.webp">q=80</a> · 49,434 bytes</figcaption>
   </figure>
 </div>
+
+## Raw Pixel Output
+
+`format=pixels` returns packed, row-major, unsigned 8-bit samples (`uint8`, 0–255), without an image header or metadata.
+The response has content type `application/octet-stream` and the download extension `.bin`. Animated sources produce
+the first frame. Apply resizing, rotation, filters, and padding before exporting the buffer.
+
+### Pixel Channels (`pixel-channels`)
+
+Specify any permutation of `RGB` or `RGBA`, or `gray`. Input is case-insensitive; Konifer reports channels in lowercase
+in response attributes. Color channels must contain `R`, `G`, and `B` once each, with an optional single `A`.
+Examples include `RGB` (default), `BGR`, `RGBA`, `BGRA`, and `ARGB`. Invalid values, such as `RRB` or `RG`, return
+`400 Bad Request`.
+
+Color channels require an output color space of `srgb` or `p3`. Use `cs=srgb` or `cs=p3` if the original color space
+is unsuitable. With `cs=origin`, a grayscale, CMYK, or other unsupported source color space returns `400 Bad Request`.
+
+An `A` channel preserves source alpha or contains `255` if the source has no alpha. Color output without `A` drops
+alpha. `gray` returns one grayscale channel and composites transparency against white. For `gray`, omit `cs` or use
+`cs=origin` or `cs=grayscale`; an explicit `cs=srgb` or `cs=p3` returns `400 Bad Request`.
+
+### Pixel Layout (`pixel-layout`)
+
+| Value         | Arrangement for RGB                                     | Default |
+| :------------ | :------------------------------------------------------ | :------ |
+| `interleaved` | All channels per pixel: `R1 G1 B1 R2 G2 B2 …`           | Yes     |
+| `planar`      | A complete plane per channel: `R1 R2 … G1 G2 … B1 B2 …` | No      |
+
+Both layouts follow row order within the image. Channel and plane order follow `pixel-channels`. For `gray`, Konifer
+normalizes the layout to `interleaved`, including requests for `planar`.
+
+Pixel options apply when the resolved output format is `pixels`. They do not select that format on their own and have
+no effect on encoded output such as PNG. Select pixels through `format=pixels` or a profile that defines it;
+`Accept: application/octet-stream` does not select pixel output.
+
+Fetch `link` with the same transformation to read `attributes.width`, `attributes.height`, and `attributes.pixels`
+(`channels`, `layout`, `dataType`). The byte count is `width × height × channel count`. The current output data type
+is fixed at `uint8`; there is no data-type transformation parameter.
+
+Use these same parameter names in variant profiles and preprocessing configuration. See
+[Raw Pixels](../concepts/pixels.md) for configuration and
+[Fetching raw pixels](api/assets/fetch-assets.mdx#example-raw-pixels) for HTTP and client examples.
 
 ## Color Space
 

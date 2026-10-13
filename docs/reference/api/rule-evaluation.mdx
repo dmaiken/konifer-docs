@@ -1,8 +1,9 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 id: rule-evaluation-api
+slug: /reference/rule-evaluation-api/rule-evaluation-api
 title: Evaluate Rules
-sidebar_label: "Evaluate"
+sidebar_label: "Rule Evaluation"
 ---
 
 import Tabs from '@theme/Tabs';
@@ -211,7 +212,7 @@ Uploaded content cannot exceed `source.multipart.max-bytes`.
 
 Send an `application/json` request with `source.s3.arn` and the same definitions array.
 Replace `arn:aws:s3:::your-bucket/konifer-small.png` with an existing object's ARN. As with
-[asset imports](../assets-api/store-assets.mdx#amazon-s3-arn-source), the server needs AWS credentials with read access.
+[asset imports](assets/store-assets.mdx#amazon-s3-arn-source), the server needs AWS credentials with read access.
 
 <Tabs groupId="konifer-example-language" defaultValue="curl">
 <TabItem value="curl" label="curl">

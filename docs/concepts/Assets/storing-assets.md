@@ -252,8 +252,7 @@ Request the thumbnail with:
 GET /assets/documentation/preprocessing/cow/-/content?format=webp&w=128&h=128&fit=fill
 ```
 
-Larger variants still start from the 640×480 stored original. Increasing requested dimensions cannot recover detail
-discarded during preprocessing. Keep a separate source copy if your application needs the uploaded resolution later.
+Larger variants still **start** from the 640×480 stored original.
 
 ### Clamp Width/Height
 
