@@ -9,9 +9,8 @@ description: "Install the Konifer client, store your first image, and handle req
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Use the Konifer client to store images, retrieve their content or delivery URLs, update metadata, and evaluate rules
-from your application. Client version `{{koniferClientVersion}}` supports JVM 17 or newer. Kotlin/Native and JavaScript
-targets are not part of this release... yet :).
+The Konifer client wraps the HTTP API for Kotlin and Java. Version `{{koniferClientVersion}}` supports JVM 17 or newer;
+Kotlin/Native and JavaScript targets are not part of this release.
 
 ## Install the client
 
@@ -37,20 +36,16 @@ Maven:
 
 ## Choose your client
 
-- Use `KoniferClient` in Kotlin code that can call suspending functions.
-- Use `KoniferBlockingClient` in Java or other JVM code that needs blocking calls. Each request blocks the calling thread.
+Use `KoniferClient` for suspending Kotlin calls or `KoniferBlockingClient` for blocking Java/JVM calls. Both expose
+the same operations and return `KoniferResult<T>`.
 
-Both clients expose the same operations and return `KoniferResult<T>`.
-
-Create a client with your server's base URL, without the `/assets` suffix. Reuse it across requests, then close it at
-application shutdown. The examples below create and close a client for a single program. In a Kotlin application,
-call the suspending operations from your existing coroutine context.
+Build the client with your server's base URL, without `/assets`. Reuse it across requests and close it at application
+shutdown.
 
 ## Store an image and get its URL
 
-Start a server using the [Quickstart](getting-started.md#1-start-konifer), and keep it running at
-`http://localhost:8080`. Run this example from the documentation repository to use `static/img/konifer-small.png`,
-or replace that filename with your own PNG. Each run stores a new entry at `documentation/examples/profile-picture`.
+Start the [Quickstart](getting-started.md#1-start-konifer) server at `http://localhost:8080`. Run this example from the
+documentation repository, or replace `static/img/konifer-small.png` with your own PNG.
 
 <Tabs groupId="konifer-example-language" defaultValue="kotlin">
 <TabItem value="kotlin" label="Kotlin (suspending)">
@@ -64,7 +59,7 @@ import java.nio.file.Path
 suspend fun main() {
   val client = KoniferClient.build("http://localhost:8080")
   try {
-    val assets = client.assets("user/123/profile-picture")
+    val assets = client.assets("users/123/profile-picture")
     val image = Files.readAllBytes(Path.of("static/img/konifer-small.png"))
 
     val asset = assets.newAsset()
@@ -100,7 +95,7 @@ import java.nio.file.Path;
 public class Example {
   public static void main(String[] args) throws Exception {
     try (var client = KoniferBlockingClient.build("http://localhost:8080")) {
-      var assets = client.assets("user/123/profile-picture");
+      var assets = client.assets("users/123/profile-picture");
       var image = Files.readAllBytes(Path.of("static/img/konifer-small.png"));
 
       var asset = assets.newAsset()
@@ -113,6 +108,8 @@ public class Example {
         .originalVariant()
         .fetchLink()
         .valueOrThrow();
+
+      System.out.println(link.getUrl());
     }
   }
 }
@@ -121,112 +118,31 @@ public class Example {
 </TabItem>
 </Tabs>
 
-Open the printed URL to view the image. The server's delivery configuration determines whether this URL points to
-Konifer, your object store, or a CDN. These examples buffer a small image in memory; use a streaming upload source for
-larger files.
-
-## Build requests
-
-Start an asset operation with `client.assets(path)`. For operations that select one asset, you select the newest entry
-by default. Use `entry(entryId)` to select a specific version, as in the example above.
-
-Chain modifiers to describe the request. Methods such as `withAlt()` and `matchingLabels()` return new request or
-selection objects; keep the returned value or continue the chain. You send the request when you call an operation
-such as `store()`, `fetchInfo()`, `fetchLink()`, `update()`, or `deleteFirst()`.
-
-For rule evaluation, start with `client.ruleEvaluation()`, choose an image source and definitions, then call
-`evaluate()`. See the [Rule Evaluation API](../reference/api/rule-evaluation.mdx) for examples.
-
-## Request pixel transformations
-
-Both clients support raw pixel variants. Select `ImageFormat.PIXELS`, set `pixelChannels` to a string such as `RGB`,
-`BGRA`, or `gray`, and choose `PixelLayout.INTERLEAVED` or `PixelLayout.PLANAR` from
-`io.konifer.common.image.pixel`. Kotlin's `requestedTransformation` DSL exposes `pixelChannels` and `pixelLayout`;
-Java's `RequestedTransformation.Builder` exposes `pixelChannels(...)` and `pixelLayout(...)`.
-
-Pass the transformation to `client.assets(path).entry(entryId).variant(transformation)`. Use `fetchLink()` to read
-dimensions and `attributes.pixels`, and `fetchContentBytes()` for the raw buffer. The pixel attributes expose the
-channel order, layout, and `PixelDataType.UINT8` data type. On the JVM, convert signed bytes to unsigned sample values
-with `byte.toInt() and 0xff` in Kotlin or `Byte.toUnsignedInt(byte)` in Java.
-
-See the [raw pixel examples](../reference/api/assets/fetch-assets.mdx#example-raw-pixels) for Kotlin and Java code,
-including resizing and color-space conversion. Pixel output requires an encoded source image; `ImageFormat.PIXELS`
-does not enable raw-buffer uploads.
+Open the printed URL to view the stored image. The server's delivery configuration determines whether it points to
+Konifer, object storage, or a CDN.
 
 ## Handle results
 
-Request operations return either `KoniferResult.Success<T>` with the response value or a `KoniferResult.Failure`:
-
-| Failure                   | Meaning                                                          | Available details                      |
-|---------------------------|------------------------------------------------------------------|----------------------------------------|
-| `Failure.Http`            | The server returned a non-success HTTP status.                   | `statusCode` and an optional `message` |
-| `Failure.Transport`       | A network or response-body I/O operation failed.                 | The underlying `cause`                 |
-| `Failure.InvalidResponse` | The client could not decode the response into the expected type. | The underlying `cause`                 |
-
-Call `valueOrThrow()` if a request failure should abort your operation. This SDK method returns the successful value or
-throws `KoniferRequestException`, an unchecked exception with the original failure in its `failure` property. For
-transport and decoding failures, you can inspect the underlying exception through its `cause`.
-
-Inspect the result instead if you need to recover from a particular failure. For example, you might treat a missing
-profile picture as an expected case:
-
-<Tabs groupId="konifer-example-language" defaultValue="kotlin">
-<TabItem value="kotlin" label="Kotlin (suspending)">
-
-```kotlin
-import io.konifer.client.KoniferRequestException
-import io.konifer.client.KoniferResult
-
-// Inside a suspending function, using your existing client:
-when (val result = client.assets("users/123/profile-picture").fetchInfo()) {
-  is KoniferResult.Success -> println(result.value.entryId)
-  is KoniferResult.Failure.Http -> {
-    if (result.statusCode == 404) {
-      println("No profile picture yet.")
-    } else {
-      throw KoniferRequestException(result)
-    }
-  }
-  is KoniferResult.Failure -> throw KoniferRequestException(result)
-}
-```
-
-</TabItem>
-<TabItem value="java" label="Java (blocking)">
-
-```java
-import io.konifer.client.KoniferResult;
-
-// Inside a method, using your existing blocking client:
-var result = client.assets("users/123/profile-picture").fetchInfo();
-if (result instanceof KoniferResult.Failure.Http http && http.getStatusCode() == 404) {
-  System.out.println("No profile picture yet.");
-} else {
-  var asset = result.valueOrThrow();
-  System.out.println(asset.getEntryId());
-}
-```
-
-</TabItem>
-</Tabs>
-
-You can handle the failures relevant to your application without branching on each failure type. Coroutine cancellation
-and unexpected programming errors propagate as exceptions rather than `KoniferResult.Failure` values.
+Call `valueOrThrow()` to get the successful value or throw `KoniferRequestException` on failure. To recover from a
+request failure, inspect the `KoniferResult` instead: `Failure.Http` includes the HTTP status, while
+`Failure.Transport` and `Failure.InvalidResponse` include the underlying cause. Coroutine cancellation propagates as
+an exception.
 
 ## Optional configuration
 
-Pass `hmacKey` to `build()` if your server requires [signed retrieval URLs](../reference/url-signing.md). Use the same
-secret and signing algorithm as your server, and keep the secret in your application's secret configuration.
-
-Use `KoniferHttpConfiguration` to set request, connection, or socket timeouts when creating the client. With the default
-configuration, the client keeps the HTTP engine's timeout defaults and has no overall request deadline.
+Pass `hmacKey` and the matching signing algorithm to `build()` if your server requires
+[signed retrieval URLs](../reference/url-signing.md). Use `KoniferHttpConfiguration` to set request, connection, and
+socket timeouts.
 
 ## Next steps
 
-Use the API reference's Kotlin and Java tabs for endpoint examples:
+The API reference includes Kotlin and Java examples for each operation:
 
 - [Store assets](../reference/api/assets/store-assets.mdx)
-- [Fetch assets](../reference/api/assets/fetch-assets.mdx)
+- [Fetch assets](../reference/api/assets/fetch-assets.mdx), including content metadata, streaming, and pixel variants
 - [Update metadata](../reference/api/assets/update-assets.mdx)
 - [Delete assets](../reference/api/assets/delete-assets.mdx)
 - [Evaluate rules](../reference/api/rule-evaluation.mdx)
+
+See [Client content results](../reference/api/assets/fetch-assets.mdx#client-content-results) for redirect metadata
+availability and streaming destination ownership.

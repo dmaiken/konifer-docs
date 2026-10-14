@@ -99,6 +99,8 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
     "height": 100,
     "width": 200,
     "format": "jpg",
+    "rotate": "0",
+    "horizontalFlip": false,
     "colorSpace": "srgb",
     "pageCount": 1
   }
@@ -130,6 +132,11 @@ The curl example shows the redirect headers without following the redirect, as i
 The clients follow the redirect and save its content using `ContentDelivery.FOLLOW_REDIRECT`.
 To obtain the delivery URL without downloading content, use `fetchLink()` from the Link example.
 
+`FOLLOW_REDIRECT` returns an `AssetContent` with bytes and null `attributes`, `alt`, and `lqip` fields. The client
+does not decode Konifer metadata from the redirect destination, even if it supplies matching header names.
+Streaming returns an `AssetContentMetadata` with the same null fields. Use `fetchLink()` for metadata when using
+external delivery, or fetch through Konifer to receive [content attribute headers](#content-attribute-headers).
+
 <Tabs groupId="konifer-example-language" defaultValue="curl">
 <TabItem value="curl" label="curl">
 
@@ -152,8 +159,8 @@ curl --fail-with-body \
 ```kotlin
 client.assets(path)
   .originalVariant()
-  .fetchContentBytes(ContentDelivery.FOLLOW_REDIRECT)
-  .valueOrThrow()
+  .fetchContent(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow().bytes
 ```
 
 </TabItem>
@@ -162,8 +169,8 @@ client.assets(path)
 ```java
 client.assets(path)
   .originalVariant()
-  .fetchContentBytes(ContentDelivery.FOLLOW_REDIRECT)
-  .valueOrThrow();
+  .fetchContent(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow().getBytes();
 ```
 
 </TabItem>
@@ -322,15 +329,22 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 
 ##### Attributes
 
-| Field Name   | Type    | Description                                                                                                                                      |
-| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `height`     | Integer | Height of variant                                                                                                                                |
-| `width`      | Integer | Width of variant                                                                                                                                 |
-| `format`     | Format  | Format of variant                                                                                                                                |
-| `pageCount`  | Integer | Number of pages in image (0 unless image is animated)                                                                                            |
-| `loop`       | Integer | For multi-paged images, specifies the amount of animated repetitions. Defaults to 0, -1 is continuous looping                                    |
-| `colorSpace` | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
-| `pixels`     | Object  | Pixel attributes for `format=pixels`; absent or null for encoded image formats                                                                   |
+| Field Name       | Type    | Description                                                                                                                                      |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `height`         | Integer | Height of variant                                                                                                                                |
+| `width`          | Integer | Width of variant                                                                                                                                 |
+| `format`         | Format  | Format of variant                                                                                                                                |
+| `pageCount`      | Integer | Number of pages in image; single-page content reports 1                                                                                          |
+| `loop`           | Integer | For multi-paged images, specifies the amount of animated repetitions. Defaults to 0, -1 is continuous looping                                    |
+| `colorSpace`     | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
+| `pixels`         | Object  | Pixel attributes for `format=pixels`; absent or null for encoded image formats                                                                   |
+| `rotate`         | String  | Clockwise rotation still needed for display: `0`, `90`, `180`, or `270`; never `auto`                                                            |
+| `horizontalFlip` | Boolean | Whether to flip horizontally after applying the remaining rotation                                                                               |
+
+These attributes describe the selected variant's stored bytes. For a source whose EXIF orientation has not been
+applied, `rotate` and `horizontalFlip` describe how to orient it for display. Orientation-normalized output reports
+`"rotate": "0"` and `"horizontalFlip": false`. Avoid applying these operations again if your image decoder already
+honors the source orientation.
 
 ###### Pixel attributes
 
@@ -342,6 +356,8 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 
 These fields also appear under `attributes.pixels` in a pixel variant's `link` response. Use the selected variant's
 width and height to interpret the raw body. Pixel output has no file header containing this information.
+
+Content and download responses carry the same attributes in [HTTP headers](#content-attribute-headers).
 
 ##### Transformation
 
@@ -522,18 +538,50 @@ curl --fail-with-body \
 <TabItem value="kotlin" label="Kotlin (suspending)">
 
 ```kotlin
-client.assets(path).originalVariant().fetchContentBytes().valueOrThrow()
+client.assets(path).originalVariant().fetchContent().valueOrThrow().bytes
 ```
 
 </TabItem>
 <TabItem value="java" label="Java (blocking)">
 
 ```java
-client.assets(path).originalVariant().fetchContentBytes().valueOrThrow();
+client.assets(path).originalVariant().fetchContent().valueOrThrow().getBytes();
 ```
 
 </TabItem>
 </Tabs>
+
+### Client content results
+
+`fetchContent()` returns `KoniferResult<AssetContent>`. Read the buffered body from `bytes` and the decoded response
+metadata from `attributes`, `alt`, and `lqip`. The [attribute headers](#content-attribute-headers) describe the bytes
+from that request, including dimensions, pixel layout, and remaining display orientation.
+
+The metadata fields can be null. `attributes` is null if the server sends no attribute headers; a partial set or
+invalid value returns `KoniferResult.Failure.InvalidResponse`. `alt` is null if its header is absent, and `lqip` is null
+if neither placeholder header is present. [Redirect delivery](#fetching-redirect-redirect) leaves all metadata null.
+
+#### Streaming content
+
+Use `fetchAndWriteContentTo()` for larger bodies. It returns `KoniferResult<AssetContentMetadata>` after the transfer,
+with the same metadata fields as `AssetContent`.
+
+In Kotlin, supply a `ByteWriteChannel` and consume it concurrently to handle backpressure. The client flushes and
+closes the write side on success, or terminates it on failure or cancellation. In Java, supply an `OutputStream`;
+you control flushing and closing. Transfer failures can leave partial bytes in either destination.
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+try (var output = Files.newOutputStream(Path.of("profile-picture.png"))) {
+  var metadata = client.assets(path)
+    .originalVariant()
+    .fetchAndWriteContentTo(output)
+    .valueOrThrow();
+  System.out.println(metadata.getAttributes());
+}
+```
 
 ### Example: WebP thumbnail
 
@@ -561,8 +609,8 @@ val transformation = requestedTransformation {
 }
 client.assets(path)
   .variant(transformation)
-  .fetchContentBytes()
-  .valueOrThrow()
+  .fetchContent()
+  .valueOrThrow().bytes
 ```
 
 </TabItem>
@@ -578,8 +626,8 @@ var transformation = new RequestedTransformation.Builder()
   .build();
 client.assets(path)
   .variant(transformation)
-  .fetchContentBytes()
-  .valueOrThrow();
+  .fetchContent()
+  .valueOrThrow().getBytes();
 ```
 
 </TabItem>
@@ -588,19 +636,16 @@ client.assets(path)
 ### Example: raw pixels
 
 Fetch a 224×224 BGR buffer in planar layout for an image-processing input. This produces 150,528 unsigned 8-bit samples.
-The curl example uses entry `0`; replace it with the `entryId` returned by your upload. The client examples use the
-same `entryId` for content and attributes so a newer upload cannot change the selected source between requests.
+The curl example uses entry `0`; replace it with the `entryId` returned by your upload. Read attributes from the
+content response headers, or from the client's `AssetContent`, to interpret the bytes from the same request.
 
 <Tabs groupId="konifer-example-language" defaultValue="curl">
 <TabItem value="curl" label="curl">
 
 ```bash
-# Inspect dimensions, channel order, layout, and data type:
+# Save dimensions and pixel attributes alongside the buffer:
 curl --fail-with-body \
-  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/link?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
-
-# Download the same variant:
-curl --fail-with-body \
+  --dump-header profile-picture.headers \
   --output profile-picture.bin \
   'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
 ```
@@ -625,8 +670,9 @@ val transformation = requestedTransformation {
   pixelLayout = PixelLayout.PLANAR
 }
 val variant = client.assets(path).entry(entryId).variant(transformation)
-val attributes = variant.fetchLink().valueOrThrow().attributes
-val pixels = variant.fetchContentBytes().valueOrThrow()
+val content = variant.fetchContent().valueOrThrow()
+val attributes = requireNotNull(content.attributes)
+val pixels = content.bytes
 val channels = requireNotNull(attributes.pixels).channels
 val channelCount = if (channels == "gray") 1 else channels.length
 check(pixels.size.toLong() == attributes.width.toLong() * attributes.height * channelCount)
@@ -655,8 +701,9 @@ var transformation = new RequestedTransformation.Builder()
   .pixelLayout(PixelLayout.PLANAR)
   .build();
 var variant = client.assets(path).entry(entryId).variant(transformation);
-var attributes = variant.fetchLink().valueOrThrow().getAttributes();
-var pixels = variant.fetchContentBytes().valueOrThrow();
+var content = variant.fetchContent().valueOrThrow();
+var attributes = java.util.Objects.requireNonNull(content.getAttributes());
+var pixels = content.getBytes();
 var channels = attributes.getPixels().getChannels();
 int channelCount = channels.equals("gray") ? 1 : channels.length();
 long expectedBytes = (long) attributes.getWidth() * attributes.getHeight() * channelCount;
@@ -669,25 +716,25 @@ int firstSample = Byte.toUnsignedInt(pixels[0]);
 </TabItem>
 </Tabs>
 
-The `link` response includes the following attributes:
+The content response includes the following attribute headers:
 
-```json
-{
-  "width": 224,
-  "height": 224,
-  "format": "pixels",
-  "colorSpace": "srgb",
-  "pixels": {
-    "channels": "bgr",
-    "layout": "planar",
-    "dataType": "uint8"
-  }
-}
+```http
+K-Attr-Width: 224
+K-Attr-Height: 224
+K-Attr-Format: pixels
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
+K-Attr-Pixels-Channels: bgr
+K-Attr-Pixels-Layout: planar
+K-Attr-Pixels-Data-Type: uint8
 ```
 
 Content responses use `Content-Type: application/octet-stream`. The body contains pixel bytes without a header; the download
-selector uses a `.bin` filename. `fetchContentBytes()` buffers the whole response. For larger buffers, use
-`fetchAndWriteContentTo()` with a Kotlin `ByteWriteChannel` or a Java `OutputStream`.
+selector uses a `.bin` filename. `fetchContent()` buffers the whole response and returns `AssetContent`.
+For larger buffers, use `fetchAndWriteContentTo()` with a Kotlin `ByteWriteChannel` or a Java `OutputStream`;
+its result contains `AssetContentMetadata` after the transfer.
 
 See [Raw Pixel Output](../../image-transformation-reference.md#raw-pixel-output) for channel validation, color space,
 alpha handling, and grayscale behavior.
@@ -713,8 +760,8 @@ curl --fail-with-body \
 client.assets(path)
   .entry(entryId)
   .originalVariant()
-  .fetchContentBytes()
-  .valueOrThrow()
+  .fetchContent()
+  .valueOrThrow().bytes
 ```
 
 </TabItem>
@@ -724,8 +771,8 @@ client.assets(path)
 client.assets(path)
   .entry(entryId)
   .originalVariant()
-  .fetchContentBytes()
-  .valueOrThrow();
+  .fetchContent()
+  .valueOrThrow().getBytes();
 ```
 
 </TabItem>
@@ -742,6 +789,13 @@ K-Alt: "Your defined alt, if any"
 K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
 K-LQIP-Blurhash: "BASE64 Blurhash, if enabled"
 K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
+K-Attr-Width: 200
+K-Attr-Height: 100
+K-Attr-Format: jpg
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
 
 <image bytes>
 ```
@@ -750,9 +804,42 @@ K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
 Etag is only returned for Content and Download return formats
 :::
 
+### Content attribute headers
+
+Successful `content` and `download` responses include the selected variant's attributes in `K-Attr-*` headers.
+These describe the body you receive, including requested transformations, on both cache hits and generated variants.
+The body remains image or raw pixel bytes; it does not include a JSON envelope.
+
+| Header                    | Attribute         | Value                                                            | Presence          |
+| :------------------------ | :---------------- | :--------------------------------------------------------------- | :---------------- |
+| `K-Attr-Width`            | `width`           | Width of the returned image buffer, in pixels                    | Always            |
+| `K-Attr-Height`           | `height`          | Height of the returned image buffer, in pixels                   | Always            |
+| `K-Attr-Format`           | `format`          | Format identifier, such as `jpg`, `webp`, or `pixels`            | Always            |
+| `K-Attr-Rotate`           | `rotate`          | Remaining clockwise display rotation: `0`, `90`, `180`, or `270` | Always            |
+| `K-Attr-Horizontal-Flip`  | `horizontalFlip`  | `true` or `false`; apply after the remaining rotation            | Always            |
+| `K-Attr-Color-Space`      | `colorSpace`      | Color-space name, such as `srgb`, `p3`, or `grayscale`           | Always            |
+| `K-Attr-Page-Count`       | `pageCount`       | Number of pages or frames; 1 for single-page content             | When available    |
+| `K-Attr-Loop`             | `loop`            | Animation loop value                                             | When applicable   |
+| `K-Attr-Pixels-Channels`  | `pixels.channels` | Lowercase channel order, such as `rgb`, `bgra`, or `gray`        | Pixel output only |
+| `K-Attr-Pixels-Layout`    | `pixels.layout`   | `interleaved` or `planar`                                        | Pixel output only |
+| `K-Attr-Pixels-Data-Type` | `pixels.dataType` | `uint8`                                                          | Pixel output only |
+
+Optional attributes have no header when they are absent. HTTP header names are case-insensitive. The existing
+`K-Alt`, `K-LQIP-Blurhash`, and `K-LQIP-Thumbhash` headers still carry asset metadata when present.
+
+`K-Attr-Rotate` and `K-Attr-Horizontal-Flip` describe the orientation still needed for display. They do not repeat
+the requested `r` and `f` parameters. For output whose orientation Konifer has normalized, such as an `r=auto`
+variant, they are `0` and `false`. Width and height describe the returned buffer before any remaining display rotation.
+
+The same attributes appear in JSON `link` and asset-information responses. Redirect destinations such as object
+storage do not receive these Konifer response headers. The client leaves metadata null in `FOLLOW_REDIRECT` mode;
+use `THROUGH_KONIFER` to receive metadata with content. See [Client content results](#client-content-results) for
+return types and streaming behavior.
+
 ## Fetching Content Download
 
-Same behavior as Content but with the addition of a `Content-Disposition: attachment` response header
+Same behavior as Content, including [attribute headers](#content-attribute-headers), with the addition of a
+`Content-Disposition: attachment` response header.
 
 ### Request
 
@@ -780,8 +867,8 @@ curl --fail-with-body \
 ```kotlin
 client.assets(path)
   .originalVariant()
-  .fetchContentBytes()
-  .valueOrThrow()
+  .fetchContent()
+  .valueOrThrow().bytes
 ```
 
 </TabItem>
@@ -790,8 +877,8 @@ client.assets(path)
 ```java
 client.assets(path)
   .originalVariant()
-  .fetchContentBytes()
-  .valueOrThrow();
+  .fetchContent()
+  .valueOrThrow().getBytes();
 ```
 
 </TabItem>

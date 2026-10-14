@@ -433,18 +433,14 @@ For image-processing code, request a 224×224 RGB buffer in planar layout:
 
 ```bash
 curl --fail-with-body \
+  --dump-header profile-picture.headers \
   --output profile-picture.bin \
   --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=RGB&pixel-layout=planar'
 ```
 
 Konifer returns 150,528 unsigned 8-bit samples as `application/octet-stream`. This buffer contains the red plane,
-then the green plane, then the blue plane. It has no image header. Fetch `link` with the same transformation to inspect
-the dimensions and `attributes.pixels`:
-
-```bash
-curl --fail-with-body \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/link?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=RGB&pixel-layout=planar'
-```
+then the green plane, then the blue plane. It has no image header. The saved `profile-picture.headers` contains the
+dimensions, channel order, layout, and data type in `K-Attr-*` HTTP headers from the same response.
 
 See [Raw Pixels](../concepts/pixels.md) for channel order, grayscale, and preprocessing, and the
 [Fetch Assets reference](../reference/api/assets/fetch-assets.mdx#example-raw-pixels) for client examples.
