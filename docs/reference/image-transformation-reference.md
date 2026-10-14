@@ -170,9 +170,11 @@ Pixel options apply when the resolved output format is `pixels`. They do not sel
 no effect on encoded output such as PNG. Select pixels through `format=pixels` or a profile that defines it;
 `Accept: application/octet-stream` does not select pixel output.
 
-Fetch `link` with the same transformation to read `attributes.width`, `attributes.height`, and `attributes.pixels`
-(`channels`, `layout`, `dataType`). The byte count is `width × height × channel count`. The current output data type
-is fixed at `uint8`; there is no data-type transformation parameter.
+Read the output dimensions and pixel attributes (`channels`, `layout`, `dataType`) from the content response's
+[`K-Attr-*` headers](api/assets/fetch-assets.mdx#content-attribute-headers), or from `attributes` in the client's
+`fetchContent()` result. `link` also returns these attributes in JSON. The byte count is
+`width × height × channel count`. The current output data type is fixed at `uint8`; there is no data-type
+transformation parameter.
 
 Use these same parameter names in variant profiles and preprocessing configuration. See
 [Raw Pixels](../concepts/pixels.md) for configuration and
