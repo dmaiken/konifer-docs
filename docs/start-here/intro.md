@@ -3,16 +3,51 @@ slug: /
 sidebar_position: 1
 id: intro
 title: Introduction
-description: Learn what Konifer is, how its path-based model works, and why applications use it to manage image storage, transformation, and delivery.
+description: Store images once and serve display formats or raw pixel buffers through one self-hosted image storage and preprocessing API.
 sidebar_label: "What is Konifer?"
 ---
 
-Konifer is image infrastructure for applications that need to store, transform, and deliver images using their own
-domain model.
+Konifer is one image source for humans and machines. It stores your images and serves display formats or raw pixel
+buffers through a self-hosted API, with reusable transformations for applications and vision pipelines.
 
-It stores original images, generates and caches transformed variants, and delivers images as content, links, redirects,
-downloads, or structured information. Instead of introducing a separate identity model for media, Konifer lets your
-application address images using paths it already understands.
+A product photo may appear in a storefront and feed a classification worker. An inspection photo may need a preview
+for a reviewer and a pixel buffer for analysis. With Konifer, both consumers can use the same stored image and request
+the dimensions, format, and layout they need.
+
+## One upload, two consumers
+
+Store the source image at an application path:
+
+```http
+POST /assets/products/sku-123/photo
+```
+
+Use the returned `entryId` to select that source for both consumers. These examples use entry `4`; replace it with
+the ID from your upload.
+
+For a display thumbnail, request WebP with orientation applied:
+
+```http
+GET /assets/products/sku-123/photo/-/entry/4/content?w=256&h=256&fit=fill&r=auto&format=webp
+```
+
+For a processing worker, request a 224×224 RGB buffer in planar layout:
+
+```http
+GET /assets/products/sku-123/photo/-/entry/4/content?w=224&h=224&fit=fill&r=auto&cs=srgb&format=pixels&pixel-channels=RGB&pixel-layout=planar
+```
+
+Konifer returns the pixel bytes together with dimensions, channel order, layout, and data type in HTTP headers.
+The client exposes these attributes alongside the bytes. You can change the representation without uploading a
+second source image, and Konifer caches generated variants for reuse.
+
+Pixel output contains unsigned 8-bit samples. Your consumer constructs tensors and applies any model-specific
+scaling or normalization it needs. See [Raw Pixels](../concepts/pixels.md) for the buffer contract and
+[Image Transformations](../reference/image-transformation-reference.md) for preprocessing options.
+
+## Address images through your application
+
+Konifer lets your application address images using paths it already understands:
 
 ```text
 /assets/users/123/profile-picture
@@ -24,41 +59,8 @@ application address images using paths it already understands.
 If your application knows which user, product, organization, or record owns an image, it can usually construct the
 corresponding Konifer URL without storing another opaque asset identifier.
 
-## Image infrastructure often becomes a second application model
-
-A typical image service begins with a simple upload:
-
-1. Your application uploads an image.
-2. The image service returns an asset identifier.
-3. Your application stores that identifier.
-4. Every future request must translate between your domain resource and the image service’s resource.
-
-This is appropriate when media has an independent identity. But many application images do not.
-
-A profile picture belongs to a user. A hero image belongs to a product. A receipt belongs to an expense. Card artwork
-belongs to a program, region, and design. Adding a separate media identifier can create integration state without adding
-useful meaning.
-
-Konifer starts with the relationship your application already knows:
-
-```http
-POST /assets/users/123/profile-picture
-```
-
-The same path can later be used to retrieve the image:
-
-```http
-GET /assets/users/123/profile-picture/-/content
-```
-
-Or request a transformed version:
-
-```http
-GET /assets/users/123/profile-picture/-/content?w=256&h=256&fit=crop&format=webp
-```
-
-Konifer’s path is not merely an object-storage key. It is an application-level address through which images can be
-stored, selected, transformed, and delivered.
+Use these paths to store, select, transform, and deliver images. An application can request the current image at a
+path, while a processing job can select a specific entry when its source version matters.
 
 ## A path can represent the current image, a collection, or history
 
@@ -93,7 +95,7 @@ matters.
 
 ## Transformations are stored as reusable variants
 
-Konifer can resize, crop, rotate, blur, pad, normalize, and convert images into modern formats.
+Konifer can resize, crop, rotate, blur, pad, convert color spaces, and output encoded images or raw pixels.
 
 Transformations can be requested directly:
 
@@ -108,7 +110,7 @@ GET /assets/products/sku-123/hero/-/content?profile=social-card
 ```
 
 When Konifer generates a variant, it stores the result and reuses it for later requests. Common variants can also be
-generated after upload so they are ready before the first viewer requests them.
+generated after upload for display or processing consumers.
 
 This makes Konifer more than an image-processing proxy. It manages the relationship between originals, generated
 variants, application paths, stored information, and delivery behavior.
@@ -172,7 +174,7 @@ This architecture gives your team control over:
 
 Konifer does not prescribe how the rest of your application must be deployed.
 
-## What Konifer is—and what it is not
+## What Konifer is - and what it is not
 
 Konifer is an API-first image infrastructure component for application and platform teams.
 
@@ -191,7 +193,7 @@ Konifer is not:
 Start with [Who should use Konifer?](/docs/start-here/is-konifer-right-for-you) to evaluate whether its model fits your
 application.
 
-Then complete [Getting started](/docs/start-here/getting-started) to run Konifer locally, upload an image, request a
-transformed variant, and replace the image without changing its application path.
+Then complete [Getting started](/docs/start-here/getting-started) to run Konifer locally, upload one image, and request
+both a WebP thumbnail and a raw pixel buffer from it.
 
 To understand the design in more depth, continue to [Assets](/docs/concepts/Assets/concepts-assets).

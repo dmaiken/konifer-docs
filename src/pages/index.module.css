@@ -54,7 +54,7 @@
   letter-spacing: -0.045em;
   line-height: 1.01;
   margin: 0 0 1.5rem;
-  max-width: 12ch;
+  max-width: 16ch;
 }
 
 .heroLead {
@@ -127,7 +127,8 @@
 }
 
 .apiExample code {
-  white-space: pre;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .codeComment {
@@ -394,11 +395,6 @@
   .heroActions {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .apiExample code {
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
   }
 
   .infrastructureList > div {
