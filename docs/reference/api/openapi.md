@@ -33,3 +33,7 @@ instance you use so the document reflects that server's implementation.
 The specification represents asset routes as `/assets/{**}`. Replace `**` with your asset path and selectors,
 such as `users/123/profile-picture/-/content`. See the [Fetch Assets reference](assets/fetch-assets.mdx) for
 selector examples.
+
+The specification also describes the `K-Attr-*` headers on content and download responses, including dimensions,
+remaining display orientation, and pixel attributes. See
+[Content attribute headers](assets/fetch-assets.mdx#content-attribute-headers) for their values and optional fields.

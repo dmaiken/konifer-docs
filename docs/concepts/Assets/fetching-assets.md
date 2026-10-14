@@ -96,6 +96,8 @@ Returns:
     "height": 100,
     "width": 200,
     "format": "jpg",
+    "rotate": "0",
+    "horizontalFlip": false,
     "colorSpace": "srgb",
     "pageCount": 1
   }
@@ -133,10 +135,21 @@ HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
 K-Alt: "Your defined alt, if any"
+K-Attr-Width: 200
+K-Attr-Height: 100
+K-Attr-Format: jpg
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
 ```
 
+Content and download responses include the selected variant's dimensions, format, color space, remaining display
+orientation, and applicable animation or pixel attributes in `K-Attr-*` headers. These describe the bytes in that
+response. See [Content attribute headers](../../reference/api/assets/fetch-assets.mdx#content-attribute-headers).
+
 For a raw image buffer, request `format=pixels` with `pixel-channels` and `pixel-layout`. Fetch `link` with the same
-transformation to get dimensions and pixel attributes, then download the returned URL. See
+transformation if you need a delivery URL; fetch `content` to get bytes and attributes together. See
 [Raw Pixels](../pixels.md) for the buffer format and
 [client examples](../../reference/api/assets/fetch-assets.mdx#example-raw-pixels).
 

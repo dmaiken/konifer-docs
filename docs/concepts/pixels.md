@@ -47,35 +47,44 @@ returning grayscale samples.
 
 ## Fetch bytes with their attributes
 
-Fetch `link` with the desired transformation to get the output dimensions and pixel attributes. Then fetch the returned
-`url` to download those bytes. This keeps the metadata and content tied to the same entry, including if someone uploads
-a newer entry at the path between your requests.
+Fetch `content` with the desired transformation to get the bytes and their attributes in one response. Konifer puts
+dimensions and pixel attributes in `K-Attr-*` HTTP headers, so you can interpret the buffer without a separate `link`
+request.
 
 ```bash
 curl --fail-with-body \
-  'http://localhost:8080/assets/users/123/profile-picture/-/link?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
+  --dump-header profile-picture.headers \
+  --output profile-picture.bin \
+  'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
 ```
 
-The response's `attributes` include:
+The response headers include:
 
-```json
-{
-  "width": 224,
-  "height": 224,
-  "format": "pixels",
-  "colorSpace": "srgb",
-  "pixels": {
-    "channels": "bgr",
-    "layout": "planar",
-    "dataType": "uint8"
-  }
-}
+```http
+K-Attr-Width: 224
+K-Attr-Height: 224
+K-Attr-Format: pixels
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Pixels-Channels: bgr
+K-Attr-Pixels-Layout: planar
+K-Attr-Pixels-Data-Type: uint8
 ```
+
+With the client, `fetchContent().valueOrThrow()` returns an `AssetContent` whose `bytes` contain the buffer and whose
+`attributes` contain these decoded values. `fetchAndWriteContentTo()` returns `AssetContentMetadata` after streaming
+the bytes to your destination. Metadata fields can be null; they are unavailable with
+`ContentDelivery.FOLLOW_REDIRECT`. Use `fetchLink()` for attributes if you need an external delivery URL.
 
 The body size in bytes is `width × height × channel count`: three for RGB permutations, four for RGBA permutations,
 or one for `gray`. This example produces 150,528 bytes. Use the returned dimensions because resizing, rotation, and
 padding can change them. See the [Fetch Assets reference](../reference/api/assets/fetch-assets.mdx#example-raw-pixels)
 for curl, Kotlin, and Java examples.
+
+The orientation attributes describe the clockwise rotation still needed for display, followed by a horizontal flip.
+If you need pixels with orientation applied, request `r=auto`; normalized output reports rotation `0` and flip `false`.
+See [Content attribute headers](../reference/api/assets/fetch-assets.mdx#content-attribute-headers) for the full mapping.
 
 ## Pixel variants and preprocessing
 
