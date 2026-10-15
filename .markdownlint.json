@@ -1,6 +1,8 @@
 {
   "MD033": {
-    "allowed_elements": ["Tabs", "TabItem", "ClientExampleSetup", "details", "summary"]
+    "allowed_elements": [
+      "Tabs", "TabItem", "ClientExampleSetup", "details", "summary", "a", "div", "figure", "figcaption", "img"
+    ]
   },
   "MD013": {
     "line_length": 120,

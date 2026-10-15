@@ -55,3 +55,39 @@
   padding-bottom: 0.3rem; /* Space between text and line */
   margin-bottom: 1rem;    /* Space between line and next paragraph */
 }
+
+/* Keep quickstart examples at readable sizes and stack comparisons on small screens. */
+.quickstart-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  align-items: start;
+  gap: 1.5rem;
+  margin-bottom: var(--ifm-leading);
+}
+
+.quickstart-image {
+  margin: 0 0 var(--ifm-leading);
+}
+
+.quickstart-images .quickstart-image {
+  margin-bottom: 0;
+}
+
+.quickstart-image img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: var(--ifm-global-radius);
+}
+
+.quickstart-images img {
+  max-height: 256px;
+}
+
+.quickstart-image figcaption {
+  margin-top: 0.5rem;
+  color: var(--ifm-color-content-secondary);
+  font-size: 0.875rem;
+}

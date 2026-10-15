@@ -5,13 +5,12 @@ title: Getting Started with Konifer
 sidebar_label: "Quickstart"
 ---
 
-## Objective
-
-> Build a replaceable profile-image pipeline in 10 minutes
+Upload a profile picture, create a WebP thumbnail, and replace the original without changing its URL.
+You can follow along in about 10 minutes with Docker and curl, or browse the images and example responses below.
 
 ## 1. Start Konifer
 
-Run the container in development mode, exposing the service on port 8080 (or any port you want) using this command:
+Start a development container on port 8080:
 
 ```bash
 docker run --detach \
@@ -22,8 +21,8 @@ docker run --detach \
   ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
-This starts Konifer with in-memory dependencies. This mode is for evaluation; its data is discarded when the container
-stops.
+This evaluation mode uses in-memory storage. You lose the uploaded images and their information when you stop the
+container.
 
 Verify that Konifer is ready before continuing:
 
@@ -36,114 +35,393 @@ curl --fail \
 ```
 
 :::note
-Konifer is deployed exclusively via Docker. Due to the precise configuration required for the underlying libvips binary,
-we do not provide standalone JARs or binary releases.
+Use Docker to run Konifer with its required libvips configuration. We do not provide standalone JARs or binary releases.
 :::
 
 ## 2. Store your first image
 
-Store an image at the `/users/123/profile-picture` path.
+Download Mr. Dog and save it as `mr-dog-1.jpg`. Run the upload command from the folder where you saved the image.
+You will store it at the `/users/123/profile-picture` path.
+
+<figure className="quickstart-image">
+  <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, a small cute dog" width="1200" height="798" />
+  <figcaption>
+    Mr. Dog · Original JPG · 1200×798 pixels.{' '}
+    <a href="/getting-started/mr-dog-1.jpg" download="mr-dog-1.jpg">Download Mr. Dog (JPG)</a>
+  </figcaption>
+</figure>
 
 ```bash
 curl --fail-with-body \
   --request POST \
   --url 'http://localhost:8080/assets/users/123/profile-picture' \
   --form 'metadata={"alt":"profile picture"}' \
-  --form 'asset=@/path/to/your/image.png'
+  --form 'asset=@mr-dog-1.jpg'
 ```
+
+The response includes `"entryId": 0`, which identifies this first upload. Keep it to retrieve this picture after you
+upload a replacement. Your entry ID may differ if you have uploaded to this path before.
+
+<details>
+<summary>Full upload response</summary>
+
+```json
+{
+  "class": "image",
+  "alt": "profile picture",
+  "entryId": 0,
+  "labels": {},
+  "tags": [],
+  "source": "upload",
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      "storeKey": "d2128c60-e2e2-4056-ae6a-3d6799b41b83.jpeg",
+      "attributes": {
+        "height": 798,
+        "width": 1200,
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1
+      },
+      "lqip": {}
+    }
+  ],
+  "createdAt": "2026-10-15T01:46:42.879461495",
+  "modifiedAt": "2026-10-15T01:46:42.906062144"
+}
+```
+
+</details>
 
 ## 3. View your asset's content
 
-To view the content itself, use the `content` query selector.
+Open this URL in your browser to view Mr. Dog. The `content` selector returns the image itself:
 
-```bash
-curl --fail-with-body \
-  --request GET \
-  --output profile-picture.png \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/content
 ```
 
 ## 4. Request a WebP thumbnail
 
-Request a thumbnail. The thumbnail is transformed by:
+Open this URL in your browser to create a 256×256 WebP thumbnail. Use `fit=fill` to fill the square without stretching
+the image, and `g=attention` to choose which area to keep when cropping:
 
-- Specifying WebP format; a space-efficient, mature, and well-supported format
-- Setting height and width to be 256×256
-- Setting the fit to `fill` and gravity to `attention` to center on the most important part of the image
-
-```bash
-curl --fail-with-body \
-  --header 'Accept: image/webp' \
-  --output profile-picture.webp \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?w=256&h=256&fit=fill&g=attention'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&w=256&h=256&fit=fill&g=attention
 ```
 
+<div className="quickstart-images">
+  <figure className="quickstart-image">
+    <img src="/getting-started/mr-dog-1.jpg" alt="Original landscape photo of Mr. Dog" width="1200" height="798" />
+    <figcaption>Original JPG · 1200×798 pixels</figcaption>
+  </figure>
+  <figure className="quickstart-image">
+    <img src="/getting-started/mr-dog-thumbnail.webp" alt="Square thumbnail of Mr. Dog" width="256" height="256" />
+    <figcaption>WebP thumbnail · 256×256 pixels</figcaption>
+  </figure>
+</div>
+
+You now have the original image and a thumbnail under the same asset path.
+
 :::note
-The `Accept` header asks Konifer to return the generated variant as WebP. A `format` query parameter, when present,
-takes precedence over the header.
+Konifer respects the `Accept` header. A `format` query parameter, when present, takes precedence over the header.
 :::
 
 ## 5. View your asset's information
 
-To view information about this profile picture, use the `info` query selector. You will see two variants listed:
+Open the `info` URL in your browser to inspect the stored image and its variants:
 
-1. The original variant is the content supplied when storing the asset initially.
-2. The WebP thumbnail
-
-```bash
-curl --fail-with-body \
-  --request GET \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/info'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/info
 ```
+
+The response includes the original JPG and the WebP thumbnail you requested. This excerpt shows their dimensions and
+formats; it omits the other response fields:
+
+```json
+{
+  "entryId": 0,
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "attributes": { "height": 798, "width": 1200, "format": "jpg" }
+    },
+    {
+      "isOriginalVariant": false,
+      "attributes": { "height": 256, "width": 256, "format": "webp" }
+    }
+  ]
+}
+```
+
+<details>
+<summary>Full asset information response</summary>
+
+```json
+{
+  "class": "image",
+  "alt": "profile picture",
+  "entryId": 0,
+  "labels": {},
+  "tags": [],
+  "source": "upload",
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      "storeKey": "d2128c60-e2e2-4056-ae6a-3d6799b41b83.jpeg",
+      "attributes": {
+        "height": 798,
+        "width": 1200,
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1
+      },
+      "lqip": {}
+    },
+    {
+      "isOriginalVariant": false,
+      "storeBucket": "assets",
+      "storeKey": "f68b413f-a5db-4e9a-b38c-613909bd9bc0.webp",
+      "attributes": {
+        "height": 256,
+        "width": 256,
+        "format": "webp",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "loop": 0
+      },
+      "transformation": {
+        "width": 256,
+        "height": 256,
+        "fit": "fill",
+        "gravity": "attention",
+        "format": "webp",
+        "rotate": "0",
+        "flip": "",
+        "filter": "",
+        "blur": 0,
+        "quality": 80,
+        "padding": {
+          "amount": 0,
+          "color": []
+        },
+        "metadata": {
+          "strip": []
+        },
+        "colorSpace": "srgb"
+      },
+      "lqip": {}
+    }
+  ],
+  "createdAt": "2026-10-15T01:46:42.879461495",
+  "modifiedAt": "2026-10-15T01:46:42.906062144"
+}
+```
+
+</details>
 
 ## 6. Upload an updated profile picture
 
-The user has chosen a new profile picture. Upload another image to the same path; Konifer creates a new entry without
-changing the application-facing URL.
+Replace Mr. Dog's profile picture with a new one. Download the image as `mr-dog-2.jpg` into the same folder, then
+upload it to the same path. Konifer creates a new entry without changing the URL your application uses.
+
+<figure className="quickstart-image">
+  <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, a cute little dog" width="1200" height="798" />
+  <figcaption>
+    Mr. Dog · Replacement JPG · 1200x798 pixels.{' '}
+    <a href="/getting-started/mr-dog-2.jpg" download="mr-dog-2.jpg">Download Mr. Dog (JPG)</a>
+  </figcaption>
+</figure>
 
 ```bash
 curl --fail-with-body \
   --request POST \
   --url 'http://localhost:8080/assets/users/123/profile-picture' \
   --form 'metadata={"alt":"profile picture"}' \
-  --form 'asset=@/path/to/new-profile-picture.png'
+  --form 'asset=@mr-dog-2.jpg'
 ```
 
-Note the `entryId` returned. It will have incremented.
+The response now includes `"entryId": 1`. You have two entries at the same path, each with its own entry ID.
+
+<details>
+<summary>Full replacement upload response</summary>
+
+```json
+{
+  "class": "image",
+  "alt": "profile picture",
+  "entryId": 1,
+  "labels": {},
+  "tags": [],
+  "source": "upload",
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      "storeKey": "d87ce003-aa51-4e00-b507-30465751e971.jpeg",
+      "attributes": {
+        "height": 798,
+        "width": 1200,
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1
+      },
+      "lqip": {}
+    }
+  ],
+  "createdAt": "2026-10-15T01:53:32.95613658",
+  "modifiedAt": "2026-10-15T01:53:32.958626453"
+}
+```
+
+</details>
 
 ## 7. Fetch the new and old profile pictures
 
-Using the `content` query selector, request the new image using the same path as before:
+Open the same `content` URL again to view Mr. Dog's latest profile picture:
 
-```bash
-curl --fail-with-body \
-  --request GET \
-  --output profile-picture-new.png \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/content
 ```
 
-To fetch the old one, specify the old `entryId`:
+To view Mr. Dog's old profile picture, add the first upload's entry ID to the URL:
 
-```bash
-curl --fail-with-body \
-  --request GET \
-  --output profile-picture-old.png \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/entry/0/content'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/entry/0/content
 ```
 
 In a fresh quickstart container, the first entry has an `entryId` of `0`. Use the value returned by your first upload if
 it differs.
 
+<div className="quickstart-images">
+  <figure className="quickstart-image">
+    <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, the current profile picture" width="1200" height="798" />
+    <figcaption>Current picture · Mr. Dog · Entry 1</figcaption>
+  </figure>
+  <figure className="quickstart-image">
+    <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, the previous profile picture" width="1200" height="798" />
+    <figcaption>Previous picture · Mr. Dog · Entry 0</figcaption>
+  </figure>
+</div>
+
 ## 8. View information for every profile picture
 
-The `entries` selector can return information for every entry at the path when `limit` is `-1`:
+Open the `entries` URL in your browser to see both uploads, newest first. By default, Konifer returns up to 20 entries;
+use the `limit` query parameter to change that number.
 
-```bash
-curl --fail-with-body \
-  --request GET \
-  --output profile-pictures.json \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/entries?limit=-1'
+```http
+http://localhost:8080/assets/users/123/profile-picture/-/entries
 ```
+
+This excerpt shows the two entry IDs. Expand the full response to inspect each entry's variants:
+
+```json
+{
+  "entries": [
+    { "entryId": 1 },
+    { "entryId": 0 }
+  ]
+}
+```
+
+<details>
+<summary>Full entries response</summary>
+
+```json
+{
+  "entries": [
+    {
+      "class": "image",
+      "alt": "profile picture",
+      "entryId": 1,
+      "labels": {},
+      "tags": [],
+      "source": "upload",
+      "variants": [
+        {
+          "isOriginalVariant": true,
+          "storeBucket": "assets",
+          "storeKey": "d87ce003-aa51-4e00-b507-30465751e971.jpeg",
+          "attributes": {
+            "height": 798,
+            "width": 1200,
+            "format": "jpg",
+            "colorSpace": "srgb",
+            "pageCount": 1
+          },
+          "lqip": {}
+        }
+      ],
+      "createdAt": "2026-10-15T01:53:32.95613658",
+      "modifiedAt": "2026-10-15T01:53:32.958626453"
+    },
+    {
+      "class": "image",
+      "alt": "profile picture",
+      "entryId": 0,
+      "labels": {},
+      "tags": [],
+      "source": "upload",
+      "variants": [
+        {
+          "isOriginalVariant": true,
+          "storeBucket": "assets",
+          "storeKey": "d2128c60-e2e2-4056-ae6a-3d6799b41b83.jpeg",
+          "attributes": {
+            "height": 798,
+            "width": 1200,
+            "format": "jpg",
+            "colorSpace": "srgb",
+            "pageCount": 1
+          },
+          "lqip": {}
+        },
+        {
+          "isOriginalVariant": false,
+          "storeBucket": "assets",
+          "storeKey": "f68b413f-a5db-4e9a-b38c-613909bd9bc0.webp",
+          "attributes": {
+            "height": 256,
+            "width": 256,
+            "format": "webp",
+            "colorSpace": "srgb",
+            "pageCount": 1,
+            "loop": 0
+          },
+          "transformation": {
+            "width": 256,
+            "height": 256,
+            "fit": "fill",
+            "gravity": "attention",
+            "format": "webp",
+            "rotate": "0",
+            "flip": "",
+            "filter": "",
+            "blur": 0,
+            "quality": 80,
+            "padding": {
+              "amount": 0,
+              "color": []
+            },
+            "metadata": {
+              "strip": []
+            },
+            "colorSpace": "srgb"
+          },
+          "lqip": {}
+        }
+      ],
+      "createdAt": "2026-10-15T01:46:42.879461495",
+      "modifiedAt": "2026-10-15T01:46:42.906062144"
+    }
+  ]
+}
+```
+
+</details>
 
 ## 9. Stop Konifer
 
@@ -157,7 +435,7 @@ Because the container was started with `--rm`, Docker removes it after it stops.
 
 To use Konifer from your application, see [Konifer Client](using-the-client.mdx).
 
-The quickstart uses ephemeral in-memory storage. To configure persistent storage, path policies, variant profiles, and
+The quickstart uses temporary in-memory storage. To configure persistent storage, path policies, variant profiles, and
 delivery behavior, continue to [Configure Konifer](configure-konifer.md).
 
 For a production-ready PostgreSQL and S3-compatible deployment, see
