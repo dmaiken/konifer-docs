@@ -298,11 +298,11 @@ it differs.
 
 <div className="quickstart-images">
   <figure className="quickstart-image">
-    <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, the current profile picture" width="1200" height="798" />
+    <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, the current profile picture" width="1200" height="798" />
     <figcaption>Current picture · Mr. Dog · Entry 1</figcaption>
   </figure>
   <figure className="quickstart-image">
-    <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, the previous profile picture" width="1200" height="798" />
+    <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, the previous profile picture" width="1200" height="798" />
     <figcaption>Previous picture · Mr. Dog · Entry 0</figcaption>
   </figure>
 </div>
