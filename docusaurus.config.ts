@@ -170,6 +170,9 @@ const buildConfig = (koniferVersion: string, koniferClientVersion: string): Conf
       insights: false,
     },
     image: 'img/konifer-small.png',
+    metadata: [
+      {name: 'twitter:card', content: 'summary'},
+    ],
     colorMode: {
       respectPrefersColorScheme: true,
     },
