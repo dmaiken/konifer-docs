@@ -174,7 +174,7 @@ export default function Home(): ReactNode {
                 <dd>A 256 × 256 WebP image for display.</dd>
               </div>
               <div>
-                <dt>For pipelines</dt>
+                <dt>For machines</dt>
                 <dd>A 224 × 224 RGB pixel buffer with one plane per channel.</dd>
               </div>
             </dl>
