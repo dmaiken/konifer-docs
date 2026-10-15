@@ -25,3 +25,5 @@ grayscale
 IPTC
 hostnames
 tmpfs
+pretrained
+Lanczos
