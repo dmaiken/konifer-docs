@@ -15,8 +15,8 @@ These guides require:
 
 1. **Docker or OCI-compatible runtime:** Konifer is deployed exclusively as a Docker image. Any OCI-compatible runtime
    such as [Podman](https://podman.io/) should work, but guides assume Docker is being used.
-2. **Bruno:** An open source Postman equivalent. [Installation](https://docs.usebruno.com/get-started/bruno-basics/download)
-   is easy and does not require an account.
+2. **Bruno, for guides that use the collection:** An open source Postman equivalent.
+   [Installation](https://docs.usebruno.com/get-started/bruno-basics/download) does not require an account.
 
 ## Open the Bruno collection
 
