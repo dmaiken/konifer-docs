@@ -462,3 +462,6 @@ delivery behavior, continue to [Configure Konifer](configure-konifer.md).
 
 For a production-ready PostgreSQL and S3-compatible deployment, see
 [Deploying Konifer](../operate/deployment.md).
+
+To feed raw pixels to a Python inference worker through named variant profiles, follow
+[Prepare Pixels for Inference](../guides/pixels-for-inference.md).
