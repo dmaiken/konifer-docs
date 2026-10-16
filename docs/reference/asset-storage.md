@@ -7,7 +7,7 @@ sidebar_label: "Storing Assets"
 
 ## Storage Architecture
 
-Konifer leverages a dual-store architecture to manage assets efficiently.
+Konifer stores image content and asset information separately.
 
 1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3, S3-compatible,
    filesystem, and in-memory providers.
@@ -127,7 +127,7 @@ the selected variant's stored bucket, key, and configured TTL.
 
 ## Metadata Store (PostgreSQL)
 
-Konifer uses PostgreSQL for robust transactional support and hierarchical path queries.
+Konifer uses PostgreSQL for transactions and hierarchical path queries.
 
 :::warning
 The `ltree` extension must be enabled on your PostgreSQL database before

@@ -5,21 +5,22 @@ title: Variant Profiles
 sidebar_label: "Profiles"
 ---
 
-Variant Profiles are an easy way to name a specific transformation you commonly make against an asset. For example,
-let's say you want to define what a thumbnail is for your application.
+Variant profiles assign a name to a reusable transformation. A profile keeps dimensions, format, and other image rules
+in server configuration instead of repeating them in each request.
 
-Let's define a `thumbnail` variant profile to have:
+This `thumbnail` profile:
 
-- Width of 128
-- a Fit of `fill`
-- autorotation of the image
+- Produces a 128×128-pixel image
+- Uses `fill` resizing
+- Applies the source image's EXIF orientation
 
-At the root level of your configuration, define a `variant-profile` array:
+Define profiles in the top-level `variant-profiles` block:
 
 ```hocon
 variant-profiles {
   thumbnail {
     w = 128
+    h = 128
     fit = fill
     r = auto
   }
@@ -30,7 +31,7 @@ Variant profiles use the same transformation parameters as the Fetch Asset API.
 
 ## Usage
 
-To use a variant profile, supply the `profile` query parameter.
+Supply the profile name in the `profile` query parameter:
 
 ```http
 GET /assets/users/123/profile-picture?profile=thumbnail
@@ -38,22 +39,16 @@ GET /assets/users/123/profile-picture?profile=thumbnail
 
 ## Overriding a Variant Profile
 
-Konifer lets you override aspects of a supplied variant profile within the Fetch Asset API request. Using the example
-from
-above, let's say you wish to create a larger thumbnail that's 256 pixels wide. Specify the `w` you wish in the
-request:
+Individual transformation parameters in the request override matching values from the profile. This request uses the
+`thumbnail` profile but changes its dimensions to 256×256 pixels:
 
 ```http
-GET /assets/users/123/profile-picture?profile=thumbnail&w=256
+GET /assets/users/123/profile-picture?profile=thumbnail&w=256&h=256
 ```
 
-Any individual transformation parameters supplied override the profile's respective parameter, if defined
-in the profile.
+## Restricting Transformations to Profiles
 
-## Restricting transformations to only profiles
-
-You may want to limit the on-demand variants allowed to only those defined in variant profiles. To do this,
-set `transform.on-demand-variant.mode` to `profile_only` in your Path Configuration.
+Set `transform.on-demand-variant.mode` to `profile_only` to reject on-demand transformations that do not use a profile:
 
 ```hocon
 paths {
@@ -67,6 +62,6 @@ paths {
 }
 ```
 
-With `profile_only` set, any request containing a transformation parameter that is not `profile` will return a
-`400 Bad Request`. The default `mode` is `enabled` which permits any transformation parameter including `profile`.
-Original variants can also be requested if `profile` is not supplied.
+With `profile_only`, a request that contains a transformation parameter other than `profile` returns `400 Bad Request`.
+A request without transformation parameters can still retrieve the original variant. The default mode, `enabled`,
+accepts profiles and individual transformation parameters.

@@ -9,7 +9,7 @@ When variants are generated eagerly or on-demand, they are cached in your config
 cached variant already exists, Konifer returns it. Otherwise, Konifer generates the variant and persists it for future
 requests.
 
-Caching applies equally to eager and on-demand variants. The difference is simply when the variant is first generated.
+Caching works the same way for eager and on-demand variants; only the time of initial generation differs.
 
 ## Normalized Variant Requests
 
@@ -36,12 +36,12 @@ but equivalent in output.
 
 ## Cache Misses
 
-If no cached variant matches the normalized request, Konifer generates the variant from the Original Variant and stores
+If no cached variant matches the normalized request, Konifer generates the variant from the original variant and stores
 it in the object store.
 
 ## Cache Size Limit
 
-By default, Konifer caches up to 16 generated variants per asset. The Original Variant does not count toward this
+By default, Konifer caches up to 16 generated variants per asset. The original variant does not count toward this
 limit.
 
 Set `transform.retention.cache.max-variants` in Path Configuration to change the limit:
@@ -67,7 +67,7 @@ paths {
 
 Konifer checks the limit after it finishes generating and uploading a variant. If the new variant would exceed the
 limit, Konifer keeps it and evicts existing generated variants until the cache returns to the configured size. Konifer
-does not count the Original Variant or variants whose uploads remain pending.
+does not count the original variant or variants whose uploads remain pending.
 
 With PostgreSQL, Konifer evicts the variant with the lowest access score first. Each access increases a variant's score,
 and the score decays over time. The `access-score-half-life` property controls the decay rate: a variant's score falls

@@ -5,18 +5,16 @@ title: Assets
 sidebar_label: "Overview"
 ---
 
-An asset is the fundamental resource that Konifer manages. An asset is composed of two elements, information and content.
-Information is stored in Postgres, and content is stored in the configured object store (S3, filesystem, or in-memory).
+An asset combines image content with information such as alt text, labels, and tags. Konifer stores information in the
+configured data store and image content in the configured object store.
 
-Assets can be created, fetched, and their information updated. Content is not updatable since, for caching purposes, an
-asset's content is considered immutable.
+You can create and fetch assets or update their information. Image content remains immutable so caches can identify a
+stored entry by its content.
 
 ## API
 
-An asset is created by calling `POST:/assets/{your/defined/path}`. This way, _you_ define the domain structure
-of the platform. For example, if your assets are primarily user-generated content, you may want to organize your API
-around
-your users.
+Create an asset with `POST /assets/{your/defined/path}`. Choose paths that match your application's domain. An
+application with user-generated images might organize paths by user:
 
 ```http
 POST /assets/users/123/profile-picture
@@ -32,10 +30,8 @@ If they were blog-oriented:
 POST /assets/blog/123/post/5
 ```
 
-Multiple assets can exist within a path. To add a new asset to an existing path, simply `POST` to the same path. By
-default,
-fetching an asset at a given path returns the most-recently created asset; however, that can be changed using Query
-Selectors.
+Multiple assets can share a path. Send another `POST` to create a new entry at that path. A fetch request returns the
+newest entry by default; query selectors can select a different entry or ordering.
 
 ## Content
 

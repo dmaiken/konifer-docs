@@ -5,12 +5,9 @@ title: Path Configuration
 sidebar_label: "Path Configuration"
 ---
 
-Path Configuration is one of the most powerful features within Konifer. It gives you fine-grained control over how your
-assets are processed, stored, and delivered, all based on the API path you use to store them.
-
-Path configuration allows you to treat different categories of assets (like public avatars, private documents, or
-marketing
-materials) in completely different ways, all from a single, unified configuration file, `konifer.conf`.
+Path configuration applies processing, storage, and delivery rules according to the API path used to store an asset.
+For example, public avatars and private documents can use different buckets, transformation rules, and delivery
+strategies in the same `konifer.conf` file.
 
 Path Configuration is defined in the `paths` array in `konifer.conf`. Each object is keyed by a string that specifies
 the pattern it applies to.
@@ -59,10 +56,8 @@ paths {
 }
 ```
 
-While at the same time, configuring the path `/users/*/profile-picture` to:
-
-- Use a completely different S3 bucket.
-- Only accept JPEG images
+Another path can apply different rules. This configuration makes `/users/*/profile-picture` use a separate S3 bucket
+and accept only JPEG images:
 
 ```hocon
 paths {
@@ -77,8 +72,7 @@ paths {
 
 ## Wildcard Matching
 
-You don't have to define rules for every exact path. Konifer allows you to apply rules to entire categories of assets
-using wildcards in your `konifer.conf` file.
+Wildcards apply one configuration to a group of asset paths.
 
 There are two types of wildcards:
 
@@ -90,8 +84,7 @@ Matches any single path segment (the text between two slashes).
 
 ### Multi-Segment (`**`)
 
-Greedily matches zero or more path segments. This is the most common and powerful wildcard for applying rules
-to an entire "directory."
+Greedily matches zero or more path segments.
 
 **Example**: `users/**` matches `users/`, `users/123`, and `users/123/profile`.
 
@@ -173,8 +166,7 @@ You have two types of defaults to be aware of:
 ### The `/**` Root Path
 
 To specify a default configuration that applies to all paths, configure path configuration that is keyed with `/**`.
-This serves as the
-root of the inheritance tree. All other paths inherit from this base configuration.
+This path forms the root of the inheritance tree. All other paths inherit from it.
 
 ### System Defaults
 

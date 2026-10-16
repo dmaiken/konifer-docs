@@ -5,29 +5,24 @@ title: LQIPs (Low Quality Image Previews)
 sidebar_label: "LQIPs"
 ---
 
-Low-quality image previews or LQIPs are small, usually blurry versions of the image you'd like to display while the
-larger image is downloaded over a network. This can be useful for a variety of reasons. Konifer supports two LQIP
-implementations:
+Low-quality image previews (LQIPs) provide a compact placeholder while a full image downloads. Konifer can generate two
+types:
 
-- [BlurHash](https://blurha.sh/): By far the most common LQIP implementation
-- [ThumbHash](https://evanw.github.io/thumbhash/): A newer, more compact version of BlurHash
+- [BlurHash](https://blurha.sh/): Encodes a blurred color approximation as a short string
+- [ThumbHash](https://evanw.github.io/thumbhash/): Encodes color, aspect ratio, and optional transparency in a compact
+  binary value
 
-One or both of these can be enabled.
+You can enable either format or both.
 
-> **Note**: For proper usage and decoding of these LQIP implementations, reference the links above. Correct LQIP
-> usage is out of the scope of this documentation.
+> **Note**: Use a BlurHash or ThumbHash decoder in your application to render the placeholder. The projects linked above
+> provide format details and implementation libraries.
 
-LQIP(s) are generated at the same time a variant is generated which could be eager or on-demand. Konifer is smart
-enough
-to know when an LQIP should be regenerated and when it does not need to be. For example, if you apply a `blur`
-transformation,
-an LQIP is not regenerated, saving compute resources.
+Konifer creates LQIPs with eager and on-demand variants. It regenerates a preview only when a transformation changes the
+image data used by the preview. For example, a `blur` transformation reuses the existing LQIP.
 
 ## Usage
 
-LQIPs are disabled by default. LQIP implementations are enabled within Path Configuration. To enable both
-implementations,
-define your Path Configuration to be:
+LQIPs are disabled by default. Enable both formats for a path with this configuration:
 
 ```hocon
 paths {
@@ -40,7 +35,7 @@ paths {
 }
 ```
 
-If LQIPs are enabled in a parent path, and you wish to disable in a specific child path, set `lqip` to an empty array:
+To disable inherited LQIPs for a child path, set `lqip` to an empty array:
 
 ```hocon
 paths {

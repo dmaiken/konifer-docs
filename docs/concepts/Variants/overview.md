@@ -5,36 +5,33 @@ title: Variants
 sidebar_label: "Overview"
 ---
 
-A variant represents a specific, transformed version of the asset's content. It is generated using the
-transformation options available within Konifer (e.g., resizing, cropping, format change).
+A variant is a transformed version of an asset's image content, such as a resized thumbnail, cropped avatar, or WebP
+conversion.
 
 A variant is composed of:
 
-1. **Attributes**: Properties of the variant, such as its `height`, `width`, and `mimeType`.
-2. **Transformation**: The specific operations applied to the **Original Variant** to create *this* variant
-   (e.g., `rotate: 90`, `blur: 2`).
+1. **Attributes**: Properties of the output, such as its `height`, `width`, and `format`.
+2. **Transformation**: The operations applied to the original variant, such as `rotate: 90` or `blur: 2`.
 
 ## Original Variant
 
-The Original Variant is the physical representation of the asset content supplied during the Store Assets request.
-**All other variants for this asset are transformed *from* the Original Variant.**
+The original variant is the image Konifer stores during the Store Assets request. Konifer creates every other variant
+from this image.
 
-Only pre-processing defined in your configuration (e.g., applying a global `clamp-width` or file format conversion)
-can transform the supplied content into the Original Variant. If no pre-processing is configured or applied, the
-Original Variant is the exact representation of the supplied content.
+Preprocessing can resize or convert the supplied content before Konifer stores it as the original variant. Without
+preprocessing, the original variant contains the supplied image unchanged.
 
 ## Variant Types
 
-Variants can be generated in two different ways (in addition to Ingest Transformations):
+Konifer generates variants in two ways:
 
 - Eager variant generation
 - On-demand variant generation
 
 ### Eager Variant Generation
 
-You may know which variants you need at the time you store the asset. Eager variants are generated at the time of
-upload; however, the generation is asynchronous and best-effort. The Store Asset API returns before eager variants are
-generated; however, a background process to generate them is kicked off at the time of upload.
+Use eager generation when you know which variants an application will need before an upload arrives. Konifer queues
+these variants during upload and returns the Store Asset response without waiting for them to finish.
 
 :::info
 Eager variants can only be defined using [variant profiles](variant-profiles.md).
@@ -42,8 +39,8 @@ Eager variants can only be defined using [variant profiles](variant-profiles.md)
 
 #### Best-effort
 
-Eager variants are generated on a best-effort basis. If your Konifer instance is killed or the variant fails to generate
-for any reason, generation is not rescheduled. When you request the variant, it will simply be generated on-demand.
+Eager generation is asynchronous and best-effort. Konifer does not reschedule a failed or interrupted eager task. If a
+client later requests the missing variant, Konifer generates it on demand.
 
 #### Configuration
 
@@ -54,14 +51,14 @@ variant-profiles {
   small {
     h = 50
     w = 50
-    fit = cover
-    mimeType = "image/png"
+    fit = fill
+    format = png
   }
   medium {
     h = 100
     w = 100
-    fit = cover
-    mimeType = "image/png"
+    fit = fill
+    format = png
   }
 }
 
@@ -79,20 +76,19 @@ paths {
 
 ### On-demand Variant Generation
 
-Whenever the Fetch Asset API is invoked and manipulation arguments are supplied (e.g. `w`, `h`, `g`, etc.), a variant
-is generated from the Original Variant on-demand. The variant is also cached in your configured object store. See
-[Variant Caching](caching.md) for how Konifer stores and reuses generated variants.
+A Fetch Asset request with transformation parameters such as `w`, `h`, or `g` generates a variant from the original
+variant. Konifer caches the result in the configured object store. See [Variant Caching](caching.md) for details.
 
 ## On-demand Variant Generation Modes
 
-By default, on-demand variants are allowed to be generated and are cached in your configured object store. You can
-disable or limit on-demand variants using the `transform.on-demand-variant.mode` Path Configuration. The default setting
-is `enabled`.
+By default, clients can request any supported on-demand transformation. Set
+`transform.on-demand-variant.mode` in path configuration to restrict this behavior.
 
-- **`profile_only`**: Only `profile` can be supplied. This enables you to limit variant transformations to only
-those defined as [variant profiles](variant-profiles.md).
-- **`disabled`**: On-demand variants are disabled. Only eager variants are allowed. In the event that an eager variant
-has not been generated at the time of request, it can still be generated on-demand.
+- **`enabled`** (default): Clients can supply a profile or individual transformation parameters.
+- **`profile_only`**: Clients can supply only `profile`, limiting transformations to configured
+  [variant profiles](variant-profiles.md).
+- **`disabled`**: Clients cannot request arbitrary on-demand variants. A request for a configured eager variant can
+  still generate that variant when its eager task has not completed.
 
 ## Transformation Limits
 
@@ -139,6 +135,6 @@ Supplied images have a separate path-level `limits` block, which is checked befo
 See the [configuration reference](../../reference/configuration-reference.md#transformation-limits) for the complete
 property list and defaults.
 
-## Deleting your Asset
+## Deleting an Asset
 
-Deleting your asset results in all variants belonging to the asset also being deleted.
+Deleting an asset also deletes each of its variants.

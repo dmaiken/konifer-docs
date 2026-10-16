@@ -5,53 +5,51 @@ title: Image Processing Architecture
 sidebar_label: "Image Processing"
 ---
 
-Konifer leverages **[libvips](https://www.libvips.org/)** as its underlying transformation engine. Libvips is a
-demand-driven, streaming image processing library. Unlike traditional image processors (like ImageMagick), libvips does
-not load the entire image into memory. Instead, it streams the image in small chunks, processing them via a pipeline.
+Konifer uses **[libvips](https://www.libvips.org/)** to transform images. Libvips processes images through a
+demand-driven pipeline and can stream small regions instead of loading every decoded pixel into memory.
 
-This architecture allows Konifer to handle large assets (e.g., 100MB+ images) with a small memory footprint and
-relatively low latency.
+This design reduces memory use and latency when Konifer processes large images.
 
 :::caution
-Libvips buffers the entire image if it is progressively rendered JPEGs (image content is interlaced to provide a
-progressively improving display quality as the image is downloaded). Avoid ingestion of these images.
+Libvips must buffer an entire progressive JPEG before processing it. Progressive JPEGs display in increasing detail as
+they download, but they can consume more processing memory than baseline JPEGs. Avoid large progressive JPEG uploads
+when memory is constrained.
 :::
 
 ## Memory Management
 
-Because Konifer is a Kotlin application running on the JVM (Netty) while using libvips (C library) for processing,
-memory is managed in three distinct regions.
+Konifer uses three memory regions:
 
-1. **JVM Heap**: Manages application logic, routing, and request information. Controlled by -Xmx.
-2. **Direct Memory (Off-Heap)**: Manages Netty IO buffers for network uploads. Controlled by -XX:MaxDirectMemorySize.
-3. **Native Memory (Off-Heap)**: Manages the actual image pixels processed by libvips. Not controlled by JVM flags.
+1. **JVM heap** stores application state, routing data, and request information. Configure it with `-Xmx` or
+   `-XX:MaxRAMPercentage`.
+2. **Direct memory** stores Netty I/O buffers used for network requests and uploads. Configure it with
+   `-XX:MaxDirectMemorySize`.
+3. **Native memory** stores decoded pixels and libvips processing data. JVM memory flags do not limit this region.
 
 ### Managing Out of Memory Errors
 
-If Konifer crashes, the error type determines the fix:
+Use the reported error to identify which memory region needs attention:
 
 1. **`OutOfMemoryError: Java heap space`**
 
-   - **Cause**: Application logic or metadata overhead has exhausted the heap.
-   - **Fix**: Increase JVM heap using `-Xmx` or `-XX:MaxRAMPercentage`.
+   - **Cause**: Application state or metadata exhausted the JVM heap.
+   - **Action**: Increase `-Xmx` or `-XX:MaxRAMPercentage`.
 
 1. **`OutOfMemoryError: Direct buffer memory`**
 
-   - **Cause**: Netty has exhausted I/O buffers, likely due to high concurrent uploads.
-   - **Fix**: Increase `-XX:MaxDirectMemorySize`. (If unspecified, this often defaults to the heap size.)
+   - **Cause**: Netty exhausted its I/O buffers, often during concurrent uploads.
+   - **Action**: Increase `-XX:MaxDirectMemorySize`. Without an explicit value, the limit often follows the heap size.
 
 1. **Container `OOMKilled` (exit code 137)**
 
-   - **Cause**: libvips exhausted the remaining system RAM. The OS killed the container to save the host.
-   - **Fix**: Increase the container memory limit without increasing the JVM heap (for example, lower `-XX:MaxRAMPercentage`).
+   - **Cause**: The process exceeded the container memory limit, often because libvips needed more native memory.
+   - **Action**: Increase the container limit or reduce the JVM's share of that limit with a lower
+     `-XX:MaxRAMPercentage`.
 
 ## Temporary Files
 
-Konifer makes extensive use of temporary files for image processing. By default, these are created inside the
-container's
-writable layer, which can be slow. For improved performance, mount a fast volume (or RAM disk) to the `/app/tmp`
-directory.
-Konifer is pre-configured to check this location.
+Konifer writes temporary processing files to `/app/tmp`. Without a mount, these files use the container's writable
+layer. Mount a fast persistent volume or RAM-backed `tmpfs` at this path when the writable layer is too slow.
 
 ### Using a RAM disk ([tmpfs](https://www.kernel.org/doc/html/latest/filesystems/tmpfs.html))
 
@@ -65,7 +63,7 @@ your-registry/konifer:latest
 
 ### Using Outside Volume
 
-Use this if you process massive files that exceed your available RAM.
+Use a persistent volume when temporary files may exceed the memory available for `tmpfs`.
 
 ```shell
 docker run -d \
@@ -77,18 +75,18 @@ docker run -d \
 
 ## Variant Workers
 
-Konifer uses a bounded thread pool to manage concurrent image transformations. This prevents the server from being
-overwhelmed by a sudden spike in complex transformation requests.
+Konifer limits concurrent image transformations with a bounded worker pool. Requests wait in queues when every worker
+is busy.
 
 ### Concurrency Limit
 
-By default, Konifer calculates the worker pool size using the formula: `Available CPU Cores * 2`.
+By default, the worker count is `available CPU cores * 2`.
 
 **Example:** On a 4-core system, Konifer initializes eight Variant Workers.
 
 ### Configuration
 
-You can manually override the worker count in `konifer.conf`:
+Override the worker count in `konifer.conf`:
 
 ```hocon
 variant-generation {
@@ -99,37 +97,32 @@ variant-generation {
 
 ## Scheduling & Priority
 
-Not all transformations are equal. A user waiting for a webpage to load (On-Demand) is more critical than a background
-thumbnail generation task (Eager).
+Konifer prioritizes requests with a waiting client over background eager generation.
 
 ### Priority
 
-1. **Synchronous (High Priority)**: These are tasks where a client is actively waiting for a response. The request is
-   waiting until processing completes.
+1. **Synchronous (high priority)**: A client waits for these tasks to complete.
 
-   - On-Demand variants
-   - Pre-processing original variants during upload
+   - On-demand variants
+   - Preprocessing during upload
 
-1. **Asynchronous (Low Priority)**: These are best-effort transformations that occur within an asynchronous context.
+1. **Asynchronous (low priority)**: Konifer runs these tasks in the background on a best-effort basis.
 
    - Eager variants
 
 :::note
-Fallback Mechanism: If a client requests an Eager Variant that hasn't been processed yet (e.g., due to a long queue)
-or failed to be processed (e.g., the server shutdown with a full queue), Konifer immediately schedules an On-Demand
-variant task and the respective Eager Variant task is discarded.
+If a client requests an eager variant that is missing or still queued, Konifer schedules a high-priority on-demand task
+and discards the corresponding eager task.
 :::
 
 ### Configuring Priority
 
-The scheduler uses a probabilistic weighting system. By default, it attempts to dedicate 80% of throughput to
-Synchronous tasks and 20% to Asynchronous tasks.
-
-This ensures that background work continues to progress (preventing starvation) without degrading API responsiveness.
+The scheduler assigns 80% of contested worker capacity to synchronous tasks and 20% to asynchronous tasks by default.
+The asynchronous share keeps background work moving while synchronous requests are queued.
 
 :::note
-Weighting is only considered when queues are full. If only Asynchronous tasks are queued, that queue is
-pulled from until Synchronous tasks are queued. In other words, the scheduler's algorithm leverages work-stealing.
+Weighting applies only when both queues contain work. If only asynchronous tasks are queued, workers continue processing
+that queue until synchronous work arrives.
 :::
 
 To change the weighting:

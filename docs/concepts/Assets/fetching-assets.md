@@ -5,9 +5,7 @@ title: Fetching Assets
 sidebar_label: "Fetching"
 ---
 
-After an asset is stored, it can be fetched. Konifer offers powerful options to fetch your asset in a variety of ways
-using
-query selectors.
+Fetch requests use query selectors to choose an asset entry and its response format.
 
 ## Query Selectors
 
@@ -26,25 +24,25 @@ The following are the default values and can be omitted as selectors:
 - **Ordering**: `new`
 - **Return Format**: `link`
 
-So this:
+For example, this request:
 
 ```http
 GET /assets/users/123/profile-picture
 ```
 
-Is the same as:
+is equivalent to:
 
 ```http
 GET /assets/users/123/profile-picture/-/new/link/
 ```
 
-Any default can be omitted for brevity
+You can omit either default. For example:
 
 ```http
 GET /assets/users/123/profile-picture/-/new/info
 ```
 
-it is the same as:
+is equivalent to:
 
 ```http
 GET /assets/users/123/profile-picture/-/info
@@ -65,7 +63,7 @@ To specify an ordering, place it before the return format selector:
 GET /assets/users/123/profile-picture/-/new/redirect
 ```
 
-This also works if you are wanting the `link` of the newest asset in the path since `link` is the default return format:
+Because `link` is the default response format, this request returns the link for the newest asset:
 
 ```http
 GET /assets/users/123/profile-picture/-/new
