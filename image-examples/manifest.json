@@ -1,0 +1,202 @@
+{
+  "preprocessing": {
+    "configuration": {
+      "enabled": true,
+      "clamp-width": 640,
+      "clamp-height": 640,
+      "fit": "fit",
+      "format": "webp"
+    },
+    "uploadPath": "/assets/documentation/preprocessing/cow",
+    "input": {
+      "file": "/image-transformations/sources/cow-original.jpg",
+      "sha256": "432c56fffb3ea5521bc840d2689951dd84c18a49c7b0e55b5fd36c7d80ebd496",
+      "attributes": {
+        "height": 1024,
+        "width": 1365,
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1
+      }
+    },
+    "storedOriginal": {
+      "file": "preprocessing/cow-preprocessed-clamp-640.webp",
+      "bytes": 65748,
+      "sha256": "0440674cdc16866465fb92aaf2202bd3a4568f3262f8c4d701a5ef941a489a4f",
+      "attributes": {
+        "height": 480,
+        "width": 640,
+        "format": "webp",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "loop": 0
+      },
+      "lqip": {}
+    },
+    "thumbnail": {
+      "file": "preprocessing/cow-thumbnail-from-preprocessed-128.webp",
+      "bytes": 4176,
+      "sha256": "ce8964019e6dd62a1ed8b127811f3aeeb3289c5e73161ac4ae064e03b1fdb43c",
+      "attributes": {
+        "height": 128,
+        "width": 128,
+        "format": "webp",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "loop": 0
+      },
+      "lqip": {},
+      "query": "format=webp&w=128&h=128&fit=fill"
+    },
+    "small": {
+      "input": {
+        "file": "preprocessing/cow-resized-input-240.jpg",
+        "bytes": 11785,
+        "sha256": "12140def89bb6371f94a40282ddae7e0d4a8f6b765ae14083c658b9ebf7c3902",
+        "attributes": {
+          "height": 180,
+          "width": 240,
+          "format": "jpg",
+          "colorSpace": "srgb",
+          "pageCount": 1
+        },
+        "lqip": {}
+      },
+      "storedOriginal": {
+        "file": "preprocessing/cow-preprocessed-small-240.webp",
+        "bytes": 9790,
+        "sha256": "c53fb0ce8af08912d8df35984d521de26adb686aef956f6ea22c263d0afd58cd",
+        "attributes": {
+          "height": 180,
+          "width": 240,
+          "format": "webp",
+          "colorSpace": "srgb",
+          "pageCount": 1,
+          "loop": 0
+        },
+        "lqip": {}
+      }
+    }
+  },
+  "lqip": {
+    "uploadPath": "/assets/documentation/lqip/cow",
+    "query": "format=webp&w=480",
+    "finalImage": {
+      "file": "lqip/cow-final-480.webp",
+      "bytes": 39122,
+      "sha256": "b7ea7e4e6e166f4d775fc396d2d18e45aeb8d02d707741873d168104d8fba505",
+      "attributes": {
+        "height": 360,
+        "width": 480,
+        "format": "webp",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "loop": 0
+      },
+      "lqip": {
+        "blurhash": "UnEyk|IUV@ni~qIUV@jF.8M|RQWB%gNIM|V[",
+        "thumbhash": "1ugVFYh1d4hfd4d6d5dniayTcOcJ"
+      }
+    },
+    "blurhash": {
+      "hash": "UnEyk|IUV@ni~qIUV@jF.8M|RQWB%gNIM|V[",
+      "hashBytes": 36,
+      "decoder": "blurhash@2.0.5",
+      "preview": {
+        "file": "lqip/cow-blurhash-preview.png",
+        "bytes": 1324,
+        "sha256": "9717480fc34ea5aef5db9911912ed2659a7616683ada9b0d66dbcb8784951c6a",
+        "width": 32,
+        "height": 24
+      }
+    },
+    "thumbhash": {
+      "hash": "1ugVFYh1d4hfd4d6d5dniayTcOcJ",
+      "hashBytes": 21,
+      "decoder": "thumbhash@0.1.1",
+      "preview": {
+        "file": "lqip/cow-thumbhash-preview.png",
+        "bytes": 1377,
+        "sha256": "5d7ba1d81058856eca3aba1f90fe55578672200744fa82e59facac6a1a4a9069",
+        "width": 32,
+        "height": 23
+      }
+    },
+    "responseExcerpt": {
+      "file": "lqip/cow-link-response-excerpt.json",
+      "bytes": 266,
+      "sha256": "9211e0ab209049f4b0f858de39d9af26f867781adfdefacc5c7e62f7efefed61"
+    }
+  },
+  "ruleEvaluation": {
+    "metadata": {
+      "file": "rule-evaluation/joshua-tree-definition.json",
+      "bytes": 198,
+      "sha256": "1f3607de6c3b3967cfead343da1c4665c26e43381a8721e1134d7b0c13a375ac"
+    },
+    "examples": [
+      {
+        "subject": "joshua-tree",
+        "input": "/image-examples/rule-evaluation/joshua-tree-original.jpg",
+        "bytes": 132998,
+        "sha256": "3e0fdbf3fbb7ce47757d6448ab30841f28dbf9e6d4340c26b2baad714d7cbc07",
+        "evaluation": {
+          "file": "rule-evaluation/joshua-tree-joshua-tree-response.json",
+          "bytes": 472,
+          "sha256": "59b1b09a848c1ba07216a30a15585551cf966c6e9588d0001440781f7bff76dd",
+          "result": {
+            "name": "joshua-tree",
+            "threshold": 0.7,
+            "score": 0.9560544896702936,
+            "matched": true,
+            "promptScores": [
+              {
+                "prompt": "a joshua tree",
+                "score": 0.9560544896702936
+              },
+              {
+                "prompt": "a tree",
+                "score": 0.016329576258978976
+              },
+              {
+                "prompt": "joshua tree national park",
+                "score": 0.8441717664428863
+              }
+            ]
+          }
+        }
+      },
+      {
+        "subject": "squirrel",
+        "input": "/image-transformations/sources/squirrel-original.jpg",
+        "bytes": 206949,
+        "sha256": "dcf6703f0fb7a41475bd5d3d5f5b9b7bf1eb02f8978cc487703243b87d2ece04",
+        "evaluation": {
+          "file": "rule-evaluation/squirrel-joshua-tree-response.json",
+          "bytes": 486,
+          "sha256": "35030c1bf6dd714760ff96a14585532b11777da8d2b713cb1618af5ee7b69ea2",
+          "result": {
+            "name": "joshua-tree",
+            "threshold": 0.7,
+            "score": 0.0005340378022364895,
+            "matched": false,
+            "promptScores": [
+              {
+                "prompt": "a joshua tree",
+                "score": 0.00001230826504316123
+              },
+              {
+                "prompt": "a tree",
+                "score": 0.0005340378022364895
+              },
+              {
+                "prompt": "joshua tree national park",
+                "score": 0.000013841963389129707
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

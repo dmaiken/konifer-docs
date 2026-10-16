@@ -1,0 +1,13 @@
+{
+  "definitions": [
+    {
+      "name": "joshua-tree",
+      "prompts": [
+        "a joshua tree",
+        "a tree",
+        "joshua tree national park"
+      ],
+      "threshold": 0.7
+    }
+  ]
+}
