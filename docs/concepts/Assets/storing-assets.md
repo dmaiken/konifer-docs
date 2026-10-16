@@ -172,21 +172,22 @@ useful for display purposes and are returned as headers when fetching asset cont
 
 ## Asset Preprocessing
 
-When you store an asset, you can transform the source content. Doing so means the original variant becomes the
-result of your defined transformation. Any variant generated for this asset is generated from the original variant.
-Keep this in mind when defining any preprocessing. For example, preprocessing an image down to 50x50 limits
-your ability to create sharp, resized variants larger than 50x50.
+Preprocessing transforms content during upload. Konifer stores the result as the original variant and generates later
+variants from that result. The asset does not retain a separate copy of the supplied content before preprocessing.
 
-The following configuration converts the supplied asset content to an AVIF image format and sets the width to 1024.
+This configuration fits large uploads within 640×640 pixels and converts them to WebP. The clamps preserve the aspect
+ratio and prevent smaller uploads from being enlarged:
 
 ```hocon
 paths {
-  "/users/**" {
+  "/documentation/preprocessing/**" {
     transform {
       preprocessing {
         enabled = true
-        format = "image/avif"
-        w = 1024
+        clamp-width = 640
+        clamp-height = 640
+        fit = fit
+        format = webp
       }
     }
   }
@@ -196,45 +197,85 @@ paths {
 All [image transformation parameters](../../reference/image-transformation-reference.md#parameter-reference) can be used
 directly within the `preprocessing` block.
 
+### Supplied Image, Stored Original, and Later Variant
+
+Konifer stored this 1365×1024 JPG as a 640×480 WebP original, then generated a 128×128 thumbnail from the stored image.
+The figures use reduced display sizes; the captions give their actual pixel dimensions.
+
+<div className="doc-images doc-images--three doc-images--bottom">
+  <figure className="doc-image">
+    <img src="/image-transformations/sources/cow-original.jpg" alt="Supplied cow photo with its full mountain pasture scene"
+      width="1365" height="1024" loading="lazy" decoding="async" />
+    <figcaption>Supplied content · JPG · 1365×1024 pixels</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-examples/preprocessing/cow-preprocessed-clamp-640.webp"
+      alt="Stored cow photo resized to fit the preprocessing clamp, with the whole scene preserved"
+      width="640" height="480" loading="lazy" decoding="async" />
+    <figcaption>Stored original · WebP · 640×480 pixels</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-examples/preprocessing/cow-thumbnail-from-preprocessed-128.webp"
+      alt="Square thumbnail generated from the preprocessed cow photo"
+      width="128" height="128" loading="lazy" decoding="async" />
+    <figcaption>Later variant · WebP · 128×128 pixels</figcaption>
+  </figure>
+</div>
+
+To reproduce the example, [download the cow photo](/image-transformations/sources/cow-original.jpg), save it as
+`cow-original.jpg`, and upload it to a path covered by the configuration:
+
+```bash
+curl --fail-with-body \
+  --request POST \
+  'http://localhost:8080/assets/documentation/preprocessing/cow' \
+  --form 'metadata={}' \
+  --form 'asset=@cow-original.jpg'
+```
+
+The upload response describes the preprocessed image as the original variant. This excerpt omits the other fields:
+
+```json
+{
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "attributes": { "height": 480, "width": 640, "format": "webp" }
+    }
+  ]
+}
+```
+
+Request the thumbnail with:
+
+```http
+GET /assets/documentation/preprocessing/cow/-/content?format=webp&w=128&h=128&fit=fill
+```
+
+Larger variants still start from the 640×480 stored original. Increasing requested dimensions cannot recover detail
+discarded during preprocessing. Keep a separate source copy if your application needs the uploaded resolution later.
+
 ### Clamp Width/Height
 
-In addition to all image transformation parameters, you can specify `clamp-height` and `clamp-width`. If the source
-content's height or width exceeds the corresponding clamp, it is down-scaled.
+`clamp-width` and `clamp-height` set upper bounds when resizing with `fit=fit`. An image below both bounds keeps its
+dimensions. With the same configuration above, this smaller upload stays at 240×180 pixels while its format changes
+from JPG to WebP:
 
-The following configuration will downscale any image larger than 1024x1024 down to 1024x1024 using a fit mode of `fit`.
-
-```hocon
-paths {
-  "/users/**" {
-    transform {
-      preprocessing {
-        enabled = true
-        clamp-height = 1024
-        clamp-width = 1024
-        fit = fit # Optional - defaults to: fit
-      }
-    }
-  }
-}
-```
+<div className="doc-images">
+  <figure className="doc-image">
+    <img src="/image-examples/preprocessing/cow-resized-input-240.jpg" alt="Small cow JPG supplied for preprocessing"
+      width="240" height="180" loading="lazy" decoding="async" />
+    <figcaption>Supplied content · JPG · 240×180 pixels</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-examples/preprocessing/cow-preprocessed-small-240.webp"
+      alt="Preprocessed cow WebP retaining the small upload's dimensions"
+      width="240" height="180" loading="lazy" decoding="async" />
+    <figcaption>Stored original · WebP · 240×180 pixels</figcaption>
+  </figure>
+</div>
 
 :::note
-`h` and `w` take precedence over `clamp-height` and `clamp-width` respectively. This configuration will result in images
-being scaled to 2048x1024. Avoid mixing height/width and `clamp-height`/`clamp-width`.
-
-```hocon
-paths {
-  "/users/**" {
-    transform {
-      preprocessing {
-        enabled = true
-        clamp-height = 1024
-        clamp-width = 1024
-        w = 2048
-      }
-    }
-  }
-}
-```
-
+`w` and `h` take precedence over `clamp-width` and `clamp-height`, respectively. Avoid mixing explicit dimensions and
+clamps in the same preprocessing rule.
 :::

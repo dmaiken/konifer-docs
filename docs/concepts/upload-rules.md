@@ -5,29 +5,24 @@ title: Upload Rules
 sidebar_label: "Upload Rules"
 ---
 
-Upload rules let Konifer accept, reject, or label uploads by comparing image content against text prompts. They are useful
-when a path should only receive a narrow class of images, when a path should reject images that match an unwanted content
-category, or when uploaded assets should be categorized automatically.
+Use upload rules to accept, reject, or label images based on their content.
 
-Upload rules are built from two configuration pieces:
+Configure two pieces:
 
-- `rule-definitions` define what Konifer should look for in the uploaded image.
-- `upload-ruleset` selects which definitions apply to a path and whether matching definitions accept, reject, or label
-  the upload.
+- `rule-definitions` describe the content to detect.
+- `upload-ruleset` assigns definitions to a path and sets the actions for matches.
 
-Konifer evaluates rules with a SigLIP2 zero-shot image classification model. Each rule definition has one or more text
-prompts and a threshold. Konifer embeds the uploaded image, compares it to each prompt in the rule definition, and uses
-the highest prompt score. The rule matches when that score is greater than or equal to the rule's threshold.
+Konifer uses SigLIP2 to compare each image against a definition's text prompts. A rule matches when its highest prompt
+score meets or exceeds its threshold.
 
 :::note
-Konifer initializes rule inference when `rule-definitions` is populated or the
-[Rule Evaluation API](rule-evaluation.md) is enabled. If neither is configured, the SigLIP2 model files are not required.
+Install the [model files](#installing-model-files) if you configure `rule-definitions` or enable the
+[Rule Evaluation API](rule-evaluation.md).
 :::
 
 ## Rule Definitions
 
-Rule definitions are global. They live at the top level of `konifer.conf` and are keyed by rule name. Use lowercase
-rule definition keys because upload rule references are normalized to lowercase.
+Define rules at the top level of `konifer.conf`. Use lowercase names to match Konifer's normalization of rule references.
 
 ```hocon
 rule-definitions {
@@ -43,19 +38,17 @@ rule-definitions {
 }
 ```
 
-A good rule definition should describe the visual evidence you want the model to detect. Prefer concrete image
-descriptions over policy language. For example, prompts like `"graphic visible blood"` and `"open wound with blood"` are
-usually more useful than `"unsafe content"`.
+Describe visible content: `"open wound with blood"` gives the model more detail than `"unsafe content"`.
 
 ## Upload Rulesets
 
-Upload rulesets are path configuration. They live under a path entry in `paths` and decide how matched rules affect the
-upload. A ruleset can use three kinds of rule actions:
+Add an `upload-ruleset` under a path in `paths`:
 
-- `accept-rules` accept matching uploads. They are commonly paired with `default = reject` to create an allow list.
-- `reject-rules` reject matching uploads. They are commonly paired with `default = accept` to create a deny list.
-- `modify-rules` modify the asset when matched without changing whether the upload is accepted or rejected. Currently, only
-labeling is supported.
+- Use `default = accept` with `reject-rules` for a deny list.
+- Use `default = reject` with `accept-rules` for an allow list.
+- Add `modify-rules` to either policy to label matching uploads without changing the accept/reject decision.
+
+This deny list rejects images that match `blood-and-gore`:
 
 ```hocon
 paths {
@@ -73,13 +66,7 @@ paths {
 }
 ```
 
-There are three common patterns:
-
-- Deny list: set `default = accept` and add `reject-rules`. Uploads pass unless they match a reject rule.
-- Allow list: set `default = reject` and add `accept-rules`. Uploads fail unless they match an accept rule.
-- Automatic editing: add `modify-rules` to either policy to alter accepted assets when visual content matches.
-
-For example, an avatar path can require human portrait-like uploads:
+This allow list requires a matching portrait for avatar uploads:
 
 ```hocon
 rule-definitions {
@@ -105,14 +92,12 @@ paths {
 }
 ```
 
-If an upload is rejected and the matched reject rule has a `violation-response`, Konifer returns that message. If several
-reject rules match, their responses are joined together. When no response is configured, Konifer uses the default upload
-rules rejection message.
+Konifer returns the matched reject rules' `violation-response` messages, joined if several match. Without a custom
+response, Konifer returns its default rejection message.
 
 ### Labeling Matched Uploads
 
-Label rules use the same global rule definitions as accept and reject rules. When a label rule matches, Konifer adds its
-configured labels to the stored asset:
+Use `modify-rules` to add labels to matching assets:
 
 ```hocon
 rule-definitions {
@@ -144,112 +129,59 @@ paths {
 }
 ```
 
-Label rules do not accept an upload that would otherwise be rejected. They add labels only to assets that pass the
-ruleset's accept or reject decision. Labels from all matched label rules are combined with labels supplied in the upload
-request. When both define the same key, the label rule's value takes precedence.
+Konifer labels assets that pass the ruleset's accept/reject decision. It combines labels from matched rules with the
+upload's labels; rule values override upload values for the same key.
 
-Use distinct label keys across label rules. If several matched rules define the same key, the result depends on rule
-evaluation order and should not be used as a precedence mechanism.
+Use distinct keys across label rules. Conflicting rule values depend on evaluation order.
 
 ## Prompt Ensembles
 
-A prompt ensemble is a set of related prompts for the same rule definition. Ensembles make rules less dependent on a
-single wording. Konifer scores each prompt and uses the highest score for that rule.
+A prompt ensemble covers several descriptions of the same content. Konifer uses the highest score, so one broad prompt
+can cause false matches.
 
-When creating an ensemble:
+To write an ensemble:
 
-- Start with 4 to 12 prompts for most rules, then expand if testing shows the model is missing important variations.
-- Use up to 100 prompts when a rule needs broad coverage, but keep the set focused because Konifer uses the highest
-  scoring prompt for the rule.
-- Describe visible content, not intent or policy categories.
-- Mix short labels with natural descriptions.
-- Include common variants of the same concept.
-- Avoid prompts that are broader than the rule you intend to enforce.
-- Start with a conservative threshold, test with representative uploads, and adjust from real results.
-- Prompts must complete the phrase: This is a photo of ...
+- Start with a few focused prompts. You can use up to 100 per definition.
+- Describe visible content and its common variations. Avoid assumptions about intent or policy labels.
+- Write prompts that complete `This is a photo of ...`; Konifer adds this prefix before embedding them.
+- Test with matching, non-matching, and borderline images before expanding the ensemble.
 
-You can ask an LLM to draft a prompt ensemble. Keep the prompt focused on visual descriptions and review the result
-before using it:
+For an LLM-generated draft, use a request like this and review the output:
 
 ```text
-Create a zero-shot image classification prompt ensemble containing up to [x] prompts for detecting [content category].
-Return 8 concise prompts. Each prompt should describe visible image content only.
-Avoid policy wording, legal labels, or assumptions about intent.
-Include common visual variations and exclude unrelated concepts.
-Prompts must complete the phrase: This is a photo of [prompt].
-```
-
-Example prompt ensembles:
-
-```hocon
-rule-definitions {
-  "blood-and-gore" {
-    prompts = [
-      "graphic visible blood",
-      "bloody injury",
-      "open wound with blood",
-      "severe injury with exposed tissue",
-      "gore in an image",
-      "blood splatter on a person",
-      "medical trauma with visible blood",
-      "violent bloody scene"
-    ]
-    threshold = 0.72
-  }
-
-  "product-photo" {
-    prompts = [
-      "a product photo on a plain background",
-      "an ecommerce product image",
-      "a single item photographed for sale",
-      "a clean catalog image of a product",
-      "a centered object on a simple background",
-      "a studio photo of merchandise"
-    ]
-    threshold = 0.66
-  }
-
-  "documents" {
-    prompts = [
-      "a scanned document",
-      "a page of printed text",
-      "a form or receipt",
-      "a screenshot of a document",
-      "paper document with readable text",
-      "an invoice or statement"
-    ]
-    threshold = 0.67
-  }
-}
+Write 8 image classification prompts for [content category].
+Describe visible content and common variations, without policy labels or assumptions about intent.
+Each prompt must complete: This is a photo of [prompt].
 ```
 
 :::note
-Konifer caches text prompt embeddings after they are computed. Large prompt ensembles can add startup time the first time
-Konifer sees them, but cached embeddings make later startups faster when using a persistent datastore.
+Konifer caches prompt embeddings. A persistent datastore lets Konifer reuse them across restarts.
 :::
 
 ## Thresholds
 
-Thresholds are model scores, not percentages. Higher values are stricter and may miss borderline matches. Lower values
-catch more possible matches but may reject unrelated uploads. Tune each rule separately because some concepts are easier
-for the model to identify than others.
+Thresholds are model scores, not confidence percentages. Raise a threshold to reduce false matches; lower it to catch
+missed matches. Tune each definition against representative images because score ranges differ by concept.
 
-Use the [Rule Evaluation API](rule-evaluation.md) to compare prompt and threshold behavior against representative images
-without storing assets or changing your active upload rules.
+Use the [Rule Evaluation API](rule-evaluation.md) to test without storing assets or changing active upload rules.
+The [Joshua tree example](rule-evaluation.md#example-joshua-tree-detection) includes real images and per-prompt scores.
+
+The thresholds in this guide's configuration examples are illustrative. Validate them against your own images before
+using them to accept or reject uploads.
 
 ## Installing Model Files
 
-Upload rules use the SigLIP2 ONNX model pack. Download it from the [Konifer repository](https://github.com/dmaiken/konifer/tree/main/scripts):
+Download the SigLIP2 ONNX model pack with the script in the [Konifer repository](https://github.com/dmaiken/konifer/tree/main/scripts):
 
 ```bash
 ./scripts/download-siglip2-models.sh
 ```
 
 :::note
-`HF_TOKEN` is respected by the script and can be provided for faster downloads from Hugging Face.
+Set `HF_TOKEN` for authenticated Hugging Face downloads.
 :::
 
-By default, this creates:
+The script creates:
 
 ```text
 models/siglip2-base-patch16-224/
@@ -266,17 +198,8 @@ volumes:
   - ./models/siglip2-base-patch16-224:/app/models/siglip2-base-patch16-224:ro
 ```
 
-For reproducible deployments, use a pinned Hugging Face revision when downloading the model pack:
+Pin a Hugging Face revision for reproducible deployments:
 
 ```bash
 ./scripts/download-siglip2-models.sh --revision <hugging-face-revision>
-```
-
-Konifer expects these files to exist at runtime when `rule-definitions` are configured or the Rule Evaluation API is
-enabled:
-
-```text
-/app/models/siglip2-base-patch16-224/vision_model.onnx
-/app/models/siglip2-base-patch16-224/text_model.onnx
-/app/models/siglip2-base-patch16-224/tokenizer.json
 ```

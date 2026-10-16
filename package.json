@@ -39,9 +39,12 @@
     "@docusaurus/tsconfig": "3.10.2",
     "@docusaurus/types": "3.10.2",
     "@usebruno/cli": "4.2.1",
+    "blurhash": "2.0.5",
     "cspell": "10.3.6",
     "markdownlint-cli2": "0.23.3",
+    "pngjs": "7.0.0",
     "prettier": "3.9.9",
+    "thumbhash": "0.1.1",
     "typescript": "7.0.2"
   },
   "browserslist": {

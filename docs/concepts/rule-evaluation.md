@@ -51,6 +51,79 @@ As you review the results:
 
 For guidance on writing prompt ensembles, see [Prompt Ensembles](upload-rules.md#prompt-ensembles).
 
+### Example: Joshua Tree Detection
+
+Define a `joshua-tree` rule with three prompts and a threshold of `0.7`. Save this request metadata as
+`joshua-tree-definition.json`:
+
+```json
+{
+  "definitions": [
+    {
+      "name": "joshua-tree",
+      "prompts": [
+        "a joshua tree",
+        "a tree",
+        "joshua tree national park"
+      ],
+      "threshold": 0.7
+    }
+  ]
+}
+```
+
+Download the photo using the link below and save it as `joshua-tree-original.jpg` in the same folder, then evaluate it.
+The `<` form syntax reads the metadata file as a text field:
+
+```bash
+curl --fail-with-body \
+  --request POST \
+  'http://localhost:8080/rule-evaluations' \
+  --form 'metadata=<joshua-tree-definition.json;type=application/json' \
+  --form 'asset=@joshua-tree-original.jpg;type=image/jpeg'
+```
+
+Repeat the request with the squirrel photo to compare a non-matching image against the same definition.
+Konifer returned these results from the configured SigLIP2 model, rounded to six decimal places:
+
+<div className="doc-images doc-images--comparison">
+  <figure className="doc-image">
+    <img src="/image-examples/rule-evaluation/joshua-tree-original.jpg"
+      alt="Joshua tree with spiky leaves among desert rocks beneath a cloudy sky"
+      width="800" height="602" loading="lazy" decoding="async" />
+    <figcaption>
+      <a href="/image-examples/rule-evaluation/joshua-tree-original.jpg" download="joshua-tree-original.jpg">
+        Joshua tree photo
+      </a>
+      · Score 0.956054 · Matched
+    </figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/sources/squirrel-original.jpg" alt="Squirrel resting on a branch beside a tree trunk"
+      width="1536" height="1024" loading="lazy" decoding="async" />
+    <figcaption>
+      <a href="/image-transformations/sources/squirrel-original.jpg" download="squirrel-original.jpg">Squirrel photo</a>
+      · Score 0.000534 · No match
+    </figcaption>
+  </figure>
+</div>
+
+| Prompt                       | Joshua tree score | Squirrel score |
+|:-----------------------------|:------------------|:---------------|
+| `a joshua tree`              | 0.956054          | 0.000012       |
+| `a tree`                     | 0.016330          | 0.000534       |
+| `joshua tree national park`  | 0.844172          | 0.000014       |
+
+Konifer uses each image's highest prompt score. The Joshua tree photo exceeds `0.7`, so `matched` is `true`. The squirrel
+photo falls below it, so `matched` is `false`. Inspect the full responses for the
+[Joshua tree](/image-examples/rule-evaluation/joshua-tree-joshua-tree-response.json) and
+[squirrel](/image-examples/rule-evaluation/squirrel-joshua-tree-response.json).
+
+The specific prompts score higher for the Joshua tree photo than the broad `a tree` prompt. Test each prompt against
+representative images; related descriptions can produce different scores. Raising the threshold above `0.95605449`
+would miss this tree photo without changing its score. Validate your threshold on more images before using it in an
+[upload ruleset](upload-rules.md), which applies match decisions to uploads.
+
 ## Supplying Images
 
 The API accepts an image URL or S3 object ARN in a JSON request, or image bytes in a multipart request. URL sources

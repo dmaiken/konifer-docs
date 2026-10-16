@@ -125,6 +125,22 @@
   align-items: end;
 }
 
+/* Align comparison photos and captions without cropping different source shapes. */
+.doc-images--comparison img {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: 4 / 3;
+  object-position: left top;
+}
+
+/* Decode hash placeholders at low resolution, then fill the final image's display area. */
+.doc-images--previews img {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: 4 / 3;
+  object-fit: fill;
+}
+
 /* A comparison frame is page furniture, not padding added to the returned image. */
 .doc-image-frame {
   display: flex;

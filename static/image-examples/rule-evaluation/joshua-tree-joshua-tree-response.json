@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "name": "joshua-tree",
+      "threshold": 0.7,
+      "score": 0.9560544896702936,
+      "matched": true,
+      "promptScores": [
+        {
+          "prompt": "a joshua tree",
+          "score": 0.9560544896702936
+        },
+        {
+          "prompt": "a tree",
+          "score": 0.016329576258978976
+        },
+        {
+          "prompt": "joshua tree national park",
+          "score": 0.8441717664428863
+        }
+      ]
+    }
+  ]
+}
