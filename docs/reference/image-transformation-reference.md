@@ -24,7 +24,7 @@ Use transformations to resize, crop, convert, or adjust an image. Supply the par
 | `r`              | Rotate         | Rotates the image clockwise. `auto` uses EXIF data                       | `0`, `90`, `180`, `270`, `auto`             | `0`                                    |
 | `f`              | Flip           | Flips the image along an axis                                            | `v` (vertical), `h` (horizontal), `none`    | `none`                                 |
 | `filter`         | Filter         | Applies a visual effect                                                  | `none`, `black_white`, `grayscale`, `sepia` | `none`                                 |
-| `blur`           | Blur           | Applies a Gaussian blur (value is sigma)                                 | `0` - `150`                                 | `0`                                    |
+| `blur`           | Blur           | Applies a Gaussian blur                                                  | `0` - `150`                                 | `0`                                    |
 | `q`              | Quality        | Compression level for lossy formats                                      | `1` - `100`                                 | Format dependent (e.g., 80)            |
 | `pad`            | Padding        | Adds padding pixels to the image boundaries                              | Integer `> 0`                               | `0`                                    |
 | `pad-c`          | Pad Background | The padding background color                                             | Hex Code (e.g., `#FF0000` or `#FF0000FF`)   | Transparent / White (Format dependent) |
@@ -47,6 +47,18 @@ Use transformations to resize, crop, convert, or adjust an image. Supply the par
 
 The `h`, `w`, and `fit` parameters determine the output dimensions and whether Konifer scales, crops, or distorts the
 source image.
+
+The resizing examples use this 1365×1024-pixel cow photo. Download it to try the same transformations with your own
+Konifer instance. The examples on this page are saved outputs from the Konifer API.
+
+<figure className="doc-image doc-image--source">
+  <img src="/image-transformations/sources/cow-original.jpg" alt="Cow in a mountain pasture with autumn trees behind it"
+    width="1365" height="1024" loading="lazy" decoding="async" />
+  <figcaption>
+    Source · 1365×1024 pixels.{' '}
+    <a href="/image-transformations/sources/cow-original.jpg" download="cow-original.jpg">Download the cow photo</a>
+  </figcaption>
+</figure>
 
 ### `fit` (Default)
 
@@ -86,6 +98,53 @@ The output may appear squashed or stretched when the requested aspect ratio diff
 Konifer removes pixels from the source to produce the requested width and height. Unlike `fill`, `crop` does not scale
 the image before cropping. Use `g` to choose which part of the source remains.
 
+All four requests below use `w=320&h=320&format=webp`. Compare how much of the pasture remains and whether the cow keeps
+its proportions. The outlined frames mark the same 320×320 target box; the empty space around the `fit` result belongs
+to this page, not the returned image. Select a caption to inspect the output at its native size.
+
+<div className="doc-images">
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/resizing/cow-fit-320.webp" alt="Whole cow photo scaled to fit a square target"
+        width="320" height="240" loading="lazy" decoding="async" />
+    </div>
+    <figcaption><a href="/image-transformations/resizing/cow-fit-320.webp">fit=fit</a> · 320×240 pixels · Whole scene</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/resizing/cow-fill-320.webp" alt="Cow photo scaled and cropped to fill a square"
+        width="320" height="320" loading="lazy" decoding="async" />
+    </div>
+    <figcaption>
+      <a href="/image-transformations/resizing/cow-fill-320.webp">fit=fill</a> · 320×320 pixels · Scaled, then cropped
+    </figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/resizing/cow-stretch-320.webp" alt="Whole cow photo stretched vertically into a square"
+        width="320" height="320" loading="lazy" decoding="async" />
+    </div>
+    <figcaption>
+      <a href="/image-transformations/resizing/cow-stretch-320.webp">fit=stretch</a> · 320×320 pixels · Changed proportions
+    </figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/resizing/cow-crop-320.webp" alt="Close crop of the cow's horns and autumn trees"
+        width="320" height="320" loading="lazy" decoding="async" />
+    </div>
+    <figcaption>
+      <a href="/image-transformations/resizing/cow-crop-320.webp">fit=crop</a> · 320×320 pixels · Cropped at source scale
+    </figcaption>
+  </figure>
+</div>
+
+For example, after uploading the photo at `/documentation/cow`, request the filled square with:
+
+```http
+GET /assets/documentation/cow/-/content?format=webp&w=320&h=320&fit=fill
+```
+
 #### Gravity Options (`g`)
 
 Both `fill` and `crop` support these gravity values:
@@ -95,6 +154,33 @@ Both `fill` and `crop` support these gravity values:
   landscapes, products, and textured objects.
 - **`attention`**: Keeps the area that the saliency model identifies as visually important, including faces and human
   features. It often works well for profile pictures and social content.
+
+These portrait crops use the same [bird photo](/image-transformations/sources/bird-original.jpg) and
+`w=240&h=320&fit=fill&format=webp`. Only `g` changes:
+
+<div className="doc-images doc-images--three">
+  <figure className="doc-image">
+    <img src="/image-transformations/gravity/bird-fill-center-240x320.webp"
+      alt="Centered portrait crop showing the whole bird"
+      width="240" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/gravity/bird-fill-center-240x320.webp">g=center</a> · Geometric center</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/gravity/bird-fill-entropy-240x320.webp"
+      alt="Entropy crop with branches and part of the bird's head outside the right edge"
+      width="240" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/gravity/bird-fill-entropy-240x320.webp">g=entropy</a> · Detailed region</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/gravity/bird-fill-attention-240x320.webp"
+      alt="Attention crop retaining the bird and its head"
+      width="240" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/gravity/bird-fill-attention-240x320.webp">g=attention</a> · Salient region</figcaption>
+  </figure>
+</div>
+
+The `entropy` crop clips the bird's head in this example. Automatic gravity uses visual heuristics; it does not guarantee
+that a whole subject remains in frame. Compare results with representative uploads before choosing a default.
 
 ## Image Formats & Quality
 
@@ -129,6 +215,25 @@ Defaults are based on the [Sharp](https://sharp.pixelplumbing.com/api-output/) l
 Higher quality settings can increase encoding time. AVIF encoding is especially sensitive to this setting.
 :::
 
+Both versions of this [cheetah photo](/image-transformations/sources/cheetah-original.jpg) use `w=640&format=webp`.
+Compare the fur around the eyes: `q=10` loses fine detail in exchange for a smaller file. Open each output at its native
+640×427 size to inspect the difference. These file sizes apply to this photo and these settings.
+
+<div className="doc-images">
+  <figure className="doc-image">
+    <img src="/image-transformations/quality/cheetah-quality-10.webp"
+      alt="Cheetah with smoothed fur detail from low quality compression"
+      width="640" height="427" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/quality/cheetah-quality-10.webp">q=10</a> · 11,888 bytes</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/quality/cheetah-quality-80.webp"
+      alt="Cheetah with fine fur detail preserved at quality 80"
+      width="640" height="427" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/quality/cheetah-quality-80.webp">q=80</a> · 49,434 bytes</figcaption>
+  </figure>
+</div>
+
 ## Color Space
 
 The `cs` parameter controls the output color space and its available color gamut.
@@ -153,6 +258,45 @@ file size without changing its appearance.
 
 Use `r` to rotate the image clockwise in 90-degree increments.
 
+These small outputs use the same [bird photo](/image-transformations/sources/bird-original.jpg) with
+`w=160&h=160&format=webp`. Each image fits inside the same square frame. Follow the bird and its branch as the photo
+turns clockwise; 90° and 270° produce portrait images.
+
+<div className="doc-images doc-images--four">
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/rotation/bird-rotate-0.webp"
+        alt="Upright bird on a branch, with no rotation"
+        width="160" height="107" loading="lazy" decoding="async" />
+    </div>
+    <figcaption><a href="/image-transformations/rotation/bird-rotate-0.webp">r=0</a> · Original</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/rotation/bird-rotate-90.webp"
+        alt="Bird photo turned a quarter turn clockwise, with the bird's head pointing right"
+        width="107" height="160" loading="lazy" decoding="async" />
+    </div>
+    <figcaption><a href="/image-transformations/rotation/bird-rotate-90.webp">r=90</a> · 90° clockwise</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/rotation/bird-rotate-180.webp"
+        alt="Bird photo turned upside down by a half turn"
+        width="160" height="107" loading="lazy" decoding="async" />
+    </div>
+    <figcaption><a href="/image-transformations/rotation/bird-rotate-180.webp">r=180</a> · Half turn</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <div className="doc-image-frame">
+      <img src="/image-transformations/rotation/bird-rotate-270.webp"
+        alt="Bird photo turned three quarters clockwise, with the bird's head pointing left"
+        width="107" height="160" loading="lazy" decoding="async" />
+    </div>
+    <figcaption><a href="/image-transformations/rotation/bird-rotate-270.webp">r=270</a> · 270° clockwise</figcaption>
+  </figure>
+</div>
+
 If `auto` is supplied, Konifer reads the EXIF `Orientation` metadata from the original variant and rotates the image
 accordingly. The resulting transformed variant has the EXIF `Orientation` tag stripped to prevent double-rotation by
 displays.
@@ -164,6 +308,27 @@ Use `f` to mirror the image along an axis:
 - **`v`**: Vertical flip (top-to-bottom).
 - **`h`**: Horizontal flip (left-to-right).
 
+These examples use the same bird photo with `w=240&format=webp`. With `f=h`, the bird faces the opposite direction.
+With `f=v`, the top and bottom exchange places while the bird stays on the same side of the image.
+
+<div className="doc-images doc-images--three">
+  <figure className="doc-image">
+    <img src="/image-transformations/flip/bird-flip-none.webp" alt="Original upright bird facing right on a rising branch"
+      width="240" height="160" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/flip/bird-flip-none.webp">f=none</a> · Original</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/flip/bird-flip-h.webp" alt="Bird mirrored left to right, now facing left"
+      width="240" height="160" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/flip/bird-flip-h.webp">f=h</a> · Left to right</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/flip/bird-flip-v.webp" alt="Bird mirrored top to bottom, hanging upside down"
+      width="240" height="160" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/flip/bird-flip-v.webp">f=v</a> · Top to bottom</figcaption>
+  </figure>
+</div>
+
 ### Filter (`filter`)
 
 Use `filter` to apply one of these effects:
@@ -173,19 +338,78 @@ Use `filter` to apply one of these effects:
 - **`grayscale`**: Removes color while preserving shades of gray.
 - **`sepia`**: Applies a warm, brownish tone matrix (identical to the CSS `sepia(100%)` filter).
 
+Each example below uses the same [flamingo photo](/image-transformations/sources/flamingos-original.jpg) with
+`w=480&format=webp`. Compare the solid black and white regions from `black_white` with the tonal detail retained by
+`grayscale`.
+
+<div className="doc-images">
+  <figure className="doc-image">
+    <img src="/image-transformations/filters/flamingos-filter-none.webp"
+      alt="Pink flamingos standing in dark water, with no filter"
+      width="480" height="316" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/filters/flamingos-filter-none.webp">filter=none</a> · Original colors</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/filters/flamingos-filter-black-white.webp"
+      alt="Flamingos and water reduced to solid black and white regions"
+      width="480" height="316" loading="lazy" decoding="async" />
+    <figcaption>
+      <a href="/image-transformations/filters/flamingos-filter-black-white.webp">filter=black_white</a> · Binary threshold
+    </figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/filters/flamingos-filter-grayscale.webp"
+      alt="Flamingos and water rendered in shades of gray"
+      width="480" height="316" loading="lazy" decoding="async" />
+    <figcaption>
+      <a href="/image-transformations/filters/flamingos-filter-grayscale.webp">filter=grayscale</a> · Shades of gray
+    </figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/filters/flamingos-filter-sepia.webp"
+      alt="Flamingos and water rendered in warm brown tones"
+      width="480" height="316" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/filters/flamingos-filter-sepia.webp">filter=sepia</a> · Warm brown tones</figcaption>
+  </figure>
+</div>
+
 :::note
 The `grayscale` filter is different from the `grayscale` color space (`cs`). Images with this filter applied will still
 be 3-channel (or 4-channel if the image contains alpha). Other transformations, such as padding, will still retain
 color.
 
-For example: `?filter=grayscale&pad=10&pad-c=#FF2900` will result in a grayscale image with a red border.
+For example: `?filter=grayscale&pad=10&pad-c=%23FF2900` produces a grayscale image with a red border. Encode `#` as `%23`
+in a URL.
 :::
 
 ### Blur (`blur`)
 
-Use `blur` to apply a Gaussian blur. The value sets the blur's sigma.
+Use `blur` to apply a Gaussian blur. Higher values soften more detail. Konifer applies blur after resizing, so compare
+values at the dimensions you plan to deliver.
 
 **Range:** `0` (no blur) to `150` (heavy blur).
+
+These outputs use the same [squirrel photo](/image-transformations/sources/squirrel-original.jpg) with
+`w=480&format=webp`. Only `blur` changes:
+
+<div className="doc-images doc-images--three">
+  <figure className="doc-image">
+    <img src="/image-transformations/blur/squirrel-blur-0.webp" alt="Sharp squirrel on a branch without blur"
+      width="480" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/blur/squirrel-blur-0.webp">blur=0</a> · No blur</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/blur/squirrel-blur-10.webp" alt="Blurred squirrel with its body and branch still recognizable"
+      width="480" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/blur/squirrel-blur-10.webp">blur=10</a> · Softened detail</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/blur/squirrel-blur-50.webp"
+      alt="Squirrel photo blurred into broad areas of green and brown"
+      width="480" height="320" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/blur/squirrel-blur-50.webp">blur=50</a> · Broad color shapes</figcaption>
+  </figure>
+</div>
 
 ## Borders & Padding
 
@@ -206,6 +430,30 @@ Set the padded area's color with a CSS-style hex value in `pad-c`.
 
 - **Solid Red:** `pad-c=%23FF0000` (URL encoded `#FF0000`)
 - **Translucent Red (50% Opacity):** `pad-c=%23FF000080` (URL encoded `#FF000080`)
+
+Both requests below resize the squirrel to 320×213 pixels, then add `pad=16` on every edge. The final canvas measures
+352×245 pixels. With WebP, omitting `pad-c` leaves the added area transparent; the checkerboard is this page's background.
+
+<div className="doc-images">
+  <figure className="doc-image doc-image--transparency">
+    <img src="/image-transformations/padding/squirrel-padding-16-transparent.webp"
+      alt="Squirrel photo with transparent padding visible against a checkerboard"
+      width="352" height="245" loading="lazy" decoding="async" />
+    <figcaption><a href="/image-transformations/padding/squirrel-padding-16-transparent.webp">pad=16</a> · Transparent padding</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/padding/squirrel-padding-16-orange.webp"
+      alt="Squirrel photo surrounded by an orange red border"
+      width="352" height="245" loading="lazy" decoding="async" />
+    <figcaption>
+      <a href="/image-transformations/padding/squirrel-padding-16-orange.webp">pad=16&amp;pad-c=%23FF2900</a> · Solid color
+    </figcaption>
+  </figure>
+</div>
+
+```http
+GET /assets/documentation/squirrel/-/content?format=webp&w=320&pad=16&pad-c=%23FF2900
+```
 
 ## Metadata
 

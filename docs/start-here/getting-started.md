@@ -43,7 +43,7 @@ Use Docker to run Konifer with its required libvips configuration. We do not pro
 Download Mr. Dog and save it as `mr-dog-1.jpg`. Run the upload command from the folder where you saved the image.
 You will store it at the `/users/123/profile-picture` path.
 
-<figure className="quickstart-image">
+<figure className="doc-image">
   <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, a small cute dog" width="1200" height="798" />
   <figcaption>
     Mr. Dog · Original JPG · 1200×798 pixels.{' '}
@@ -112,12 +112,12 @@ the image, and `g=attention` to choose which area to keep when cropping:
 http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&w=256&h=256&fit=fill&g=attention
 ```
 
-<div className="quickstart-images">
-  <figure className="quickstart-image">
+<div className="doc-images">
+  <figure className="doc-image">
     <img src="/getting-started/mr-dog-1.jpg" alt="Original landscape photo of Mr. Dog" width="1200" height="798" />
     <figcaption>Original JPG · 1200×798 pixels</figcaption>
   </figure>
-  <figure className="quickstart-image">
+  <figure className="doc-image">
     <img src="/getting-started/mr-dog-thumbnail.webp" alt="Square thumbnail of Mr. Dog" width="256" height="256" />
     <figcaption>WebP thumbnail · 256×256 pixels</figcaption>
   </figure>
@@ -228,7 +228,7 @@ formats; it omits the other response fields:
 Replace Mr. Dog's profile picture with a new one. Download the image as `mr-dog-2.jpg` into the same folder, then
 upload it to the same path. Konifer creates a new entry without changing the URL your application uses.
 
-<figure className="quickstart-image">
+<figure className="doc-image">
   <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, a cute little dog" width="1200" height="798" />
   <figcaption>
     Mr. Dog · Replacement JPG · 1200x798 pixels.{' '}
@@ -296,12 +296,12 @@ http://localhost:8080/assets/users/123/profile-picture/-/entry/0/content
 In a fresh quickstart container, the first entry has an `entryId` of `0`. Use the value returned by your first upload if
 it differs.
 
-<div className="quickstart-images">
-  <figure className="quickstart-image">
+<div className="doc-images">
+  <figure className="doc-image">
     <img src="/getting-started/mr-dog-2.jpg" alt="Mr. Dog, the current profile picture" width="1200" height="798" />
     <figcaption>Current picture · Mr. Dog · Entry 1</figcaption>
   </figure>
-  <figure className="quickstart-image">
+  <figure className="doc-image">
     <img src="/getting-started/mr-dog-1.jpg" alt="Mr. Dog, the previous profile picture" width="1200" height="798" />
     <figcaption>Previous picture · Mr. Dog · Entry 0</figcaption>
   </figure>

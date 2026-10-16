@@ -56,8 +56,8 @@
   margin-bottom: 1rem;    /* Space between line and next paragraph */
 }
 
-/* Keep quickstart examples at readable sizes and stack comparisons on small screens. */
-.quickstart-images {
+/* Shared documentation figures. Preserve the output's shape and stack on small screens. */
+.doc-images {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   align-items: start;
@@ -65,29 +65,97 @@
   margin-bottom: var(--ifm-leading);
 }
 
-.quickstart-image {
+.doc-image {
   margin: 0 0 var(--ifm-leading);
 }
 
-.quickstart-images .quickstart-image {
+.doc-images .doc-image {
   margin-bottom: 0;
 }
 
-.quickstart-image img {
+.doc-image img {
   display: block;
-  width: auto;
   height: auto;
   max-width: 100%;
   max-height: 320px;
+  object-fit: contain;
+  object-position: left center;
   border-radius: var(--ifm-global-radius);
 }
 
-.quickstart-images img {
+.doc-images img {
   max-height: 256px;
 }
 
-.quickstart-image figcaption {
+.doc-image figcaption {
   margin-top: 0.5rem;
   color: var(--ifm-color-content-secondary);
   font-size: 0.875rem;
+}
+
+.doc-image figcaption a {
+  text-underline-offset: 0.15em;
+}
+
+.doc-image--source img {
+  max-height: 240px;
+}
+
+.doc-images--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.doc-images--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.doc-images--four .doc-image-frame {
+  max-width: 160px;
+}
+
+.doc-images--four .doc-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-position: center;
+}
+
+.doc-images--bottom {
+  align-items: end;
+}
+
+/* A comparison frame is page furniture, not padding added to the returned image. */
+.doc-image-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1;
+  background: var(--ifm-background-surface-color);
+  outline: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+}
+
+.doc-image-frame img {
+  max-height: none;
+  border-radius: 0;
+}
+
+/* Keep an alpha border visible in either theme without altering the image itself. */
+.doc-image--transparency img {
+  background-color: #fff;
+  background-image: conic-gradient(#d1d5db 25%, transparent 0 50%, #d1d5db 0 75%, transparent 0);
+  background-size: 16px 16px;
+}
+
+@media (max-width: 600px) {
+  .doc-images--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doc-images--three {
+    grid-template-columns: 1fr;
+  }
 }

@@ -21,6 +21,26 @@ from this image.
 Preprocessing can resize or convert the supplied content before Konifer stores it as the original variant. Without
 preprocessing, the original variant contains the supplied image unchanged.
 
+For example, one stored cow photo can supply a small avatar without replacing its original. Both images belong to the
+same asset; the thumbnail is a generated variant.
+
+<div className="doc-images doc-images--bottom">
+  <figure className="doc-image">
+    <img src="/image-transformations/sources/cow-original.jpg"
+      alt="Original cow photo showing the surrounding mountain pasture"
+      width="1365" height="1024" loading="lazy" decoding="async" />
+    <figcaption>Original variant · JPG · 1365×1024 pixels</figcaption>
+  </figure>
+  <figure className="doc-image">
+    <img src="/image-transformations/resizing/cow-thumbnail-128.webp" alt="Square WebP thumbnail cropped from the cow photo"
+      width="128" height="128" loading="lazy" decoding="async" />
+    <figcaption>Generated variant · WebP · 128×128 pixels · w=128&amp;h=128&amp;fit=fill</figcaption>
+  </figure>
+</div>
+
+See [Image Transformation](../../reference/image-transformation-reference.md#image-resizing) for the resizing behavior
+behind this thumbnail.
+
 ## Variant Types
 
 Konifer generates variants in two ways:
