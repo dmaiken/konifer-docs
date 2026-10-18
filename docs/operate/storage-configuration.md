@@ -6,27 +6,13 @@ title: Storage Configuration
 sidebar_label: "Storage Configuration"
 ---
 
-## Storage Architecture
-
-Konifer stores image content and asset information separately.
-
-1. **Object Store:** Persists the physical variant content (the binaries). Konifer supports AWS S3, S3-compatible,
-   filesystem, and in-memory providers.
-2. **Metadata Store:** Persists relational data, path hierarchies, tags, and labels. Currently, in-memory and PostgreSQL
-   are the supported engines.
+Konifer stores originals and generated variants in an object store, and asset information in a metadata store.
 
 ## Object Store Configuration
 
-Konifer supports three object store implementations:
-
-1. In-memory
-2. S3 (including S3-compatible providers)
-3. Filesystem
-
 ### In-memory Configuration
 
-To enable development mode, set `IN_MEMORY=true`. This overrides both provider settings. Alternatively, configure both
-providers explicitly:
+Set `IN_MEMORY=true` to override both storage providers, or set each provider in `konifer.conf`:
 
 ```hocon
 object-store {
@@ -38,17 +24,13 @@ data-store {
 }
 ```
 
-:::warning
-Non-Production Use In-memory implementations are **ephemeral**. All data is lost when the container restarts.
-Additionally, storage capacity is strictly limited by the JVM Heap size. Uploading large files in this mode may cause
-`OutOfMemoryError` crashes.
-:::
+In-memory storage uses JVM heap and loses all data when the container restarts. Large uploads can exhaust the heap.
 
 ### AWS S3
 
-By default, Konifer looks for AWS credentials using the
-standard [AWS Default Credential Provider Chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html#credentialProviderChain).
-This enables seamless authentication when running on EC2 instances with IAM roles or locally with `~/.aws/credentials`.
+Konifer uses the
+[AWS Default Credential Provider Chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html#credentialProviderChain)
+unless you configure static credentials.
 
 ```hocon
 object-store {
@@ -58,67 +40,58 @@ object-store {
 
 #### S3-compatible Providers
 
-For non-AWS object stores (e.g., Cloudflare R2, MinIO, DigitalOcean Spaces, Oracle Cloud), you must explicitly provide
-the endpoint and credentials.
+For S3-compatible providers, configure the endpoint, credentials, and region:
 
 ```hocon
 object-store {
     provider = s3
 
     s3 {
-        # The full URL to your provider's API
         endpoint-url = "https://<account-id>.r2.cloudflarestorage.com"
-
-        # Static credentials
         access-key = "your-access-key"
-
-        # Can also use S3_SECRET_KEY environment variable
+        # Or use S3_SECRET_KEY
         secret-key = "your-secret-key"
-
-        # The S3 SDK requires a region to be populated either through the Provider Chain (AWS)
-        # or manually. Use 'auto' if your provider does not require a region.
         region = "us-east-1"
-
-        # Many non-AWS providers require this to be true (i.e. MiniIO)
         force-path-style = false
     }
 }
 ```
 
+The SDK requires a region even if the provider does not use one; use `auto` for providers that support it. Some
+providers, including MinIO, require `force-path-style = true`.
+
 ### Filesystem
 
-Konifer can store files in a specified filesystem location. This filesystem path must be configured and has no default
-property.
+The default object-store provider is `filesystem`. Set `mount-path` to an existing, writable directory inside the
+container; this property has no default:
 
 ```hocon
 object-store {
-    provider = filesystem # This is the default value
+    provider = filesystem
 
     filesystem {
-        mount-path = "/path/to/filesystem/mount"
+        mount-path = "/mnt/nas1/assets"
     }
 }
 ```
 
-`mount-path` must exist and must be the path referencing the mounted Docker volume. For example, given this Docker
-volume mount:
+For example:
 
 ```bash
 docker run -d \
-  --name Konifer \
+  --name konifer \
   -p 8080:8080 \
-  -v /path/to/your/konifer.conf:/konifer.conf \
-  -v /object-store:/mnt/nas1/assets
-  your-registry/Konifer:latest
+  --mount type=bind,source=/etc/konifer/konifer.conf,target=/app/config/konifer.conf,readonly \
+  --mount type=bind,source=/object-store,target=/mnt/nas1/assets \
+  ghcr.io/dmaiken/konifer:{{koniferVersion}}
 ```
 
-The `mount-path` should be `/object-store` and not `/mnt/nas1/assets`.
+Here, `/object-store` is the host directory and `/mnt/nas1/assets` is the configured `mount-path`.
 
 #### Buckets and Keys
 
-When using the Filesystem implementation, the `bucket` is the top-level directory. The bucket directory is created if it
-does not exist.
-Similar to the S3 implementation, the `key` represents the generated filename.
+The filesystem provider uses `bucket` as a top-level directory and `key` as the generated filename. Konifer creates
+missing bucket directories. The S3 provider requires buckets to exist before use.
 
 ### Presigned delivery
 
@@ -130,17 +103,13 @@ the selected variant's stored bucket, key, and configured TTL.
 
 Konifer uses PostgreSQL for transactions and hierarchical path queries.
 
-:::warning
-The `ltree` extension must be enabled on your PostgreSQL database before
-Konifer starts. Run the following SQL command as a superuser:
+Enable `ltree` in the application database before Konifer starts, using a role with permission to create the extension:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS ltree;
 ```
 
-:::
-
-Define your database connection details in the `postgres` block of konifer.conf.
+Configure the connection under `data-store.postgresql` in `konifer.conf`:
 
 ```hocon
 data-store {
@@ -161,6 +130,5 @@ data-store {
 
 ### SSL Mode
 
-Konifer allows you to specify the `sslMode` used when connecting to Postgres. The default is `prefer`. More
-information about these modes can be found in the
-relevant [Postgres documentation](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
+`data-store.postgresql.ssl-mode` defaults to `prefer`. See
+[PostgreSQL SSL modes](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION) for mode behavior.
