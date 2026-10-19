@@ -250,6 +250,7 @@ paths {
   # Match everything greedily after /
   "/**" {
     lqip = []
+    allowed-formats = [ png, jpg, jxl, webp, avif, gif, heic, pixels ]
     limits {
       max-width = 8192
       max-height = 8192
@@ -327,20 +328,19 @@ paths {
 |:---------|:------------------------|:-------------------------|:--------|
 | `lqip`   | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
 
-### Allowed Content Types
+### Allowed Formats
 
 ```hocon
 "/**" {
-  allowed-content-types = [ "image/png", "image/jpeg" ]
+  allowed-formats = [ png, jpg, jxl, webp, avif, gif, heic, pixels ]
 }
 ```
 
-| Property                | Description                                                                              | Allowed Input            | Default |
-| :---------------------- | :--------------------------------------------------------------------------------------- | :----------------------- | :------ |
-| `allowed-content-types` | Content types allowed for uploads and generated output. Omit to allow supported formats. | Supported MIME type list | None    |
+| Property          | Description                                       | Allowed Input         | Default           |
+| :---------------- | :------------------------------------------------ | :-------------------- | :---------------- |
+| `allowed-formats` | Formats allowed for uploads and generated output. | List of `ImageFormat` | All image formats |
 
-To permit pixel variants with an allowlist, include `application/octet-stream` alongside your accepted encoded image
-types. Raw pixel uploads remain unsupported. See [Raw Pixels](../concepts/pixels.md).
+Raw pixel _uploads_ are unsupported. See [Raw Pixels](../concepts/pixels.md).
 
 ### Supplied Asset Content Limits
 

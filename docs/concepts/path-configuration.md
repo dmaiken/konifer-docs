@@ -63,9 +63,7 @@ and accept only JPEG images:
 paths {
   "/users/*/profile-picture" {
     bucket = "profile-pictures"
-    allowed-content-types = [
-      "image/jpeg"
-    ]
+    allowed-formats = [ jpg ]
   }
 }
 ```
@@ -97,7 +95,7 @@ wins**.
 ### Example
 
 Creating an asset at `/users/123` uses the `users` bucket (inherited from the `/users` path) and also has
-restrictions on the allowed content types (defined on the more-specific `/users/123` path).
+restrictions on the allowed formats (defined on the more-specific `/users/123` path).
 
 ```hocon
 paths {
@@ -105,10 +103,7 @@ paths {
     bucket = "users"
   }
   "/users/123" {
-    allowed-content-types = [
-      "image/png",
-      "image/jpeg"
-    ]
+    allowed-formats = [ png, jpg ]
   }
 }
 ```
@@ -118,43 +113,37 @@ paths {
 Konifer's inheritance is **deep**. Nested configuration values within objects are merged; however, list properties are
 not merged.
 
-If a child path defines a list or object property (like `allowed-content-types`), the child's property completely
+If a child path defines a list or object property (like `allowed-formats`), the child's property completely
 overwrites the parent's property.
 
 #### Example 1: List Overwrite
 
-Creating an asset at `/users/123` does not allow `image/png` since list properties are not merged. The `image/png`
+Creating an asset at `/users/123` does not allow `png` since list properties are not merged. The `png`
 value from the parent is discarded, not merged.
 
 ```hocon
 paths {
   "/users" {
-    allowed-content-types = [
-      "image/png",
-    ]
+    allowed-formats = [ png ]
   }
   "/users/123" {
-    allowed-content-types = [
-      "image/jpeg"
-    ]
+    allowed-formats = [ jpg ]
   }
 }
 ```
 
 #### Example 2: Empty List Overwrite
 
-Creating an asset at `/users/123` does not allow _any_ content-type. The empty list from the child path overwrites
+Creating an asset at `/users/123` does not allow _any_ format. The empty list from the child path overwrites
 the parent's list.
 
 ```hocon
 paths {
   "/users" {
-    allowed-content-types = [
-      "image/png",
-    ]
+    allowed-formats = [ png ]
   }
   "/users/123" {
-    allowed-content-types = []
+    allowed-formats = []
   }
 }
 ```
@@ -176,19 +165,15 @@ to determine the system default for each property.
 
 #### Example
 
-Storing at `/users/123/profile-picture` only allows `image/png` but storing at `/blog/123` would only allow `image/gif`.
+Storing at `/users/123/profile-picture` only allows `png` but storing at `/blog/123` would only allow `gif`.
 
 ```hocon
 paths {
   "/users/**" {
-    allowed-content-types = [
-      "image/png",
-    ]
+    allowed-formats = [ png ]
   }
   "/blog/123" {
-    allowed-content-types = [
-      "image/gif",
-    ]
+    allowed-formats = [ gif ]
   }
 }
 ```

@@ -92,9 +92,6 @@ You can combine pixel output with resizing, cropping, rotation, filters, and oth
 [image transformations](../reference/image-transformation-reference.md). Define the same parameters in a
 [variant profile](Variants/variant-profiles.md) to reuse the transformation or generate an eager pixel variant.
 
-If your path defines `allowed-content-types`, include `application/octet-stream` to permit pixel output alongside
-the encoded input types you accept.
-
 Konifer caches pixel variants in the object store. Channel order and layout distinguish cached variants; for example,
 RGB interleaved and BGR planar are separate variants. For grayscale, Konifer normalizes both layout requests to the
 same interleaved variant. See [Variant Caching](Variants/caching.md).
