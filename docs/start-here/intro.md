@@ -141,10 +141,7 @@ paths {
 
   "/claims/**/evidence" {
     bucket = "private-evidence"
-    allowed-content-types = [
-      "image/jpeg",
-      "image/png"
-    ]
+    allowed-formats = [ jpg, png ]
   }
 }
 ```

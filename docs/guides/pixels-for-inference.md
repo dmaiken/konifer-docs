@@ -310,10 +310,4 @@ environment with `deactivate`.
 
 ## Next steps
 
-For a persistent deployment, see [Deploying Konifer](../operate/deployment.md). For a path with an `allowed-content-types`
-list, include `application/octet-stream` for pixel variants alongside the encoded input
-and display formats.
-
-For a production workload, compare task accuracy with the checkpoint's reference processor on a labeled evaluation
-set. Measure image preparation, transfer, and inference costs for your deployment: raw pixels avoid worker-side
-decoding but can take more bandwidth than compressed images.
+For a persistent deployment, see [Deploying Konifer](../operate/deployment.md).
