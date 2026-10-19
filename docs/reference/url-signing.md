@@ -47,7 +47,7 @@ Encode the HMAC digest as URL-safe Base64 with padding removed, then include it 
 parameter itself is excluded from the signed payload.
 
 ```http
-GET /assets/users/123/profile?blur=20&format=webp&h=300&s=BASE64URL_HMAC_SIGNATURE
+GET /assets/users/123/profile?blur=20&format=webp&height=300&s=BASE64URL_HMAC_SIGNATURE
 ```
 
 If URL signing is enabled, then all requests missing a signature returns a `403 Forbidden`. Invalid signatures also

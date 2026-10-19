@@ -7,12 +7,12 @@ http:
   method: GET
   url: localhost:8080/assets/users/123abc/profile-pictures/-/redirect
   params:
-    - name: w
+    - name: width
       value: "200"
       type: query
       description: Width
       disabled: true
-    - name: h
+    - name: height
       value: ""
       type: query
       description: Height
@@ -26,7 +26,7 @@ http:
       type: query
       description: Blur
       disabled: true
-    - name: q
+    - name: quality
       value: ""
       type: query
       description: Quality
@@ -35,12 +35,12 @@ http:
       value: ""
       type: query
       disabled: true
-    - name: g
+    - name: gravity
       value: ""
       type: query
       description: Gravity
       disabled: true
-    - name: r
+    - name: rotate
       value: ""
       type: query
       description: Rotate
@@ -50,7 +50,7 @@ http:
       type: query
       description: Pad border
       disabled: true
-    - name: pad-c
+    - name: pad-color
       value: ""
       type: query
       description: Padding color (#123456)

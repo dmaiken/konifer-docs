@@ -166,10 +166,10 @@ For example, define a raw pixel profile for a 224×224 BGR input with one plane 
 variant-profiles {
   vision-input {
     format = pixels
-    w = 224
-    h = 224
+    width = 224
+    height = 224
     fit = fill
-    cs = srgb
+    color-space = srgb
     pixel-channels = BGR
     pixel-layout = planar
   }
@@ -437,7 +437,7 @@ within the `preprocessing` block, as well as:
 | `transform.preprocessing.clamp-width`  | Maximum width  | Integer       | None    |
 
 :::note
-`h` and `w` take precedence over `clamp-height` and `clamp-width` respectively, if both are specified.
+`height` and `width` take precedence over `clamp-height` and `clamp-width` respectively, if both are specified.
 :::
 
 #### Eager Variants

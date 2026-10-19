@@ -11,7 +11,7 @@ processing, computer vision, or machine learning code that needs a pixel buffer 
 
 Konifer returns `application/octet-stream` content with a `.bin` extension. The body contains packed, unsigned 8-bit
 samples (`uint8`, values 0–255), with no image header, dimensions, or embedded metadata. Konifer returns the first
-frame of an animated source. The `q` parameter has no effect on pixel output.
+frame of an animated source. The `quality` parameter has no effect on pixel output.
 
 ## Channel order and layout
 
@@ -34,12 +34,15 @@ would contain the same bytes for a single channel.
 
 ## Color and transparency
 
-Color pixel output requires sRGB or Display P3. Use `cs=srgb` or `cs=p3` to convert a source with another color space;
-the default `cs=origin` retains the source color space and can fail for grayscale, CMYK, or other sources containing
+Color pixel output requires sRGB or Display P3. Use `color-space=srgb` or `color-space=p3` to convert a source with
+another color space;
+the default `color-space=origin` retains the source color space and can fail for grayscale, CMYK, or other sources
+containing
 uncommon ICC profiles.
 
-For `pixel-channels=gray`, Konifer converts the output to grayscale. You can omit `cs`, use `cs=origin`, or use
-`cs=grayscale`. Combining `gray` with `cs=srgb` or `cs=p3` returns `400 Bad Request`.
+For `pixel-channels=gray`, Konifer converts the output to grayscale. You can omit `color-space`, use
+`color-space=origin`, or use
+`color-space=grayscale`. Combining `gray` with `color-space=srgb` or `color-space=p3` returns `400 Bad Request`.
 
 Include `A` to retain source transparency. Konifer adds an opaque alpha sample if the source has no alpha channel.
 Color output without `A` drops the alpha channel. For `gray`, Konifer composites transparency against white before
@@ -55,7 +58,7 @@ request.
 curl --fail-with-body \
   --dump-header profile-picture.headers \
   --output profile-picture.bin \
-  'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
+  'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&width=224&height=224&fit=fill&color-space=srgb&pixel-channels=BGR&pixel-layout=planar'
 ```
 
 The response headers include:
@@ -83,8 +86,10 @@ padding can change them. See the [Fetch Assets reference](../reference/api/asset
 for curl, Kotlin, and Java examples.
 
 The orientation attributes describe the clockwise rotation still needed for display, followed by a horizontal flip.
-If you need pixels with orientation applied, request `r=auto`; normalized output reports rotation `0` and flip `false`.
-See [Content attribute headers](../reference/api/assets/fetch-assets.mdx#content-attribute-headers) for the full mapping.
+If you need pixels with orientation applied, request `rotate=auto`; normalized output reports rotation `0` and flip
+`false`.
+See [Content attribute headers](../reference/api/assets/fetch-assets.mdx#content-attribute-headers) for the full
+mapping.
 
 ## Pixel variants and preprocessing
 
@@ -105,7 +110,7 @@ paths {
       preprocessing {
         enabled = true
         format = pixels
-        cs = srgb
+        color-space = srgb
         pixel-channels = RGB
         pixel-layout = planar
       }

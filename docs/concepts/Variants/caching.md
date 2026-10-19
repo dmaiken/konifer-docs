@@ -20,11 +20,11 @@ result.
 For example, these two requests generate the same variant:
 
 ```http
-GET /assets/users/123/profile-picture?f=h&r=180
+GET /assets/users/123/profile-picture?flip=h&rotate=180
 ```
 
 ```http
-GET /assets/users/123/profile-picture?f=v
+GET /assets/users/123/profile-picture?flip=v
 ```
 
 The first requests a variant that is horizontally flipped and rotated 180 degrees. The second requests a vertically

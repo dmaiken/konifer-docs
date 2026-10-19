@@ -17,25 +17,25 @@ const sources = {
   cheetah: 'animal_africa_wilderness_zoo.jpg',
 };
 const examples = [
-  ['resizing', 'cow', 'fit-320', {w: 320, h: 320, fit: 'fit'}, 320, 240],
-  ['resizing', 'cow', 'fill-320', {w: 320, h: 320, fit: 'fill'}, 320, 320],
-  ['resizing', 'cow', 'stretch-320', {w: 320, h: 320, fit: 'stretch'}, 320, 320],
-  ['resizing', 'cow', 'crop-320', {w: 320, h: 320, fit: 'crop'}, 320, 320],
-  ['resizing', 'cow', 'thumbnail-128', {w: 128, h: 128, fit: 'fill'}, 128, 128],
-  ...['center', 'entropy', 'attention'].map(g =>
-    ['gravity', 'bird', `fill-${g}-240x320`, {w: 240, h: 320, fit: 'fill', g}, 240, 320]),
-  ...[0, 90, 180, 270].map(r =>
-    ['rotation', 'bird', `rotate-${r}`, {w: 160, h: 160, r}, r % 180 === 0 ? 160 : 107, r % 180 === 0 ? 107 : 160]),
-  ...['none', 'h', 'v'].map(f =>
-    ['flip', 'bird', `flip-${f}`, {w: 240, f}, 240, 160]),
+  ['resizing', 'cow', 'fit-320', {width: 320, height: 320, fit: 'fit'}, 320, 240],
+  ['resizing', 'cow', 'fill-320', {width: 320, height: 320, fit: 'fill'}, 320, 320],
+  ['resizing', 'cow', 'stretch-320', {width: 320, height: 320, fit: 'stretch'}, 320, 320],
+  ['resizing', 'cow', 'crop-320', {width: 320, height: 320, fit: 'crop'}, 320, 320],
+  ['resizing', 'cow', 'thumbnail-128', {width: 128, height: 128, fit: 'fill'}, 128, 128],
+  ...['center', 'entropy', 'attention'].map(gravity =>
+    ['gravity', 'bird', `fill-${gravity}-240x320`, {width: 240, height: 320, fit: 'fill', gravity}, 240, 320]),
+  ...[0, 90, 180, 270].map(rotate =>
+    ['rotation', 'bird', `rotate-${rotate}`, {width: 160, height: 160, rotate}, rotate % 180 === 0 ? 160 : 107, rotate % 180 === 0 ? 107 : 160]),
+  ...['none', 'h', 'v'].map(flip =>
+    ['flip', 'bird', `flip-${flip}`, {width: 240, flip}, 240, 160]),
   ...['none', 'black_white', 'grayscale', 'sepia'].map(filter =>
-    ['filters', 'flamingos', `filter-${filter.replaceAll('_', '-')}`, {w: 480, filter}, 480, 316]),
+    ['filters', 'flamingos', `filter-${filter.replaceAll('_', '-')}`, {width: 480, filter}, 480, 316]),
   ...[0, 10, 50].map(blur =>
-    ['blur', 'squirrel', `blur-${blur}`, {w: 480, blur}, 480, 320]),
-  ['padding', 'squirrel', 'padding-16-transparent', {w: 320, pad: 16}, 352, 245],
-  ['padding', 'squirrel', 'padding-16-orange', {w: 320, pad: 16, 'pad-c': '#FF2900'}, 352, 245],
-  ...[10, 80].map(q =>
-    ['quality', 'cheetah', `quality-${q}`, {w: 640, q}, 640, 427]),
+    ['blur', 'squirrel', `blur-${blur}`, {width: 480, blur}, 480, 320]),
+  ['padding', 'squirrel', 'padding-16-transparent', {width: 320, pad: 16}, 352, 245],
+  ['padding', 'squirrel', 'padding-16-orange', {width: 320, pad: 16, 'pad-color': '#FF2900'}, 352, 245],
+  ...[10, 80].map(quality =>
+    ['quality', 'cheetah', `quality-${quality}`, {width: 640, quality}, 640, 427]),
 ];
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const manifest = {sources: [], examples: []};

@@ -110,10 +110,10 @@ http://localhost:8080/assets/users/123/profile-picture/-/content
 ## 4. Request a WebP thumbnail
 
 Open this URL in your browser to create a 256×256 WebP thumbnail. Use `fit=fill` to fill the square without stretching
-the image, and `g=attention` to choose which area to keep when cropping:
+the image, and `gravity=attention` to choose which area to keep when cropping:
 
 ```http
-http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&w=256&h=256&fit=fill&g=attention
+http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&width=256&height=256&fit=fill&gravity=attention
 ```
 
 <div className="doc-images">
@@ -435,7 +435,7 @@ For image-processing code, request a 224×224 RGB buffer in planar layout:
 curl --fail-with-body \
   --dump-header profile-picture.headers \
   --output profile-picture.bin \
-  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=RGB&pixel-layout=planar'
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&width=224&height=224&fit=fill&color-space=srgb&pixel-channels=RGB&pixel-layout=planar'
 ```
 
 Konifer returns 150,528 unsigned 8-bit samples as `application/octet-stream`. This buffer contains the red plane,
