@@ -69,7 +69,7 @@
   "examples": [
     {
       "animal": "cow",
-      "request": "/assets/documentation/cow/-/content?format=webp&w=320&h=320&fit=fit",
+      "request": "/assets/documentation/cow/-/content?format=webp&width=320&height=320&fit=fit",
       "file": "resizing/cow-fit-320.webp",
       "bytes": 17718,
       "sha256": "9b071323bc1721eb8dc0e040ea686d7cd894ddf35778ea23727e6c8a76818dbd",
@@ -84,7 +84,7 @@
     },
     {
       "animal": "cow",
-      "request": "/assets/documentation/cow/-/content?format=webp&w=320&h=320&fit=fill",
+      "request": "/assets/documentation/cow/-/content?format=webp&width=320&height=320&fit=fill",
       "file": "resizing/cow-fill-320.webp",
       "bytes": 23082,
       "sha256": "98f64b7128b4b458deed60b54dc2799980a8dbeaad9a0bd99e5bcb6acfdff63c",
@@ -99,7 +99,7 @@
     },
     {
       "animal": "cow",
-      "request": "/assets/documentation/cow/-/content?format=webp&w=320&h=320&fit=stretch",
+      "request": "/assets/documentation/cow/-/content?format=webp&width=320&height=320&fit=stretch",
       "file": "resizing/cow-stretch-320.webp",
       "bytes": 23654,
       "sha256": "8aea80bade68c9647b27675c77598618774212a2d1ae785c9a488f5cb1730233",
@@ -114,7 +114,7 @@
     },
     {
       "animal": "cow",
-      "request": "/assets/documentation/cow/-/content?format=webp&w=320&h=320&fit=crop",
+      "request": "/assets/documentation/cow/-/content?format=webp&width=320&height=320&fit=crop",
       "file": "resizing/cow-crop-320.webp",
       "bytes": 29322,
       "sha256": "607e2a9d282776370df973b908a8895b92a1a941964bbb85b384441d56adbb26",
@@ -129,7 +129,7 @@
     },
     {
       "animal": "cow",
-      "request": "/assets/documentation/cow/-/content?format=webp&w=128&h=128&fit=fill",
+      "request": "/assets/documentation/cow/-/content?format=webp&width=128&height=128&fit=fill",
       "file": "resizing/cow-thumbnail-128.webp",
       "bytes": 4378,
       "sha256": "00acd09778c3107a3d0bc4ea0fec7a6c642142a135b0086851ffd8977e789fed",
@@ -144,7 +144,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&h=320&fit=fill&g=center",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&height=320&fit=fill&gravity=center",
       "file": "gravity/bird-fill-center-240x320.webp",
       "bytes": 10512,
       "sha256": "76c403776ef0efff498bc2cdebe1d845822bf58014618bffaa527908f9eb799d",
@@ -159,7 +159,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&h=320&fit=fill&g=entropy",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&height=320&fit=fill&gravity=entropy",
       "file": "gravity/bird-fill-entropy-240x320.webp",
       "bytes": 9448,
       "sha256": "1fdfc8c7304d3a469f6d57a714cb3b81a64ece85c170eb143784c2698f61bd4f",
@@ -174,7 +174,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&h=320&fit=fill&g=attention",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&height=320&fit=fill&gravity=attention",
       "file": "gravity/bird-fill-attention-240x320.webp",
       "bytes": 10964,
       "sha256": "64ae90a955e1d02511c1d274ffa2e8efb45ccac8f3b62444a149672d62d0815a",
@@ -189,7 +189,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=160&h=160&r=0",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=160&height=160&rotate=0",
       "file": "rotation/bird-rotate-0.webp",
       "bytes": 3252,
       "sha256": "b082dbe5cf9c79a5a059a86094eaa3065c4d8cbdbf2ff955a1705740104633ed",
@@ -204,7 +204,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=160&h=160&r=90",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=160&height=160&rotate=90",
       "file": "rotation/bird-rotate-90.webp",
       "bytes": 3136,
       "sha256": "5ff55df3f27aefdd3ff1bad53ea72a7a88199c877e8b813dfeb63e4892e527e7",
@@ -219,7 +219,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=160&h=160&r=180",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=160&height=160&rotate=180",
       "file": "rotation/bird-rotate-180.webp",
       "bytes": 3290,
       "sha256": "1ffc83375a208927e8e6a404bf672bc13224baf25937f659d0e3d4ece94914fd",
@@ -234,7 +234,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=160&h=160&r=270",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=160&height=160&rotate=270",
       "file": "rotation/bird-rotate-270.webp",
       "bytes": 3156,
       "sha256": "4705e00e6e4265ff8b5ab00d993fa873c2f2bdf6631309530591fbe65196c6d8",
@@ -249,7 +249,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&f=none",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&flip=none",
       "file": "flip/bird-flip-none.webp",
       "bytes": 5714,
       "sha256": "98f36027de9ee698fd2bd9e4937c4f8df184240fb4ad4f7aa24f86da15b81ae7",
@@ -264,7 +264,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&f=h",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&flip=h",
       "file": "flip/bird-flip-h.webp",
       "bytes": 5502,
       "sha256": "e1121ae22d7842e994d7798aa24d3682ff6c92a594e876c5bf3ef56ee947f38d",
@@ -279,7 +279,7 @@
     },
     {
       "animal": "bird",
-      "request": "/assets/documentation/bird/-/content?format=webp&w=240&f=v",
+      "request": "/assets/documentation/bird/-/content?format=webp&width=240&flip=v",
       "file": "flip/bird-flip-v.webp",
       "bytes": 5534,
       "sha256": "e1d2846e0d2b25f6d7ad8ffe3089b370e214f004de9440098d25132caabab869",
@@ -294,7 +294,7 @@
     },
     {
       "animal": "flamingos",
-      "request": "/assets/documentation/flamingos/-/content?format=webp&w=480&filter=none",
+      "request": "/assets/documentation/flamingos/-/content?format=webp&width=480&filter=none",
       "file": "filters/flamingos-filter-none.webp",
       "bytes": 29438,
       "sha256": "61319ca1b2fa136b33ae6b41b24df3b97cf34b11e7ff2be70d61b9c6bedfd5b0",
@@ -309,7 +309,7 @@
     },
     {
       "animal": "flamingos",
-      "request": "/assets/documentation/flamingos/-/content?format=webp&w=480&filter=black_white",
+      "request": "/assets/documentation/flamingos/-/content?format=webp&width=480&filter=black_white",
       "file": "filters/flamingos-filter-black-white.webp",
       "bytes": 21824,
       "sha256": "a327ce371808f901c91a046f854005c5208acc82b132d6795d61d9031ef2d3d4",
@@ -324,7 +324,7 @@
     },
     {
       "animal": "flamingos",
-      "request": "/assets/documentation/flamingos/-/content?format=webp&w=480&filter=grayscale",
+      "request": "/assets/documentation/flamingos/-/content?format=webp&width=480&filter=grayscale",
       "file": "filters/flamingos-filter-grayscale.webp",
       "bytes": 26260,
       "sha256": "b41343a96c12db957dae5354713c1c55a473b72dda9b49aa4d690f3b1139f808",
@@ -339,7 +339,7 @@
     },
     {
       "animal": "flamingos",
-      "request": "/assets/documentation/flamingos/-/content?format=webp&w=480&filter=sepia",
+      "request": "/assets/documentation/flamingos/-/content?format=webp&width=480&filter=sepia",
       "file": "filters/flamingos-filter-sepia.webp",
       "bytes": 28328,
       "sha256": "6db74759b51315a3e09410987f143b8cf2388dff296f738842d8e720b9bbc18c",
@@ -354,7 +354,7 @@
     },
     {
       "animal": "squirrel",
-      "request": "/assets/documentation/squirrel/-/content?format=webp&w=480&blur=0",
+      "request": "/assets/documentation/squirrel/-/content?format=webp&width=480&blur=0",
       "file": "blur/squirrel-blur-0.webp",
       "bytes": 31412,
       "sha256": "d9904d6faa70f93ce34d0cdd4a9c813f9e2decf103d35a59d58c6a3194b65af4",
@@ -369,7 +369,7 @@
     },
     {
       "animal": "squirrel",
-      "request": "/assets/documentation/squirrel/-/content?format=webp&w=480&blur=10",
+      "request": "/assets/documentation/squirrel/-/content?format=webp&width=480&blur=10",
       "file": "blur/squirrel-blur-10.webp",
       "bytes": 7260,
       "sha256": "9ae92a54f687d68afe827b68359e90e3ac868965d332f0a71ad4c02efddec931",
@@ -384,7 +384,7 @@
     },
     {
       "animal": "squirrel",
-      "request": "/assets/documentation/squirrel/-/content?format=webp&w=480&blur=50",
+      "request": "/assets/documentation/squirrel/-/content?format=webp&width=480&blur=50",
       "file": "blur/squirrel-blur-50.webp",
       "bytes": 2270,
       "sha256": "abab543d8473de8ea4c2df1b27bd54ac0ca9ebe59260f78c6f25776e5c374fed",
@@ -399,7 +399,7 @@
     },
     {
       "animal": "squirrel",
-      "request": "/assets/documentation/squirrel/-/content?format=webp&w=320&pad=16",
+      "request": "/assets/documentation/squirrel/-/content?format=webp&width=320&pad=16",
       "file": "padding/squirrel-padding-16-transparent.webp",
       "bytes": 16480,
       "sha256": "bb7224eadb08b1b39c608edc7d2dfe84f5982da57b752783155b5ef0d880ddcc",
@@ -414,7 +414,7 @@
     },
     {
       "animal": "squirrel",
-      "request": "/assets/documentation/squirrel/-/content?format=webp&w=320&pad=16&pad-c=%23FF2900",
+      "request": "/assets/documentation/squirrel/-/content?format=webp&width=320&pad=16&pad-color=%23FF2900",
       "file": "padding/squirrel-padding-16-orange.webp",
       "bytes": 16688,
       "sha256": "18d51cfc58a2f4ae83483d6989df2fd5cf02cd9ca0b2d33f30fb0d3e12a2931c",
@@ -429,7 +429,7 @@
     },
     {
       "animal": "cheetah",
-      "request": "/assets/documentation/cheetah/-/content?format=webp&w=640&q=10",
+      "request": "/assets/documentation/cheetah/-/content?format=webp&width=640&quality=10",
       "file": "quality/cheetah-quality-10.webp",
       "bytes": 11888,
       "sha256": "f9215bcd00955e27a776c211af8f31e9e9c4de16efdec2984ee4cfa2363862e9",
@@ -444,7 +444,7 @@
     },
     {
       "animal": "cheetah",
-      "request": "/assets/documentation/cheetah/-/content?format=webp&w=640&q=80",
+      "request": "/assets/documentation/cheetah/-/content?format=webp&width=640&quality=80",
       "file": "quality/cheetah-quality-80.webp",
       "bytes": 49434,
       "sha256": "427677d82067b90ea619b1365f096e948a837eb048e5ea6195f5e31576a7cd8d",

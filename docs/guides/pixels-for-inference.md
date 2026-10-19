@@ -33,20 +33,20 @@ Create `konifer.conf` with two profiles: `preview` for a reviewer and `vision-22
 variant-profiles {
   preview {
     format = webp
-    w = 512
-    h = 512
+    width = 512
+    height = 512
     fit = fit # Resize to fit inside 512x512 but retain aspect ratio
-    r = auto # auto-rotate 
-    cs = srgb # normalize colorspace (important if your image came from an iphone, for example)
+    rotate = auto # auto-rotate
+    color-space = srgb # normalize colorspace (important if your image came from an iphone, for example)
   }
 
   vision-224-v1 {
     format = pixels
-    w = 224
-    h = 224
+    width = 224
+    height = 224
     fit = stretch # Force image into box and break aspect ratio. Rectangular images will get squashed.
-    r = auto
-    cs = srgb
+    rotate = auto
+    color-space = srgb
     pixel-channels = RGB
     pixel-layout = planar # Pixel layout will look like: RRRRRGGGGGGBBBBB 
   }

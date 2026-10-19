@@ -201,19 +201,19 @@ export default function Home(): ReactNode {
             <HoconCodeBlock
               code={`variant-profiles {
   display {
-    w = 256
-    h = 256
+    width = 256
+    height = 256
     fit = fill
-    r = auto
+    rotate = auto
     format = webp
   }
 
   vision {
-    w = 224
-    h = 224
+    width = 224
+    height = 224
     fit = fill
-    r = auto
-    cs = srgb
+    rotate = auto
+    color-space = srgb
     format = pixels
     pixel-channels = RGB
     pixel-layout = planar

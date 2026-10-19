@@ -28,13 +28,13 @@ the ID from your upload.
 For a display thumbnail, request WebP with orientation applied:
 
 ```http
-GET /assets/products/sku-123/photo/-/entry/4/content?w=256&h=256&fit=fill&r=auto&format=webp
+GET /assets/products/sku-123/photo/-/entry/4/content?width=256&height=256&fit=fill&rotate=auto&format=webp
 ```
 
 For a processing worker, request a 224×224 RGB buffer in planar layout:
 
 ```http
-GET /assets/products/sku-123/photo/-/entry/4/content?w=224&h=224&fit=fill&r=auto&cs=srgb&format=pixels&pixel-channels=RGB&pixel-layout=planar
+GET /assets/products/sku-123/photo/-/entry/4/content?width=224&height=224&fit=fill&rotate=auto&color-space=srgb&format=pixels&pixel-channels=RGB&pixel-layout=planar
 ```
 
 Konifer returns the pixel bytes together with dimensions, channel order, layout, and data type in HTTP headers.
@@ -100,7 +100,7 @@ Konifer can resize, crop, rotate, blur, pad, convert color spaces, and output en
 Transformations can be requested directly:
 
 ```http
-GET /assets/products/sku-123/hero/-/content?w=1200&h=630&fit=crop&format=webp
+GET /assets/products/sku-123/hero/-/content?width=1200&height=630&fit=crop&format=webp
 ```
 
 Frequently used transformations can instead be defined as named profiles:

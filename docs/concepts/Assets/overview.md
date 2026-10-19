@@ -123,12 +123,13 @@ DELETE /assets/users/123/-/recursive?phone=iphone
 
 ### Reserved words
 
-Labels and transformation parameters (`h`, `w`, etc.) are both defined using query parameters. To specify a label with
-the key `w`, prefix the key with
+Labels and transformation parameters (`height`, `width`, etc.) are both defined using query parameters. To specify
+a label with
+the key `width`, prefix the key with
 `label:`.
 
 ```http
-GET /assets/users/123/-/new/info?label:w=wValue
+GET /assets/users/123/-/new/info?label:width=wide
 ```
 
 Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.

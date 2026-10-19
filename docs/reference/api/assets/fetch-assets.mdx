@@ -227,7 +227,7 @@ client.assets(path).fetchInfo().valueOrThrow();
 
 #### Variant Generation
 
-Transformation parameters cannot be supplied (i.e. `h`, `r`, `blur`, etc.) when requesting asset metadata. A
+Transformation parameters cannot be supplied (i.e. `height`, `rotate`, `blur`, etc.) when requesting asset metadata. A
 `400 Bad Request` is returned if any transformation parameters are supplied.
 
 ### Response
@@ -593,7 +593,7 @@ Request a 256×256 thumbnail, cropping around the most important part of the ima
 ```bash
 curl --fail-with-body \
   --output profile-picture.webp \
-  'http://localhost:8080/assets/user/123/profile-picture/-/content?w=256&h=256&format=webp&fit=fill&g=attention'
+  'http://localhost:8080/assets/user/123/profile-picture/-/content?width=256&height=256&format=webp&fit=fill&gravity=attention'
 ```
 
 </TabItem>
@@ -647,7 +647,7 @@ content response headers, or from the client's `AssetContent`, to interpret the 
 curl --fail-with-body \
   --dump-header profile-picture.headers \
   --output profile-picture.bin \
-  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content?format=pixels&w=224&h=224&fit=fill&cs=srgb&pixel-channels=BGR&pixel-layout=planar'
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content?format=pixels&width=224&height=224&fit=fill&color-space=srgb&pixel-channels=BGR&pixel-layout=planar'
 ```
 
 </TabItem>
@@ -828,7 +828,7 @@ Optional attributes have no header when they are absent. HTTP header names are c
 `K-Alt`, `K-LQIP-Blurhash`, and `K-LQIP-Thumbhash` headers still carry asset metadata when present.
 
 `K-Attr-Rotate` and `K-Attr-Horizontal-Flip` describe the orientation still needed for display. They do not repeat
-the requested `r` and `f` parameters. For output whose orientation Konifer has normalized, such as an `r=auto`
+the requested `rotate` and `flip` parameters. For output whose orientation Konifer has normalized, such as a `rotate=auto`
 variant, they are `0` and `false`. Width and height describe the returned buffer before any remaining display rotation.
 
 The same attributes appear in JSON `link` and asset-information responses. Redirect destinations such as object
