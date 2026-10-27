@@ -9,7 +9,9 @@ sidebar_label: "Fetch"
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Fetch requests use query selectors to choose an asset entry and its response format.
+Fetch requests use query selectors to choose an asset entry and its response format. Introduce selectors with a
+standalone `-` path segment. Hyphens within ordinary segments belong to the asset path; empty selector sections
+return `400 Bad Request`. See [Path rules](../../../concepts/Assets/overview.md#path-rules).
 
 ## Ordering
 
@@ -19,6 +21,57 @@ Ordering is specified using the `order` [query selector](../../../concepts/Asset
 | ---------- | --------------------------------------- | ----------------------- |
 | `new`      | Order by last-created (stack semantics) | Yes                     |
 | `modified` | Order by last-modified                  |                         |
+
+## Label filters
+
+Prefix each label query parameter with `label:`. For example, fetch the newest entry with the label `phone=iphone`:
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/new/info?label:phone=iphone'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .matchingLabels(mapOf("phone" to "iphone"))
+  .fetchInfo()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .matchingLabels(java.util.Map.of("phone", "iphone"))
+  .fetchInfo()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+Pass ordinary label keys to `matchingLabels(...)` in Kotlin and Java; the client adds the query prefix. Keep ordinary
+keys in upload/update JSON and response label maps. See [Labels](../../../concepts/Assets/overview.md#labels) for
+filtering and label limits.
+
+## Timestamps
+
+Konifer returns `createdAt`, `modifiedAt`, and non-null `expiresAt` values as RFC 3339 timestamps in UTC, ending in
+`Z`. For example: `2026-10-24T14:30:00.123456Z`. Fractional-second precision can vary; parse these values as instants
+rather than assuming a fixed string length.
+
+The Kotlin client exposes these fields as `kotlin.time.Instant`. Its timestamp parser accepts explicit UTC offsets,
+including `Z` and `+00:00`, and rejects strings without an offset. Update the client with the server when upgrading
+from the older offset-less timestamp format.
+
+HTTP `Last-Modified` headers retain the HTTP-date format, such as `Sat, 24 Oct 2026 14:30:00 GMT`.
 
 ## Content Negotiation
 
@@ -89,7 +142,7 @@ Content-Type: application/json
 K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
 
 {
-  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content",
+  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpeg&height=100&width=200",
   "lqip": {
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
@@ -110,13 +163,22 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 | Field Name   | Type       | Description                                                                  |
 | ------------ | ---------- | ---------------------------------------------------------------------------- |
 | `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
-| `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
+| `expiresAt`  | RFC 3339   | Populated for presigned URLs                                                 |
 | `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
 | `alt`        | String     | The `alt` supplied when storing the asset                                    |
 | `attributes` | Attributes | [Attributes](#attributes) of the selected variant                            |
 
 The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
 URL in the same field.
+
+Service URLs include the selected entry and resolved transformation, including the format selected through `Accept`.
+Fetch the returned URL as supplied, without repeating the original header. With [URL signing](../../url-signing.md)
+enabled, Konifer signs the destination URL, including the service fallback for unsupported presigned delivery. Service
+URL examples here omit some default transformation parameters for readability.
+
+After cache eviction, Konifer can regenerate the variant from its URL, subject to current path policy and transformation
+limits. In `profile_only` mode, the URL includes the profile name and equivalent explicit parameters. See
+[Service Delivery](../../../concepts/Assets/fetching-assets.md#service-delivery).
 
 ## Fetching Redirect (`/redirect`)
 
@@ -182,7 +244,7 @@ Returns a **`Temporary Redirect 307`**:
 
 ```http
 HTTP/1.1 307
-Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpeg&height=100&width=200
 ```
 
 The `Location` value is resolved with the same path-level
@@ -299,7 +361,7 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
       "lqip": {}
     }
   ],
-  "createdAt": "2025-11-12T01:20:55"
+  "createdAt": "2025-11-12T01:20:55Z"
 }
 ```
 
@@ -313,8 +375,8 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
 | `source`     | String       | Either `url` or `upload` depending on how you provided asset content |
 | `sourceUrl`  | String       | If URL source was used, then this is the supplied URL                |
 | `variants`   | AssetVariant | Will only contain the original variant - the one supplied            |
-| `createdAt`  | ISO 8601     | Date asset was stored                                                |
-| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
+| `createdAt`  | RFC 3339 UTC | Date asset was stored                                                |
+| `modifiedAt` | RFC 3339 UTC | Date asset was last modified (ignores variant generation)            |
 
 #### AssetVariant
 
@@ -432,11 +494,25 @@ client.assets(path).fetchEntries(20).valueOrThrow();
 
 #### Limit
 
-`entries` is the only return format where multiple assets can be returned. Specify limit using the `limit` query
-parameter.
+Supply the `limit` query parameter once. Its allowed values depend on the return format:
 
-- **Default**: 20
-- **Fetch all at path**: -1
+| Return format | Default | Allowed values |
+| --- | --- | --- |
+| `entries` | `20` | `1` through `2147483647`, or `-1` for all matching entries at the exact path |
+| `info`, `link`, `content`, `download`, `redirect` | `1` | `1` |
+
+To fetch all matching entries over HTTP:
+
+```http
+GET /assets/users/123/profile-picture/-/entries?limit=-1
+```
+
+Blank, malformed, overflowing, zero, below-`-1`, or repeated limit values return `400 Bad Request`. A limit other than
+`1` also returns 400 for a singular representation. Konifer applies a default only when you omit the parameter.
+
+The Kotlin and Java `fetchEntries(limit)` methods accept positive integer limits. For deletion, use
+[the DELETE limit rules](delete-assets.mdx#limit): `limit=-1` selects exact-path bulk deletion, and entry or recursive
+selectors require you to omit the limit.
 
 ### Response
 
@@ -507,7 +583,7 @@ Content-Type: application/json
           "lqip": {}
         }
       ],
-      "createdAt": "2025-11-12T01:20:55"
+      "createdAt": "2025-11-12T01:20:55Z"
     }
   ]
 }
@@ -897,3 +973,8 @@ K-LQIP-Blurhash: "BASE64 Blurhash, if enabled"
 K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
 Content-Disposition: attachment; filename*=UTF-8''profile-picture.jpeg
 ```
+
+## Error codes
+
+API failures return JSON with a stable `code` and an optional `message`. See
+[Error Responses](../errors.md) for the codes, HTTP statuses, and client compatibility behavior.

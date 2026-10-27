@@ -279,3 +279,8 @@ from JPG to WebP:
 dimensions and
 clamps in the same preprocessing rule.
 :::
+
+## Handling errors
+
+Use the response `code` to distinguish invalid requests, rejected uploads, and external-source failures.
+See [Error Responses](../../reference/api/errors.md) for the codes and HTTP statuses.

@@ -124,9 +124,50 @@ Konifer, object storage, or a CDN.
 ## Handle results
 
 Call `valueOrThrow()` to get the successful value or throw `KoniferRequestException` on failure. To recover from a
-request failure, inspect the `KoniferResult` instead: `Failure.Http` includes the HTTP status, while
+request failure, inspect the `KoniferResult` instead: `Failure.Http` includes the HTTP status, stable error code, and optional message, while
 `Failure.Transport` and `Failure.InvalidResponse` include the underlying cause. Coroutine cancellation propagates as
 an exception.
+
+Branch on `code` instead of parsing the message:
+
+<Tabs groupId="konifer-example-language" defaultValue="kotlin">
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+val result = client.assets("users/123/profile-picture").fetchInfo()
+if (result is KoniferResult.Failure.Http) {
+  when (result.code) {
+    ErrorCode.NOT_FOUND -> println("No image found")
+    ErrorCode.UNKNOWN -> println("HTTP ${result.statusCode}: ${result.message}")
+    else -> println("${result.code}: ${result.message}")
+  }
+}
+```
+
+Import `io.konifer.client.KoniferResult` and `io.konifer.common.http.ErrorCode`.
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+var result = client.assets("users/123/profile-picture").fetchInfo();
+if (result instanceof KoniferResult.Failure.Http failure) {
+  switch (failure.getCode()) {
+    case NOT_FOUND -> System.out.println("No image found");
+    case UNKNOWN -> System.out.println("HTTP " + failure.getStatusCode());
+    default -> System.out.println(failure.getCode() + ": " + failure.getMessage());
+  }
+}
+```
+
+Import `io.konifer.client.KoniferResult`.
+
+</TabItem>
+</Tabs>
+
+The client uses `UNKNOWN` for missing or unfamiliar codes and preserves the HTTP status and readable message.
+`KoniferRequestException.failure` exposes the same failure when you use `valueOrThrow()`.
+See [Error Responses](../reference/api/errors.md) for the code/status table.
 
 ## Optional configuration
 

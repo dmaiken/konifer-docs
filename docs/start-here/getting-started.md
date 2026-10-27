@@ -92,8 +92,8 @@ upload a replacement. Your entry ID may differ if you have uploaded to this path
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:46:42.879461495",
-  "modifiedAt": "2026-10-15T01:46:42.906062144"
+  "createdAt": "2026-10-15T01:46:42.879461495Z",
+  "modifiedAt": "2026-10-15T01:46:42.906062144Z"
 }
 ```
 
@@ -220,8 +220,8 @@ formats; it omits the other response fields:
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:46:42.879461495",
-  "modifiedAt": "2026-10-15T01:46:42.906062144"
+  "createdAt": "2026-10-15T01:46:42.879461495Z",
+  "modifiedAt": "2026-10-15T01:46:42.906062144Z"
 }
 ```
 
@@ -276,8 +276,8 @@ The response now includes `"entryId": 1`. You have two entries at the same path,
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:53:32.95613658",
-  "modifiedAt": "2026-10-15T01:53:32.958626453"
+  "createdAt": "2026-10-15T01:53:32.95613658Z",
+  "modifiedAt": "2026-10-15T01:53:32.958626453Z"
 }
 ```
 
@@ -359,8 +359,8 @@ This excerpt shows the two entry IDs. Expand the full response to inspect each e
           "lqip": {}
         }
       ],
-      "createdAt": "2026-10-15T01:53:32.95613658",
-      "modifiedAt": "2026-10-15T01:53:32.958626453"
+      "createdAt": "2026-10-15T01:53:32.95613658Z",
+      "modifiedAt": "2026-10-15T01:53:32.958626453Z"
     },
     {
       "class": "image",
@@ -418,8 +418,8 @@ This excerpt shows the two entry IDs. Expand the full response to inspect each e
           "lqip": {}
         }
       ],
-      "createdAt": "2026-10-15T01:46:42.879461495",
-      "modifiedAt": "2026-10-15T01:46:42.906062144"
+      "createdAt": "2026-10-15T01:46:42.879461495Z",
+      "modifiedAt": "2026-10-15T01:46:42.906062144Z"
     }
   ]
 }

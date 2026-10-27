@@ -405,6 +405,9 @@ These are model scores, not confidence percentages. See
 
 ## Error Responses
 
+Failures return JSON with a `code` and an optional `message`. See [Error Responses](errors.md) for the full
+code/status table, including external-source failures and size limits.
+
 | Status                       | Cause                                                                                  |
 |------------------------------|----------------------------------------------------------------------------------------|
 | `400 Bad Request`            | The request, rule definitions, URL, multipart parts, image format, or size is invalid. |

@@ -106,8 +106,8 @@ By default, clients can request any supported on-demand transformation. Set
 `transform.on-demand-variant.mode` in path configuration to restrict this behavior.
 
 - **`enabled`** (default): Clients can supply a profile or individual transformation parameters.
-- **`profile_only`**: Clients can supply only `profile`, limiting transformations to configured
-  [variant profiles](variant-profiles.md).
+- **`profile_only`**: Clients must name a [variant profile](variant-profiles.md) for transformed content. Explicit
+  parameters must resolve to that profile's transformation. Profiles that omit `format` allow format negotiation.
 - **`disabled`**: Clients cannot request arbitrary on-demand variants. A request for a configured eager variant can
   still generate that variant when its eager task has not completed.
 

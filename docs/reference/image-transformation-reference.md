@@ -587,6 +587,6 @@ keep their existing spelling. The URL signature parameter remains `s`.
 Regenerate [URL signatures](url-signing.md) after renaming parameters. Sign the updated path and query string,
 with parameters sorted by their new keys.
 
-The current transformation names are reserved query keys. To filter by an asset label named `width`, for example,
-use `label:width=wide`. Keep the label's key as `width` in upload and update JSON. See
-[reserved label names](../concepts/Assets/overview.md#reserved-words).
+Prefix each label query parameter with `label:`, including names that overlap transformation parameters. For example,
+use `label:width=wide` to filter by an asset label named `width`. Keep the label's key as `width` in upload and update
+JSON. See [label query parameters](../concepts/Assets/overview.md#reserved-words).

@@ -203,3 +203,8 @@ Pin a Hugging Face revision for reproducible deployments:
 ```bash
 ./scripts/download-siglip2-models.sh --revision <hugging-face-revision>
 ```
+
+## Handling errors
+
+Use the response `code` to distinguish upload rejection and request validation.
+See [Error Responses](../reference/api/errors.md) for the codes and HTTP statuses.

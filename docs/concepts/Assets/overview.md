@@ -33,6 +33,28 @@ POST /assets/blog/123/post/5
 Multiple assets can share a path. Send another `POST` to create a new entry at that path. A fetch request returns the
 newest entry by default; query selectors can select a different entry or ordering.
 
+### Path rules
+
+Use a standalone `-` segment to separate the asset path from selectors. Ordinary path segments may contain or end
+with hyphens:
+
+```http
+GET /assets/album-/photo
+GET /assets/album-/-/info
+GET /assets/album-/photo/-/entry/42/content
+```
+
+The first request selects an asset at `album-/photo` using the default selectors. The second requests metadata at
+`album-`. The third requests the content of entry `42` at `album-/photo`.
+
+You cannot use a standalone `-` segment in an asset path. Supply a nonempty selector section after the separator,
+and use at most one separator. Konifer returns `400 Bad Request` for paths such as `/assets/album/-`,
+`/assets/album/-/`, or `/assets/album/-/info/-/entry/42`. Omit the separator to use the default selection.
+Store requests cannot include selectors.
+
+Earlier versions also interpreted segments ending in `-` as selector boundaries. Hyphenated segments now remain
+part of the asset path; empty selector sections return `400 Bad Request`.
+
 ## Content
 
 The following content types are currently supported by Konifer:
@@ -80,36 +102,39 @@ To specify them when storing or updating an asset, use the `labels` field in the
 
 ### Querying
 
-Labels can be used to query for assets. They are supplied as query parameters.
+To query for assets by label, prefix each label query parameter with `label:`. Use this prefix for label filters in
+fetch and delete URLs.
 
 ```http
-GET /assets/users/123?label-key=label-value&phone=Android
+GET /assets/users/123?label:label-key=label-value&label:phone=Android
 ```
 
-Labels can also be combined with other query selectors to further filter your results. For example, this returns the
-information of the five most-recently
-created assets containing the label of `phone=iphone`:
+Combine labels with query selectors to fetch up to five of the newest entries containing `phone=iphone`:
 
 ```http
-GET /assets/users/123/-/new/info?phone=iphone&limit=5
+GET /assets/users/123/-/new/entries?label:phone=iphone&limit=5
 ```
 
 ### Deleting
 
-Labels can be used to delete assets and are used in the same manner as fetching assets. For example, this deletes the five
-most-recently
-created assets containing the label of `phone=iphone`:
+Use labels to filter exact-path or recursive bulk deletion. To delete a bounded selection, first fetch the matching
+entries, then delete each returned entry ID:
 
 ```http
-DELETE /assets/users/123/-/new?phone=iphone&limit=5
+GET /assets/users/123/-/new/entries?label:phone=iphone&limit=5
+DELETE /assets/users/123/-/entry/42
 ```
+
+Replace `42` with an ID from the response's `entries` array and repeat the DELETE for the other returned IDs.
+Retain the IDs for retries; the fetch and deletions are separate requests. See
+[Deleting Assets](deleting-assets.md#delete-a-bounded-selection).
 
 #### Delete all with label(s)
 
 To delete all assets at a particular path, set your `limit` to `-1` and supply the labels.
 
 ```http
-DELETE /assets/users/123?phone=iphone&limit=-1
+DELETE /assets/users/123?label:phone=iphone&limit=-1
 ```
 
 #### Recursively delete
@@ -118,21 +143,21 @@ Recursive deletes can be performed with labels as well. To delete assets at and 
 and the `recursive` selector.
 
 ```http
-DELETE /assets/users/123/-/recursive?phone=iphone
+DELETE /assets/users/123/-/recursive?label:phone=iphone
 ```
 
 ### Reserved words
 
-Labels and transformation parameters (`height`, `width`, etc.) are both defined using query parameters. To specify
-a label with
-the key `width`, prefix the key with
-`label:`.
+Use `label:` for label query parameters, including names that overlap transformation parameters. For example, filter
+by the label `width=wide` and request a 100-pixel-wide image with:
 
 ```http
-GET /assets/users/123/-/new/info?label:width=wide
+GET /assets/users/123/-/new/content?label:width=wide&width=100
 ```
 
-Prefixing labels using reserved keys is not necessary when creating or updating labels through a POST or PUT.
+Keep ordinary label keys, such as `width`, in POST/PUT JSON and response label maps. In the Kotlin and Java clients,
+pass ordinary keys to `matchingLabels(...)`; the client adds `label:` when building the URL. See
+[label filter examples](../../reference/api/assets/fetch-assets.mdx#label-filters).
 
 ### Rules
 

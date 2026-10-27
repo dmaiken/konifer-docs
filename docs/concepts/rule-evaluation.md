@@ -157,3 +157,8 @@ configuration.
 Rule evaluation performs model inference and can consume significant CPU and memory. Enable and expose this endpoint
 only when clients using it are trusted or separately protected by your deployment.
 :::
+
+## Handling errors
+
+Use the response `code` to distinguish request validation and source retrieval failures.
+See [Error Responses](../reference/api/errors.md) for the codes and HTTP statuses.

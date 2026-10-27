@@ -47,6 +47,16 @@ data-store {
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
 `in-memory`.
 
+### Timestamp storage and upgrades
+
+Konifer stores application timestamps in PostgreSQL `TIMESTAMPTZ` columns and applies schema migrations at startup.
+The timestamp migration interprets existing timezone-less values as UTC, preserving the convention used by earlier
+Konifer versions. Audit stored timestamps before upgrading if an earlier deployment used non-UTC database sessions
+or external writers.
+
+Back up an existing database and stop older Konifer instances before starting the upgraded version. Keep old writers
+stopped during migration and deploy the matching client version for the new UTC timestamp response format.
+
 ## HTTP
 
 ```hocon

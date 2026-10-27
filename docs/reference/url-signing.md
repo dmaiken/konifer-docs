@@ -52,3 +52,13 @@ GET /assets/users/123/profile?blur=20&format=webp&height=300&s=BASE64URL_HMAC_SI
 
 If URL signing is enabled, then all requests missing a signature returns a `403 Forbidden`. Invalid signatures also
 return a `403 Forbidden`.
+
+## Returned Delivery URLs
+
+Konifer signs service delivery URLs returned by `link` and `redirect`, including the service fallback when an object
+store does not support presigned URLs. Fetch the returned URL as supplied: it includes the selected entry, resolved
+transformation, and a signature for the destination request. You do not need the original `Accept` header or a signing
+client to fetch it.
+
+Konifer signs the internal `/assets/...` path. If `http.public-url` includes a reverse-proxy prefix, configure the proxy
+to strip that prefix before forwarding requests to Konifer. The public prefix is not part of the signed path.

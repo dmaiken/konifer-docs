@@ -323,7 +323,7 @@ Content-Type: application/json
       }
     }
   ],
-  "createdAt": "2025-11-12T01:20:55"
+  "createdAt": "2025-11-12T01:20:55Z"
 }
 ```
 
@@ -343,11 +343,13 @@ Additionally, a `Location` header is returned containing an absolute, entry-spec
 | `source`     | String       | `upload`, `url`, or `arn`, according to how the asset content was supplied        |
 | `sourceUrl`  | String       | Supplied URL or ARN for an external source; absent for multipart content          |
 | `variants`   | AssetVariant | Will only contain the original variant - the one supplied                         |
-| `createdAt`  | ISO 8601     | Date asset was stored                                                             |
-| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)                         |
+| `createdAt`  | RFC 3339 UTC | Date asset was stored                                                             |
+| `modifiedAt` | RFC 3339 UTC | Date asset was last modified (ignores variant generation)                         |
 
 For compatibility, the response field containing the external source is named `sourceUrl` even when its value is an
 S3 object ARN. For example, an ARN import returns `"source": "arn"` and the supplied ARN in `sourceUrl`.
+
+The response timestamps use RFC 3339 UTC values ending in `Z`. See [Timestamps](fetch-assets.mdx#timestamps).
 
 ### AssetVariant
 
@@ -382,3 +384,8 @@ S3 object ARN. For example, an ARN import returns `"source": "arn"` and the supp
 | `jxl`  | JPEG XL | .jxl           | image/jxl    |
 | `heic` | HEIC    | .heic          | image/heic   |
 | `gif`  | GIF     | .gif           | image/gif    |
+
+## Error codes
+
+API failures return JSON with a stable `code` and an optional `message`. See
+[Error Responses](../errors.md) for the codes, HTTP statuses, and client compatibility behavior.
