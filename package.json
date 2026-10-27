@@ -40,7 +40,7 @@
     "@docusaurus/types": "3.10.2",
     "@usebruno/cli": "4.2.1",
     "blurhash": "2.0.5",
-    "cspell": "10.3.6",
+    "cspell": "10.4.0",
     "markdownlint-cli2": "0.23.3",
     "pngjs": "7.0.0",
     "prettier": "3.9.10",
