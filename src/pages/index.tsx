@@ -66,7 +66,7 @@ const infrastructure = [
   },
   {
     label: "Delivery",
-    value: "Image links, redirects, or image content, with optional CDN delivery",
+    value: "Display images or raw pixels with attributes, plus links and CDN delivery",
   },
 ];
 
@@ -74,34 +74,31 @@ function ApiExample(): ReactNode {
   return (
     <div
       className={styles.apiExample}
-      aria-label="Example Konifer asset API requests"
+      aria-label="One stored image served as a display variant and a raw pixel variant"
     >
-      <div className={styles.codeLabel}>Asset API</div>
+      <div className={styles.codeLabel}>One source, two consumers</div>
       <pre>
         <code>
           <span className={styles.codeComment}>
-            # Upload a profile picture
+            # Store an image
           </span>
           {"\n"}
           <span className={styles.codeVerb}>POST</span>{" "}
-          /assets/users/123/profile-picture
+          /assets/photos/123
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Get metadata or an image link
+            # Serve a WebP image to your application
           </span>
           {"\n"}
-          <span className={styles.codeVerb}>GET </span>{" "}
-          /assets/users/123/profile-picture/-/info
-          {"\n"}
-          <span className={styles.codeVerb}>GET </span>{" "}
-          /assets/users/123/profile-picture/-/link
+          <span className={styles.codeVerb}>GET</span>{" "}
+          /assets/photos/123/-/entry/0/content?profile=display
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Delete the images under this user&apos;s path
+            # Serve pixels from the same entry to a worker
           </span>
           {"\n"}
-          <span className={styles.codeVerb}>DELETE</span>{" "}
-          /assets/users/123/-/recursive
+          <span className={styles.codeVerb}>GET</span>{" "}
+          /assets/photos/123/-/entry/0/content?profile=vision
         </code>
       </pre>
     </div>
@@ -135,17 +132,17 @@ function HoconCodeBlock({ code }: { code: string }): ReactNode {
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="Backend image management"
-      description="Use Konifer to upload, validate, and manage images through a self-hosted API. Organize images by application path and choose your storage and CDN."
+      title="Images for humans and machines"
+      description="Store images once and serve display formats or raw pixel buffers through one self-hosted API. Share image storage and preprocessing across applications and vision pipelines."
     >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <Heading as="h1">Image management for backend teams.</Heading>
+            <Heading as="h1">One image source for humans and machines.</Heading>
             <p className={styles.heroLead}>
-              Use Konifer to upload, validate, and manage images through a
-              self-hosted API. Organize them by user or listing, replace a photo
-              at the same URL, and choose how you store and serve it.
+              Store images once and serve display formats or raw pixel buffers
+              through one self-hosted API. Define reusable transformations for
+              your application and vision pipelines.
             </p>
             <div className={styles.heroActions}>
               <Link
@@ -160,6 +157,70 @@ export default function Home(): ReactNode {
             </div>
           </div>
           <ApiExample />
+        </section>
+
+        <section className={clsx(styles.section, styles.pathSection)}>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Shared preprocessing</span>
+            <Heading as="h2">Prepare each image for its next consumer.</Heading>
+            <p>
+              A product photo can appear in your storefront and feed a
+              classification or search pipeline. Keep the source in Konifer
+              and request the representation each consumer needs.
+            </p>
+            <dl className={styles.infrastructureList}>
+              <div>
+                <dt>For people</dt>
+                <dd>A 256 × 256 WebP image for display.</dd>
+              </div>
+              <div>
+                <dt>For machines</dt>
+                <dd>A 224 × 224 RGB pixel buffer with one plane per channel.</dd>
+              </div>
+            </dl>
+            <p>
+              Use named profiles to choose dimensions, orientation, color space,
+              channels, and layout. Konifer caches generated variants for reuse
+              and returns pixel attributes with the content. Pin requests to an
+              entry ID when both consumers need the same source version.
+            </p>
+            <div className={styles.infrastructureLinks}>
+              <Link className={styles.textLink} to="/docs/concepts/concepts-pixels">
+                Explore raw pixels <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                className={styles.textLink}
+                to="/docs/concepts/Variants/concepts-variant-profiles"
+              >
+                Define profiles <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
+          <div className={styles.codeColumn}>
+            <div className={styles.codeLabel}>Profiles used above · konifer.conf</div>
+            <HoconCodeBlock
+              code={`variant-profiles {
+  display {
+    width = 256
+    height = 256
+    fit = fill
+    rotate = auto
+    format = webp
+  }
+
+  vision {
+    width = 224
+    height = 224
+    fit = fill
+    rotate = auto
+    color-space = srgb
+    format = pixels
+    pixel-channels = RGB
+    pixel-layout = planar
+  }
+}`}
+            />
+          </div>
         </section>
 
         <section className={clsx(styles.section, styles.pathSection)}>
@@ -181,8 +242,8 @@ export default function Home(): ReactNode {
               Configure storage, validation, preprocessing, and delivery by path.
               Set shared defaults on a parent path and override individual
               settings on more specific paths. In this example, you cap user
-              uploads at 20 MB and 15 megapixels, then restrict profile pictures
-              to JPEG and PNG in a dedicated bucket.
+              uploads at 20 MB and 15 megapixels, then prepare display and vision
+              variants for profile pictures in a dedicated bucket.
             </p>
             <Link
               className={styles.textLink}
@@ -204,10 +265,9 @@ export default function Home(): ReactNode {
 
   "/users/*/profile-picture" {
     bucket = "profile-pictures"
-    allowed-content-types = [
-      "image/jpeg",
-      "image/png"
-    ]
+    transform {
+      eager-variants = [display, vision]
+    }
   }
 }`}
             />
@@ -256,16 +316,17 @@ export default function Home(): ReactNode {
               storage, and keep asset records in PostgreSQL.
             </p>
             <p>
-              Serve images through your CDN, redirect requests to object
-              storage, or return image content from the API. Configure delivery
-              for each path to suit your application.
+              Serve display images through your CDN, redirect requests to object
+              storage, or return content and its attributes from the API for
+              processing workers. Configure delivery for each path to suit your
+              application.
             </p>
             <div className={styles.infrastructureLinks}>
               <Link
                 className={styles.textLink}
                 to="/docs/reference/reference-variant-storage"
               >
-                Storage architecture <span aria-hidden="true">→</span>
+                Storage configuration <span aria-hidden="true">→</span>
               </Link>
               <Link
                 className={styles.textLink}
@@ -290,7 +351,8 @@ export default function Home(): ReactNode {
             <span className={styles.sectionLabel}>Try Konifer</span>
             <Heading as="h2">Run Konifer in one container.</Heading>
             <p>
-              Use in-memory mode to try the API on your machine. Add PostgreSQL
+              Upload one image and request a WebP thumbnail and a raw pixel
+              buffer. Try the API with in-memory storage, then add PostgreSQL
               and persistent image storage for deployment.
             </p>
           </div>

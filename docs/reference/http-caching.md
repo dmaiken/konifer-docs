@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 3
 id: http-caching
 title: HTTP Caching
 sidebar_label: "HTTP Caching"
@@ -49,10 +49,12 @@ usage of [`Cache-Control` header directives](https://developer.mozilla.org/en-US
 }
 ```
 
-## Etags
+## ETags
 
-Etags are always enabled and are returned regardless of your `cache-control` configuration. `Etags` and conditional
-validation are only enabled when returning asset in the `content` return format. The usage of `Etags` is outside the
-scope
-of this document. See the [MDN ETag header documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag)
-for more information.
+ETags and conditional requests are enabled for `content` and `download`, regardless of `cache-control` configuration.
+Each ETag identifies the selected representation and changes when its variant or asset metadata changes. Raw pixels
+use weak validators (`W/`); image formats use strong validators.
+
+A matching `If-None-Match` returns `304 Not Modified` without a response body. When both `If-None-Match` and
+`If-Modified-Since` are supplied, `If-None-Match` takes precedence. See the
+[MDN ETag header documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag) for more information.

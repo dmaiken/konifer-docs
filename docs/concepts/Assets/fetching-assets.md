@@ -52,10 +52,11 @@ GET /assets/users/123/profile-picture/-/info
 
 When fetching a single asset or multiple assets, you can specify the order.
 
-- **`new`** (default): Return the most recently created asset. If `limit` is specified, return the `n` most
-  recently created assets.
-- **`modified`**: Return the most recently modified asset. If `limit` is specified, return the `n` most recently
-  _modified_ assets.
+- **`new`** (default): Select the newest entry, or list entries in creation order, newest first, with `entries`.
+- **`modified`**: Select the last-modified entry, or list entries in modification order, newest first, with `entries`.
+
+Use the `entries` return format to fetch multiple assets. Other return formats select one entry and permit only
+`limit=1` when you supply a limit.
 
 To specify an ordering, place it before the return format selector:
 
@@ -71,7 +72,7 @@ GET /assets/users/123/profile-picture/-/new
 
 ## Return format
 
-You can return your asset in one of five different return formats:
+Choose one of these return formats:
 
 ### `link` (default)
 
@@ -86,7 +87,7 @@ Returns:
 
 ```json
 {
-  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content",
+  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200",
   "lqip": { // Empty if LQIPs are disabled
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
@@ -96,6 +97,8 @@ Returns:
     "height": 100,
     "width": 200,
     "format": "jpg",
+    "rotate": "0",
+    "horizontalFlip": false,
     "colorSpace": "srgb",
     "pageCount": 1
   }
@@ -107,15 +110,19 @@ Returns:
 | Field Name   | Type       | Description                                                                  |
 |--------------|------------|------------------------------------------------------------------------------|
 | `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
-| `expiresAt`  | ISO 8601   | Populated for presigned URLs                                                 |
+| `expiresAt`  | RFC 3339   | Populated for presigned URLs                                                 |
 | `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
 | `alt`        | String     | The `alt` supplied when storing the asset                                    |
 | `attributes` | Attributes | Image properties of the selected variant                                     |
 
-See the [Attributes fields](../../reference/assets-api/fetch-assets.mdx#attributes) in the Fetch Assets reference.
+Timestamp fields use UTC values ending in `Z`. See [Timestamps](../../reference/api/assets/fetch-assets.mdx#timestamps)
+for precision and client types.
+
+See the [Attributes fields](../../reference/api/assets/fetch-assets.mdx#attributes) in the Fetch Assets reference.
 
 The default `service` delivery strategy produces an absolute URL to the selected entry's `/content` endpoint, as shown
-above. The `presigned` and `template` strategies can instead produce an object-store or CDN URL.
+above. These examples omit some default transformation parameters for readability. The `presigned` and `template`
+strategies can instead produce an object-store or CDN URL.
 
 ### `content`
 
@@ -133,7 +140,23 @@ HTTP/1.1 200 OK
 Content-Type: image/jpeg
 Content-Length: 45123
 K-Alt: "Your defined alt, if any"
+K-Attr-Width: 200
+K-Attr-Height: 100
+K-Attr-Format: jpg
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
 ```
+
+Content and download responses include the selected variant's dimensions, format, color space, remaining display
+orientation, and applicable animation or pixel attributes in `K-Attr-*` headers. These describe the bytes in that
+response. See [Content attribute headers](../../reference/api/assets/fetch-assets.mdx#content-attribute-headers).
+
+For a raw image buffer, request `format=pixels` with `pixel-channels` and `pixel-layout`. Fetch `link` with the same
+transformation if you need a delivery URL; fetch `content` to get bytes and attributes together. See
+[Raw Pixels](../pixels.md) for the buffer format and
+[client examples](../../reference/api/assets/fetch-assets.mdx#example-raw-pixels).
 
 ### `download`
 
@@ -167,7 +190,7 @@ Returns a **`Temporary Redirect 307`**:
 
 ```http
 Code: 307
-Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200
 ```
 
 With the default `service` strategy, the location is the selected entry's `/content` endpoint. This keeps the redirect
@@ -192,6 +215,16 @@ paths {
 
 The `service` strategy returns an absolute URL to the selected entry's `content` representation. Konifer uses
 `http.public-url` as the base when configured; otherwise it uses the incoming request's scheme, host, and port.
+
+You can fetch the returned URL without repeating the original request's `Accept` header. Konifer includes the selected
+entry ID and resolved transformation parameters, including the output format, in the URL. It omits label filters and
+other selection parameters. Treat the returned query string as part of the URL.
+
+With [URL signing](../../reference/url-signing.md) enabled, Konifer signs the returned service URL. You do not need to
+sign it again. This also applies to the service fallback for unsupported presigned delivery.
+
+Konifer can regenerate an evicted variant from this URL. Fetches still obey the current path policy and transformation
+limits; deleting the asset or changing configuration can make an existing URL unavailable.
 
 ##### Presigned Delivery
 
@@ -251,68 +284,81 @@ Returns:
 
 ```json
 {
-  "class": "IMAGE",
+  "class": "image",
   "alt": "The alt text for an image",
   "entryId": 1049,
-  // Unique identifier scoped to the path
   "labels": {
     "label-key": "label-value",
     "phone": "Android"
   },
-  "tags": [
-    "cold",
-    "verified"
-  ],
-  "source": "URL",
-  // or UPLOAD if using multipart upload
+  "tags": ["cold", "verified"],
+  "source": "url",
+  "externalSourceAddress": "https://yoururl.com/image.jpeg",
   "sourceUrl": "https://yoururl.com/image.jpeg",
   "variants": [
     {
       "isOriginalVariant": true,
       "storeBucket": "assets",
-      // Defined in configuration
       "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
-      // Generated by Konifer
-      "imageAttributes": {
+      "attributes": {
         "height": 100,
         "width": 200,
-        "mimeType": "image/jpeg"
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "rotate": "0",
+        "horizontalFlip": false
       },
       "lqip": {
-        // Empty if LQIPs are disabled
         "blurhash": "BASE64",
         "thumbhash": "BASE64"
       }
     }
   ],
-  "createdAt": "2025-11-12T01:20:55"
-  // ISO 8601
+  "createdAt": "2025-11-12T01:20:55Z",
+  "modifiedAt": "2025-11-12T01:20:55Z"
 }
 ```
 
 #### Asset Info Response
 
-| Field Name   | Type         | Description                                                          |
-|--------------|--------------|----------------------------------------------------------------------|
-| `class`      | String       | The type of the asset, currently always `IMAGE`                      |
-| `alt`        | String       | The supplied alt text of your asset                                  |
-| `entryId`    | Long         | System-generated unique identifier of asset within path              |
-| `labels`     | Object       | Supplied key-value pairs associated with the asset                   |
-| `tags`       | Array        | Supplied attributes associated with the asset                        |
-| `source`     | String       | Either `URL` or `UPLOAD` depending on how you provided asset content |
-| `sourceUrl`  | String       | If URL source was used, then this is the supplied URL                |
-| `variants`   | AssetVariant | Will only contain the original variant - the one supplied            |
-| `createdAt`  | ISO 8601     | Date asset was stored                                                |
-| `modifiedAt` | ISO 8601     | Date asset was last modified (ignores variant generation)            |
+| Field Name              | Type         | Description                                                          |
+|-------------------------|--------------|----------------------------------------------------------------------|
+| `class`                 | String       | The type of the asset, currently always `image`                      |
+| `alt`                   | String       | The supplied alt text of your asset                                  |
+| `entryId`               | Long         | System-generated unique identifier of asset within path              |
+| `labels`                | Object       | Supplied key-value pairs associated with the asset                   |
+| `tags`                  | Array        | Supplied attributes associated with the asset                        |
+| `source`                | String       | `upload`, `url`, or `arn`, according to how you supplied the content |
+| `externalSourceAddress` | String       | Supplied URL or ARN for an external source                           |
+| `sourceUrl`             | String       | Deprecated alias for `externalSourceAddress`                         |
+| `variants`              | AssetVariant | Original and cached generated variants                               |
+| `createdAt`             | RFC 3339 UTC | Date asset was stored                                                |
+| `modifiedAt`            | RFC 3339 UTC | Date asset was last modified (ignores variant generation)            |
 
 ### `entries`
 
-Similar to `info`, but for information about multiple assets at the path. Defaults to 20 assets within the path.
-Specify more or less with the `limit` query parameter. Returns a list of asset `info`.
+Fetch metadata for multiple entries at a path. Konifer returns an object with an `entries` array, which is empty
+when no entries match. The default limit is 20.
 
 ```http
 GET /assets/users/123/profile-picture/-/new/entries?limit=10
 ```
+
+## Limits
+
+For `entries`, supply a positive integer from `1` through `2147483647`, or use `limit=-1` to fetch all matching entries
+at the exact path:
+
+```http
+GET /assets/users/123/profile-picture/-/entries?limit=-1
+```
+
+Other return formats default to 1 and accept only `limit=1`. Supply `limit` once. Blank, malformed, overflowing, zero,
+below-`-1`, or repeated values return `400 Bad Request`. Konifer uses the default only when you omit the parameter.
+
+The Kotlin and Java clients accept positive limits for `fetchEntries(limit)`; they do not expose HTTP's unlimited
+listing option. See the [Fetch API reference](../../reference/api/assets/fetch-assets.mdx#limit).
 
 ## Entry ID
 
@@ -335,3 +381,8 @@ GET /assets/users/123/profile-picture/-/entry/42/redirect
 
 A URL with the `entry` selector is the absolute reference to the asset; therefore, ordering query selectors cannot be used
 with the `entry` selector.
+
+## Handling errors
+
+Use the response `code` to distinguish path, transformation, and delivery failures.
+See [Error Responses](../../reference/api/errors.md) for the codes and HTTP statuses.

@@ -1,19 +1,13 @@
 ---
 sidebar_position: 1
 title: Deploying Konifer
-description: Deploy Konifer with persistent PostgreSQL and object storage, then prepare it for production traffic.
+description: Container requirements, storage dependencies, networking, and upgrades for Konifer deployments.
 ---
 
-This guide takes Konifer from the in-memory quickstart to a persistent deployment. It is platform-neutral: the same
-components can run with Docker, Docker Compose, Kubernetes, or another container orchestrator.
-
-A production deployment has three main components. Konifer processes requests; PostgreSQL and image storage hold the
-durable state:
+Konifer runs as a container with PostgreSQL for asset information and an object store for originals and generated variants.
 
 ```mermaid
 flowchart TB
-    clients["Applications and browsers"]
-    edge["CDN, reverse proxy, or load balancer"]
     konifer["<b>Konifer</b><br/>Application container"]
 
     subgraph state["<b>Persistent state</b>"]
@@ -21,253 +15,97 @@ flowchart TB
         storage[("<b>S3-compatible storage or shared filesystem</b><br/>Originals and generated variants")]
     end
 
-    clients -->|HTTPS| edge
-    edge -->|HTTP| konifer
     konifer -->|Metadata and queries| postgres
     konifer -->|Image content| storage
 ```
 
-Konifer itself is replaceable. PostgreSQL and the object store contain the state that must survive container replacement.
+## Storage requirements
 
-## Before you begin
+Disable the quickstart's `IN_MEMORY` override to use persistent storage. `IN_MEMORY=true` overrides both configured
+storage providers.
 
-You need:
-
-- A container runtime or orchestrator
-- PostgreSQL with permission to enable the `ltree` extension or the `ltree` extension already enabled
-- An S3 or S3-compatible bucket, or a persistent filesystem mount
-- A public URL for Konifer (if exposing over the public internet)
-- A secure way to supply credentials and signing secrets
-
-The repository includes a
-[Docker Compose example](https://github.com/dmaiken/konifer/blob/main/docker-compose.yml) that starts Konifer,
-PostgreSQL, and MinIO. It is useful for evaluating the persistent architecture, but its example credentials and exposed
-database and MinIO ports are not a production configuration.
-
-## 1. Prepare PostgreSQL
-
-Create a database and application user according to your PostgreSQL provider's instructions. Enable `ltree` in the
-database before starting Konifer:
+Enable `ltree` in the PostgreSQL database before starting Konifer:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS ltree;
 ```
 
-Konifer applies its bundled database migrations during startup. The application user therefore needs permission to
-create and alter tables, indexes, and other schema objects in the application database, in addition to ordinary
-read/write access.
+Konifer applies its bundled database migrations during startup. The application user needs read/write access and
+permission to create and alter tables, indexes, and other schema objects.
 
-Back up PostgreSQL as part of the deployment. Its records refer to content stored in the object store, so plan to
-restore both stores to a compatible point in time.
+Create every S3 bucket referenced by the path configuration. Konifer reads, writes, and deletes objects but does not
+create buckets. Filesystem storage requires a persistent mount; instances using the same database must have access to
+the same content at the configured mount path.
 
-## 2. Prepare content storage
+See [Storage Configuration](storage-configuration.md) for provider settings and credentials. The repository's
+[Docker Compose example](https://github.com/dmaiken/konifer/blob/main/docker-compose.yml) runs Konifer with PostgreSQL
+and MinIO.
 
-### S3 or an S3-compatible service
+## Container configuration
 
-Create every bucket referenced by your path configuration before starting Konifer. Konifer reads, writes, and deletes
-objects, but it does not create S3 buckets.
+Use the [baseline configuration](../start-here/configure-konifer.md#start-with-a-small-configuration) and
+[container command](../start-here/configure-konifer.md#where-configuration-belongs) in Configure Konifer.
 
-Grant the service identity only the object permissions it needs for those buckets. When running against AWS, you can
-omit static credentials and use the AWS default credential provider chain. Other S3-compatible services may require an
-endpoint, access key, secret key, region, and path-style addressing.
+- Image: `ghcr.io/dmaiken/konifer:{{koniferVersion}}`, available for Linux `amd64` and `arm64`.
+- Configuration mount: `/app/config/konifer.conf`.
+- HTTP port: `8080`.
+- Credential overrides: `PG_USER`, `PG_PASSWORD`, `S3_SECRET_KEY`, and `URL_SIGNING_SECRET_KEY`.
+  The signing secret applies when URL signing is enabled.
 
-### Filesystem storage
+See the [Configuration reference](../reference/configuration-reference.md) for properties, defaults, and supported
+environment variables.
 
-Filesystem storage is suitable when the content directory is mounted persistently into the container. Every Konifer
-instance that serves the same PostgreSQL database must see the same files at the configured mount path.
+Konifer exposes `/health/live` for HTTP liveness and `/health/ready` for application and dependency readiness. Both
+return an empty body. See [Configure Health Probes](health-checks.md) for checks, refresh timing, and Kubernetes examples.
 
-For multiple replicas, shared object storage is usually the simpler model. See
-[Storing assets and variants](../reference/asset-storage.md) for provider-specific configuration.
+## Networking and delivery
 
-## 3. Create `konifer.conf`
+Set `http.public-url` when the public origin differs from the scheme, host, and port Konifer sees on incoming requests:
 
-Create a configuration file outside the container. The following example uses PostgreSQL and an S3-compatible object
-store:
-
-```hocon title="konifer.conf"
-data-store {
-  provider = postgresql
-
-  postgresql {
-    host = "postgres.internal"
-    port = 5432
-    database = "konifer"
-    ssl-mode = "require"
-  }
-}
-
-object-store {
-  provider = s3
-
-  s3 {
-    endpoint-url = "https://s3.example.com"
-    access-key = "konifer"
-    region = "us-east-1"
-    force-path-style = true
-  }
-}
-
+```hocon
 http {
   public-url = "https://images.example.com"
 }
-
-paths {
-  "/**" {
-    object-store {
-      bucket = "konifer-assets"
-    }
-  }
-}
 ```
 
-Set `http.public-url` to the externally visible origin when it differs from the origin Konifer sees on incoming requests.
-Konifer uses it for service delivery URLs and absolute asset `Location` headers. You may omit it when the incoming
-request already has the correct public scheme, host, and port. Konifer does not use forwarded headers to reconstruct the
-external origin.
+Konifer uses this origin for service delivery URLs and absolute asset `Location` headers. Without it, Konifer uses the
+incoming request origin. It does not interpret forwarded headers to reconstruct the public origin.
 
-`force-path-style` is required by some S3-compatible providers, including the MinIO configuration in the repository.
-Omit the custom endpoint and static access key when your runtime supplies AWS credentials through its workload identity.
+Application authentication and authorization are external to Konifer. [URL signing](../reference/url-signing.md) applies
+to asset fetch requests; it does not authenticate store, update, delete, or rule evaluation requests.
 
-See the [Configuration reference](../reference/configuration-reference.md) for all available properties and defaults.
+Upload limits use `source.multipart.max-bytes` and `source.url.max-bytes`. Content responses support ETags, with
+`Cache-Control` configured by path; see [HTTP caching](../reference/http-caching.md). The path-level
+[`delivery` settings](../reference/configuration-reference.md#delivery) select service, presigned, or template URLs.
 
-## 4. Supply secrets
+## Processing resources and models
 
-Do not store passwords or signing keys in `konifer.conf`. Konifer supports environment-variable overrides for these
-values:
+Image processing uses JVM heap, direct memory, native libvips memory, CPU, and temporary disk space at `/app/tmp`.
+JVM memory limits do not cover native processing memory. See [Resource Tuning](resource-tuning.md) for memory settings,
+temporary storage, worker concurrency, and scheduling.
 
-```dotenv title="konifer.env"
-PG_USER=konifer
-PG_PASSWORD=replace-with-a-database-password
-S3_SECRET_KEY=replace-with-an-object-store-secret
-URL_SIGNING_SECRET_KEY=replace-with-a-signing-secret
-```
-
-Only provide `URL_SIGNING_SECRET_KEY` when URL signing is enabled. In an orchestrator, supply the same values through
-its secret-management mechanism instead of committing an environment file.
-
-## 5. Start the container
-
-Mount the configuration file at `/app/config/konifer.conf`:
-
-```bash
-docker run \
-  --name konifer \
-  --restart unless-stopped \
-  --publish 127.0.0.1:8080:8080 \
-  --env-file /secure/path/konifer.env \
-  --mount type=bind,source=/etc/konifer/konifer.conf,target=/app/config/konifer.conf,readonly \
-  ghcr.io/dmaiken/konifer:{{koniferVersion}}
-```
-
-Binding to `127.0.0.1` assumes that a reverse proxy on the same host accepts external traffic. Change the published
-address to match your network design.
-
-For reproducible deployments, use only released versions of Konifer. Konifer follows Semantic Versioning; see the
-[Konifer release list](https://github.com/dmaiken/konifer/releases) for available versions.
-
-```text
-ghcr.io/dmaiken/konifer:{{koniferVersion}}
-```
-
-Konifer supports Linux `amd64` and `arm64` container images.
-
-## 6. Check application health
-
-Check that the HTTP process is live:
-
-```bash
-curl --fail 'http://127.0.0.1:8080/health/live'
-```
-
-Check that Konifer and its configured dependencies are ready to serve traffic:
-
-```bash
-curl --fail 'http://127.0.0.1:8080/health/ready'
-```
-
-Both endpoints return an empty body. Configure container liveness checks with `/health/live` and load-balancer or
-readiness checks with `/health/ready`. See [Configure health probes](./health-checks.md) for Kubernetes configuration
-and
-dependency-check behavior.
-
-## 7. Expose Konifer safely
-
-Terminate TLS at a reverse proxy, ingress, or load balancer. Configure its request-size and timeout limits to accommodate
-the maximum uploads allowed by `source.multipart.max-bytes` and `source.url.max-bytes`.
-
-Konifer does not replace your application's authentication or authorization layer. Keep store, update, delete, and rule
-evaluation endpoints behind a trusted gateway or private network. If fetch URLs are public and accept arbitrary
-transformations, enable [URL signing](../reference/url-signing.md) to prevent callers from modifying transformation
-parameters or using your service for unapproved processing.
-
-Decide deliberately which responses a CDN may cache. Konifer always supports ETags for content responses, while
-`Cache-Control` behavior is configured by path. See [HTTP caching](../reference/http-caching.md).
-
-## 8. Size processing resources
-
-Image processing uses JVM heap, direct memory, native libvips memory, CPU, and temporary disk space. A container memory
-limit must leave room for native processing in addition to the JVM.
-
-Konifer writes temporary processing files under `/app/tmp`. The container's writable layer works initially, but a fast
-temporary volume or appropriately sized `tmpfs` is preferable for sustained or high-volume workloads. Large images may
-require disk-backed temporary storage rather than RAM.
-
-Start with conservative request limits and variant-worker concurrency, then load-test with representative source images
-and transformations. See [Image processing architecture](../reference/image-processing.md) for memory regions, temporary
-storage, and worker configuration.
-
-## 9. Add upload rules when needed
-
-Normal image storage and transformation do not require model files. Upload Rules and the Rule Evaluation API use a
-SigLIP2 model pack that must be downloaded separately and mounted at:
+Upload Rules and the Rule Evaluation API require a separate SigLIP2 model pack at:
 
 ```text
 /app/models/siglip2-base-patch16-224
 ```
 
-Follow [Installing model files](../concepts/upload-rules.md#installing-model-files) before enabling either feature. Model
-inference also changes the CPU and memory requirements of the deployment.
+See [Installing model files](../concepts/upload-rules.md#installing-model-files). Model inference adds CPU and memory
+requirements. Image storage and transformation alone do not require model files.
 
-## Scaling to multiple instances
+## Multiple instances
 
-Konifer natively supports clustered deployment models. Before adding replicas, confirm that every instance uses:
+Replicas share the same PostgreSQL database and S3 buckets or filesystem content. Use the same configuration, secrets,
+and model files across instances.
 
-- The same `konifer.conf` and secrets
-- The same PostgreSQL database
-- The same S3 buckets or shared filesystem
-- The same model files when upload rules are enabled
-- A load balancer that removes instances when `/health/ready` fails
+Konifer loads configuration at startup. Restart all instances after changing path rules, profiles, storage settings,
+or URL signing configuration.
 
-Configuration is loaded at startup, so roll all instances after changing path rules, profiles, storage settings, or URL
-signing configuration.
+## Upgrades and stored state
 
-## Backups and upgrades
+PostgreSQL records refer to content in the object store. A restored deployment needs compatible database records,
+object-store content, and configuration.
 
-Treat PostgreSQL and object storage as one application data set. Back up both, test restoration, and retain the
-configuration used to interpret the restored data.
-
-Konifer applies database migrations when it starts. For an upgrade:
-
-1. Read the release notes and record the currently deployed image digest.
-2. Back up PostgreSQL and the object store.
-3. Start the new version with one instance and allow its migrations to finish.
-4. Check `/health/live`, `/health/ready`, logs, uploads, original-image retrieval, and transformed-image retrieval.
-5. Complete the rollout only after those checks pass.
-
-Do not assume that rolling the container back also reverses a database migration. Confirm schema compatibility before
-returning to an older image.
-
-## Production checklist
-
-Before accepting production traffic, verify that:
-
-1. `IN_MEMORY` is not enabled. If enabled, Konifer will emit warnings logs.
-2. Data and object storage are persistent and backed up.
-3. The `ltree` extension is installed.
-4. Every configured S3 bucket exists.
-5. Secrets are supplied outside `konifer.conf` and are not committed to source control.
-6. `http.public-url` matches the public origin when the request origin cannot be used directly.
-7. `delivery` is configured in appropriate paths when clients should use presigned or template URLs.
-8. TLS and access control are enforced by the surrounding platform.
-9. Public transformation URLs are signed when appropriate.
-10. Upload-size, CPU, memory, and temporary-storage limits have been tested.
+Konifer applies database migrations when the new version starts. Returning to an older container image does not reverse
+those migrations; schema compatibility determines whether that version can use the upgraded database. See the
+[release notes](https://github.com/dmaiken/konifer/releases) for version-specific changes.

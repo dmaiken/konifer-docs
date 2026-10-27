@@ -19,10 +19,10 @@ Define profiles in the top-level `variant-profiles` block:
 ```hocon
 variant-profiles {
   thumbnail {
-    w = 128
-    h = 128
+    width = 128
+    height = 128
     fit = fill
-    r = auto
+    rotate = auto
   }
 }
 ```
@@ -43,7 +43,7 @@ Individual transformation parameters in the request override matching values fro
 `thumbnail` profile but changes its dimensions to 256×256 pixels:
 
 ```http
-GET /assets/users/123/profile-picture?profile=thumbnail&w=256&h=256
+GET /assets/users/123/profile-picture?profile=thumbnail&width=256&height=256
 ```
 
 ## Restricting Transformations to Profiles
@@ -62,6 +62,12 @@ paths {
 }
 ```
 
-With `profile_only`, a request that contains a transformation parameter other than `profile` returns `400 Bad Request`.
-A request without transformation parameters can still retrieve the original variant. The default mode, `enabled`,
-accepts profiles and individual transformation parameters.
+With `profile_only`, you must name a profile for transformed content. You can include explicit transformation parameters
+if they resolve to the same transformation as that profile for the selected source image. A change to the profile's
+resolved transformation returns `400 Bad Request`. This permits the expanded parameters in service delivery URLs.
+
+If the profile omits `format`, you can select the output format through `Accept` or the `format` parameter. Konifer
+includes the selected format in returned service URLs. If the profile defines `format`, requests must use that format.
+
+You can still retrieve unchanged original content without a profile. The default mode, `enabled`, accepts profiles and
+individual transformation parameters, including overrides.

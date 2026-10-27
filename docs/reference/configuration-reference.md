@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 5
 id: configuration-reference
 title: Configuration Reference
 sidebar_label: "Configuration Properties"
@@ -47,6 +47,16 @@ data-store {
 If `IN_MEMORY=true` is set as an environment variable, both the data store and object store providers will be set to
 `in-memory`.
 
+### Timestamp storage and upgrades
+
+Konifer stores application timestamps in PostgreSQL `TIMESTAMPTZ` columns and applies schema migrations at startup.
+The timestamp migration interprets existing timezone-less values as UTC, preserving the convention used by earlier
+Konifer versions. Audit stored timestamps before upgrading if an earlier deployment used non-UTC database sessions
+or external writers.
+
+Back up an existing database and stop older Konifer instances before starting the upgraded version. Keep old writers
+stopped during migration and deploy the matching client version for the new UTC timestamp response format.
+
 ## HTTP
 
 ```hocon
@@ -83,6 +93,9 @@ api {
 When disabled, the rule evaluation route is not registered and returns `404 Not Found`. Enabling it initializes SigLIP2
 rule inference even when `rule-definitions` is empty, so the model files must be installed. See
 [Rule Evaluation](../concepts/rule-evaluation.md#enabling-the-api) for setup and operational guidance.
+
+Konifer also registers Swagger UI at `/api/docs` and its generated JSON specification at `/api/docs/openapi.json`
+without an enablement flag. See [OpenAPI](api/openapi.md).
 
 ## Object Store
 
@@ -157,6 +170,27 @@ variant-profiles {
 All [image transformation parameters](image-transformation-reference.md#parameter-reference) can be used within a variant
 profile object.
 
+For example, define a raw pixel profile for a 224×224 BGR input with one plane per channel:
+
+```hocon
+variant-profiles {
+  vision-input {
+    format = pixels
+    width = 224
+    height = 224
+    fit = fill
+    color-space = srgb
+    pixel-channels = BGR
+    pixel-layout = planar
+  }
+}
+```
+
+Request it with `?profile=vision-input`, or reference it in `transform.eager-variants`. The same `format`,
+`pixel-channels`, and `pixel-layout` properties work in `transform.preprocessing` when `enabled = true`. The defaults
+are `RGB` and `interleaved`; `gray` uses one channel and normalizes to `interleaved`. See
+[Raw Pixels](../concepts/pixels.md) for preprocessing behavior and color-space constraints.
+
 ## Rule Definitions
 
 Rule definitions are global zero-shot image classification rules that can be referenced by path-level upload rulesets.
@@ -226,6 +260,7 @@ paths {
   # Match everything greedily after /
   "/**" {
     lqip = []
+    allowed-formats = [ png, jpg, jxl, webp, avif, gif, heic, pixels ]
     limits {
       max-width = 8192
       max-height = 8192
@@ -303,17 +338,19 @@ paths {
 |:---------|:------------------------|:-------------------------|:--------|
 | `lqip`   | LQIP algorithms enabled | `blurhash`,  `thumbhash` | `[]`    |
 
-### Allowed Content Types
+### Allowed Formats
 
 ```hocon
 "/**" {
-  allowed-content-types = [ "image/png", "image/jpeg" ]
+  allowed-formats = [ png, jpg, jxl, webp, avif, gif, heic, pixels ]
 }
 ```
 
-| Property                | Description                                                                                 | Allowed Input                  | Default |
-|:------------------------|:--------------------------------------------------------------------------------------------|:-------------------------------|:--------|
-| `allowed-content-types` | Content types allowed for uploads to the path. Omit to allow all supported image formats.   | Supported image MIME type list | None    |
+| Property          | Description                                       | Allowed Input         | Default           |
+| :---------------- | :------------------------------------------------ | :-------------------- | :---------------- |
+| `allowed-formats` | Formats allowed for uploads and generated output. | List of `ImageFormat` | All image formats |
+
+Raw pixel _uploads_ are unsupported. See [Raw Pixels](../concepts/pixels.md).
 
 ### Supplied Asset Content Limits
 
@@ -410,7 +447,7 @@ within the `preprocessing` block, as well as:
 | `transform.preprocessing.clamp-width`  | Maximum width  | Integer       | None    |
 
 :::note
-`h` and `w` take precedence over `clamp-height` and `clamp-width` respectively, if both are specified.
+`height` and `width` take precedence over `clamp-height` and `clamp-width` respectively, if both are specified.
 :::
 
 #### Eager Variants

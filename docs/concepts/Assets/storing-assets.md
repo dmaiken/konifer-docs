@@ -249,11 +249,10 @@ The upload response describes the preprocessed image as the original variant. Th
 Request the thumbnail with:
 
 ```http
-GET /assets/documentation/preprocessing/cow/-/content?format=webp&w=128&h=128&fit=fill
+GET /assets/documentation/preprocessing/cow/-/content?format=webp&width=128&height=128&fit=fill
 ```
 
-Larger variants still start from the 640×480 stored original. Increasing requested dimensions cannot recover detail
-discarded during preprocessing. Keep a separate source copy if your application needs the uploaded resolution later.
+Larger variants still **start** from the 640×480 stored original.
 
 ### Clamp Width/Height
 
@@ -276,6 +275,12 @@ from JPG to WebP:
 </div>
 
 :::note
-`w` and `h` take precedence over `clamp-width` and `clamp-height`, respectively. Avoid mixing explicit dimensions and
+`width` and `height` take precedence over `clamp-width` and `clamp-height`, respectively. Avoid mixing explicit
+dimensions and
 clamps in the same preprocessing rule.
 :::
+
+## Handling errors
+
+Use the response `code` to distinguish invalid requests, rejected uploads, and external-source failures.
+See [Error Responses](../../reference/api/errors.md) for the codes and HTTP statuses.

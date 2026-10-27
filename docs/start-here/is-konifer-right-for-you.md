@@ -1,11 +1,11 @@
 ---
 title: Who should use Konifer?
 sidebar_position: 2
-description: Decide whether Konifer’s path-based image storage, transformation, and delivery model fits your application.
+description: Decide whether shared image storage and preprocessing for applications and vision pipelines fit your needs.
 ---
 
-Konifer is a strong fit for applications where images belong to resources the application already knows about, and for
-teams that want storage, transformation, and delivery in infrastructure they control.
+Konifer is a strong fit for teams that want one image source for their applications and processing pipelines, with
+storage, reusable transformations, and delivery in infrastructure they control.
 
 ```text
 /assets/users/123/profile-picture
@@ -18,6 +18,16 @@ If your application can construct paths like these from its own data, it can use
 image identifier for every ordinary request.
 
 ## Konifer is a good fit when…
+
+### The same images serve people and processing pipelines
+
+Product photos can serve a storefront and a classification worker. Inspection photos can support a reviewer and an
+analysis pipeline. Konifer lets each consumer request its own representation of the same stored image: an encoded
+display format or a raw pixel buffer with the dimensions, channel order, and layout its processing code needs.
+
+Define named profiles to share preprocessing across services, cache the resulting variants, and use `entryId` to select
+the same source version for both consumers. Your processing code handles model-specific scaling, normalization, and
+tensor construction. See [Raw Pixels](../concepts/pixels.md) for the output contract.
 
 ### Images belong to identifiable application resources
 
@@ -95,8 +105,9 @@ and [imagor](https://docs.imagor.net/).
 A traditional asset-ID model may work better when assets are reused across many unrelated resources, move frequently
 between classifications, or are primarily found through search and collections rather than through application paths.
 
-Konifer supports individual entries, labels, tags, and metadata, but its main advantage is the path model. If paths do
-not simplify the relationship between your application and its images, that advantage matters less.
+Konifer supports individual entries, labels, tags, and metadata. Its path model is most useful when your application
+can derive image addresses from its own resources. Consider whether that model and shared preprocessing fit your
+consumers before choosing how to organize the images.
 
 ### You need a visual media library
 
@@ -118,13 +129,14 @@ Konifer is domain-neutral, but its model maps naturally to:
 * Receipts, inspection photos, claim evidence, and supporting documents
 * Versioned or generated artwork such as cards, passes, tickets, and report covers
 * Shared image infrastructure used by several internal services
+* Display images and pixel inputs for classification, search, or inspection pipelines
 
 These are examples rather than built-in modes. The common feature is that the application already knows what each image
 belongs to.
 
 ## Next steps
 
-Continue to [Getting started](getting-started.md) to run Konifer locally and try the path model.
+Continue to [Getting started](getting-started.md) to upload one image and request both display and pixel variants.
 
 Read [Assets](../concepts/Assets/overview.md) for a deeper explanation of paths, entries, selectors, and stable versus
 specific references.

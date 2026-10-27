@@ -1,0 +1,244 @@
+---
+sidebar_position: 4
+id: asset-deleting
+slug: /reference/assets-api/asset-deleting
+title: Deleting Assets
+sidebar_label: "Delete"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Konifer removes asset metadata and variant references during the DELETE request, then schedules object-store content
+for cleanup. You can no longer fetch the deleted asset through Konifer APIs.
+
+:::warning
+Deletion is permanent. Konifer has no soft-delete or restore operation.
+:::
+
+## Request
+
+Select one of these operations:
+
+| Operation | Request | Label filters |
+| --- | --- | --- |
+| Delete one entry | `DELETE /assets/{path}/-/entry/{entryId}` | Use the path and entry ID |
+| Delete all at an exact path | `DELETE /assets/{path}?limit=-1` | Supported |
+| Delete a path and descendants | `DELETE /assets/{path}/-/recursive` | Supported |
+
+A DELETE without one of these selections returns `400 Bad Request`. Ordering selectors and positive DELETE limits
+also return 400.
+
+Only `limit` and query parameters prefixed with `label:` are accepted. Unknown parameters return
+`400 Bad Request` with code `INVALID_REQUEST` before any assets are deleted.
+
+### Delete Specific Asset
+
+Use the `entryId` returned by an upload or fetch response. Omit `limit`, including `limit=1`.
+
+```http
+DELETE /assets/users/123/-/entry/0
+```
+
+### Example: delete a specific entry
+
+Replace `0` in the URL with the entry ID you want to delete.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).entry(entryId).delete().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).entry(entryId).delete().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Ordering
+
+Use `new` or `modified` on an `entries` fetch to choose a bounded set, then delete the returned entry IDs.
+Konifer rejects these selectors on DELETE requests.
+
+### Limit
+
+| DELETE selection | Allowed limit |
+| --- | --- |
+| Exact path, without selectors | Required: `limit=-1` |
+| `entry/{entryId}` | Omit `limit` |
+| `recursive` | Omit `limit` |
+
+Supply `limit` once. Konifer returns `400 Bad Request` for repeated parameters, blank or malformed values, values
+outside the signed 32-bit integer range, zero, or values below `-1`. Positive limits also return 400 on DELETE.
+Even a limit of `1` or `-1` is invalid alongside an entry or recursive selector.
+
+### Example: delete the most recently modified entries
+
+Fetch up to two entries in modification order, then delete those entry IDs. Fetch the list once and retain the IDs
+if you need to retry. This is a sequence of requests: some deletions may succeed before a later request fails.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+# Read entryId values from the response's entries array.
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/modified/entries?limit=2'
+
+# Replace 42 and 41 with the IDs from that response.
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/42'
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/41'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+import io.konifer.common.selector.Order
+
+val entries = client.assets(path)
+  .orderBy(Order.MODIFIED)
+  .fetchEntries(2)
+  .valueOrThrow().entries
+
+for (entry in entries) {
+  client.assets(path).entry(entry.entryId).delete().valueOrThrow()
+}
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+import io.konifer.common.selector.Order;
+
+var entries = client.assets(path)
+  .orderBy(Order.MODIFIED)
+  .fetchEntries(2)
+  .valueOrThrow().getEntries();
+
+for (var entry : entries) {
+  client.assets(path).entry(entry.getEntryId()).delete().valueOrThrow();
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Example: delete all entries at this path
+
+A limit of `-1` deletes matching entries at the exact path and leaves descendants intact. The clients expose this
+operation as `deleteAll()`.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture?limit=-1'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).deleteAll().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).deleteAll().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Label filters
+
+Filter bulk deletion with labels, using the same label syntax as
+[fetch requests](../../../concepts/Assets/overview.md#querying):
+
+```http
+DELETE /assets/users/123/profile?limit=-1&label:phone=iphone
+DELETE /assets/users/123/-/recursive?label:phone=iphone
+```
+
+For the clients, apply `matchingLabels(...)` before `deleteAll()` or `deleteRecursively()`. Supply ordinary label
+keys, such as `phone`; the client adds `label:` to the query parameters. Ordering does not affect either bulk
+operation.
+
+## Deleting Recursively
+
+Use the `recursive` selector without a limit to delete entries at a path and its descendants.
+
+```http
+DELETE /assets/users/123/-/recursive
+```
+
+### Example
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --request DELETE \
+  'http://localhost:8080/assets/user/123/profile-picture/-/recursive'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).deleteRecursively().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).deleteRecursively().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+## Response
+
+A valid request returns `204 No Content` with no response body, including when no entries match. Invalid selections
+or limits return `400 Bad Request`; Konifer leaves the assets intact.
+
+### Retries
+
+An entry-specific DELETE targets the same entry on each attempt. Konifer does not reuse a deleted entry ID, so a
+retry cannot delete a replacement upload at the same path.
+
+Exact-path and recursive bulk requests evaluate matching assets when you execute each request. Repeating a bulk
+request after new matching uploads arrive can delete those uploads. Use a list of entry IDs for a fixed selection.
+
+## Error codes
+
+API failures return JSON with a stable `code` and an optional `message`. See
+[Error Responses](../errors.md) for the codes, HTTP statuses, and client compatibility behavior.

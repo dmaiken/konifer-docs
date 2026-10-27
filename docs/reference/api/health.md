@@ -1,8 +1,9 @@
 ---
-sidebar_position: 7
+sidebar_position: 3
 id: health-api
+slug: /reference/health-api
 title: Health API
-sidebar_label: "Health API"
+sidebar_label: "Health"
 description: HTTP reference for Konifer liveness and readiness endpoints.
 ---
 
@@ -59,4 +60,4 @@ Content-Length: 0
 | `503 Service Unavailable` | At least one readiness indicator reports unhealthy.                     |
 
 Dependency checks run in the background, and this endpoint returns their cached result. See
-[Configure health probes](../operate/health-checks.md) for the checks, refresh timing, and orchestrator guidance.
+[Configure health probes](../../operate/health-checks.md) for the checks, refresh timing, and orchestrator guidance.

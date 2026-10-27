@@ -110,13 +110,13 @@ async function generateImageExamples() {
   );
   const thumbnail = await image(
     preprocessed,
-    { format: "webp", w: 128, h: 128, fit: "fill" },
+    { format: "webp", width: 128, height: 128, fit: "fill" },
     "preprocessing/cow-thumbnail-from-preprocessed-128.webp",
     [128, 128, "webp"],
   );
   const smallInput = await image(
     source,
-    { format: "jpg", w: 240 },
+    { format: "jpg", width: 240 },
     "preprocessing/cow-resized-input-240.jpg",
     [240, 180, "jpg"],
   );
@@ -148,7 +148,7 @@ async function generateImageExamples() {
       attributes: original.attributes,
     },
     storedOriginal: stored,
-    thumbnail: { ...thumbnail, query: "format=webp&w=128&h=128&fit=fill" },
+    thumbnail: { ...thumbnail, query: "format=webp&width=128&height=128&fit=fill" },
     small: { input: smallInput, storedOriginal: smallStored },
   };
 
@@ -160,7 +160,7 @@ async function generateImageExamples() {
   );
   const finalImage = await image(
     previewEntry,
-    { format: "webp", w: 480 },
+    { format: "webp", width: 480 },
     "lqip/cow-final-480.webp",
     [480, 360, "webp"],
   );
@@ -191,7 +191,7 @@ async function generateImageExamples() {
   const linkExcerpt = { attributes: finalImage.attributes, lqip: hashes };
   manifest.lqip = {
     uploadPath: "/assets/documentation/lqip/cow",
-    query: "format=webp&w=480",
+    query: "format=webp&width=480",
     finalImage,
     blurhash: {
       hash: hashes.blurhash,

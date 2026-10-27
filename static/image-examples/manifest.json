@@ -46,7 +46,7 @@
         "loop": 0
       },
       "lqip": {},
-      "query": "format=webp&w=128&h=128&fit=fill"
+      "query": "format=webp&width=128&height=128&fit=fill"
     },
     "small": {
       "input": {
@@ -80,7 +80,7 @@
   },
   "lqip": {
     "uploadPath": "/assets/documentation/lqip/cow",
-    "query": "format=webp&w=480",
+    "query": "format=webp&width=480",
     "finalImage": {
       "file": "lqip/cow-final-480.webp",
       "bytes": 39122,

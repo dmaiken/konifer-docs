@@ -92,10 +92,10 @@ specific paths as your needs grow:
 ```hocon
 variant-profiles {
   thumbnail {
-    w = 256
-    h = 256
+    width = 256
+    height = 256
     fit = fill
-    g = attention
+    gravity = attention
   }
 }
 

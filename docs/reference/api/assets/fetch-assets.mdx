@@ -1,0 +1,997 @@
+---
+sidebar_position: 2
+id: asset-fetching
+slug: /reference/assets-api/asset-fetching
+title: Fetching Assets
+sidebar_label: "Fetch"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Fetch requests use query selectors to choose an asset entry and its response format. Introduce selectors with a
+standalone `-` path segment. Hyphens within ordinary segments belong to the asset path; empty selector sections
+return `400 Bad Request`. See [Path rules](../../../concepts/Assets/overview.md#path-rules).
+
+## Ordering
+
+Ordering is specified using the `order` [query selector](../../../concepts/Assets/fetching-assets.md#ordering).
+
+| Order      | Description                             | Default if not supplied |
+| ---------- | --------------------------------------- | ----------------------- |
+| `new`      | Order by last-created (stack semantics) | Yes                     |
+| `modified` | Order by last-modified                  |                         |
+
+## Label filters
+
+Unknown query parameters are ignored and do not filter labels.
+
+Prefix each label query parameter with `label:`. For example, fetch the newest entry with the label `phone=iphone`:
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/new/info?label:phone=iphone'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .matchingLabels(mapOf("phone" to "iphone"))
+  .fetchInfo()
+  .valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .matchingLabels(java.util.Map.of("phone", "iphone"))
+  .fetchInfo()
+  .valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+Pass ordinary label keys to `matchingLabels(...)` in Kotlin and Java; the client adds the query prefix. Keep ordinary
+keys in upload/update JSON and response label maps. See [Labels](../../../concepts/Assets/overview.md#labels) for
+filtering and label limits.
+
+## Timestamps
+
+Konifer returns `createdAt`, `modifiedAt`, and non-null `expiresAt` values as RFC 3339 timestamps in UTC, ending in
+`Z`. For example: `2026-10-24T14:30:00.123456Z`. Fractional-second precision can vary; parse these values as instants
+rather than assuming a fixed string length.
+
+The Kotlin client exposes these fields as `kotlin.time.Instant`. Its timestamp parser accepts explicit UTC offsets,
+including `Z` and `+00:00`, and rejects strings without an offset. Update the client with the server when upgrading
+from the older offset-less timestamp format.
+
+HTTP `Last-Modified` headers retain the HTTP-date format, such as `Sat, 24 Oct 2026 14:30:00 GMT`.
+
+## Content Negotiation
+
+Konifer resolves the output format in this order:
+
+1. The `format` query parameter
+2. The `format` defined in a requested variant profile
+3. A recognized image MIME type in the `Accept` header
+
+The `Accept` header does not override an explicit or profile format. Otherwise, Konifer selects a recognized image
+format using the header's priorities. See the
+[MDN Accept header documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept). If
+`Accept: image/*` is used,
+the original variant's format is returned.
+
+If none of these selects a format, Konifer retains the original variant's format. Request raw pixels with
+`format=pixels` or a profile that defines it; `Accept: application/octet-stream` does not select pixel output.
+
+## Fetching Link (`/link`)
+
+Fetches the asset's resolved delivery URL, the selected variant's attributes, and any [LQIP](../../../concepts/lqip.md)
+and `alt` fields. If no return format selector is supplied, `link` is the default.
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/link
+```
+
+or
+
+```http
+GET /assets/users/123/profile-picture
+```
+
+### Example
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/link'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).originalVariant().fetchLink().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).originalVariant().fetchLink().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
+
+{
+  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200",
+  "lqip": {
+    "blurhash": "BASE64",
+    "thumbhash": "BASE64"
+  },
+  "alt": "Your alt",
+  "attributes": {
+    "height": 100,
+    "width": 200,
+    "format": "jpg",
+    "rotate": "0",
+    "horizontalFlip": false,
+    "colorSpace": "srgb",
+    "pageCount": 1
+  }
+}
+```
+
+| Field Name   | Type       | Description                                                                  |
+| ------------ | ---------- | ---------------------------------------------------------------------------- |
+| `url`        | String     | The URL resolved by the path's `delivery.strategy`                           |
+| `expiresAt`  | RFC 3339   | Populated for presigned URLs                                                 |
+| `lqip`       | LQIP       | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration |
+| `alt`        | String     | The `alt` supplied when storing the asset                                    |
+| `attributes` | Attributes | [Attributes](#attributes) of the selected variant                            |
+
+The example shows the default `service` strategy. A `presigned` or `template` strategy returns its resolved external
+URL in the same field.
+
+Service URLs include the selected entry and resolved transformation, including the format selected through `Accept`.
+Fetch the returned URL as supplied, without repeating the original header. With [URL signing](../../url-signing.md)
+enabled, Konifer signs the destination URL, including the service fallback for unsupported presigned delivery. Service
+URL examples here omit some default transformation parameters for readability.
+
+After cache eviction, Konifer can regenerate the variant from its URL, subject to current path policy and transformation
+limits. In `profile_only` mode, the URL includes the profile name and equivalent explicit parameters. See
+[Service Delivery](../../../concepts/Assets/fetching-assets.md#service-delivery).
+
+## Fetching Redirect (`/redirect`)
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/redirect
+```
+
+### Example
+
+The curl example shows the redirect headers without following the redirect, as in the Bruno request.
+The clients follow the redirect and save its content using `ContentDelivery.FOLLOW_REDIRECT`.
+To obtain the delivery URL without downloading content, use `fetchLink()` from the Link example.
+
+`FOLLOW_REDIRECT` returns an `AssetContent` with bytes and null `attributes`, `alt`, and `lqip` fields. The client
+does not decode Konifer metadata from the redirect destination, even if it supplies matching header names.
+Streaming returns an `AssetContentMetadata` with the same null fields. Use `fetchLink()` for metadata when using
+external delivery, or fetch through Konifer to receive [content attribute headers](#content-attribute-headers).
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --dump-header - \
+  --output /dev/null \
+  'http://localhost:8080/assets/user/123/profile-picture/-/redirect'
+
+# Follow the redirect and save the image instead:
+curl --fail-with-body \
+  --location \
+  --output profile-picture.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/redirect'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .originalVariant()
+  .fetchContent(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow().bytes
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .originalVariant()
+  .fetchContent(ContentDelivery.FOLLOW_REDIRECT)
+  .valueOrThrow().getBytes();
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+Returns a **`Temporary Redirect 307`**:
+
+```http
+HTTP/1.1 307
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200
+```
+
+The `Location` value is resolved with the same path-level
+[delivery strategy](../../../concepts/Assets/fetching-assets.md#delivery-strategies) used by `link`. The default `service`
+strategy redirects to the selected entry's `/content` endpoint; `presigned` and `template` can redirect directly to
+object storage or a CDN.
+
+## Fetching Asset Information
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/info
+```
+
+### Example
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/info'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).fetchInfo().valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).fetchInfo().valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+#### Variant Generation
+
+Transformation parameters cannot be supplied (i.e. `height`, `rotate`, `blur`, etc.) when requesting asset metadata. A
+`400 Bad Request` is returned if any transformation parameters are supplied.
+
+### Response
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
+
+{
+  "class": "image",
+  "alt": "The alt text for an image",
+  "entryId": 1049,
+  "labels": {
+    "label-key": "label-value",
+    "phone": "Android"
+  },
+  "tags": ["cold", "verified"],
+  "source": "url",
+  "externalSourceAddress": "https://yoururl.com/image.jpeg",
+  "sourceUrl": "https://yoururl.com/image.jpeg",
+  "variants": [
+    {
+      "isOriginalVariant": true,
+      "storeBucket": "assets",
+      "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
+      "attributes": {
+        "height": 100,
+        "width": 200,
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "rotate": "0",
+        "horizontalFlip": false
+      },
+      "lqip": {
+        "blurhash": "BASE64",
+        "thumbhash": "BASE64"
+      }
+    },
+    {
+      "isOriginalVariant": false,
+      "storeBucket": "assets",
+      "storeKey": "64fffa7e-85d2-42db-a081-354c91ec7ef9.webp",
+      "attributes": {
+        "height": 2560,
+        "width": 1752,
+        "format": "webp",
+        "pageCount": 1,
+        "loop": 0,
+        "colorSpace": "srgb",
+        "rotate": "0",
+        "horizontalFlip": false
+      },
+      "transformation": {
+        "width": 2560,
+        "height": 1752,
+        "fit": "fit",
+        "gravity": "center",
+        "format": "webp",
+        "rotate": "90",
+        "flip": "none",
+        "filter": "none",
+        "blur": 0,
+        "quality": 80,
+        "padding": {
+          "amount": 0,
+          "color": []
+        },
+        "metadata": {
+          "strip": ["exif", "xmp", "iptc"]
+        },
+        "colorSpace": "srgb"
+      },
+      "lqip": {}
+    }
+  ],
+  "createdAt": "2025-11-12T01:20:55Z",
+  "modifiedAt": "2025-11-12T01:20:55Z"
+}
+```
+
+| Field Name              | Type         | Description                                                          |
+|-------------------------|--------------|----------------------------------------------------------------------|
+| `class`                 | String       | The type of the asset, currently always `image`                      |
+| `alt`                   | String       | The supplied alt text of your asset                                  |
+| `entryId`               | Long         | System-generated unique identifier of asset within path              |
+| `labels`                | Object       | Supplied key-value pairs associated with the asset                   |
+| `tags`                  | Array        | Supplied attributes associated with the asset                        |
+| `source`                | String       | `upload`, `url`, or `arn`, according to how you supplied the content |
+| `externalSourceAddress` | String       | Supplied URL or ARN for an external source                           |
+| `sourceUrl`             | String       | Deprecated alias for `externalSourceAddress`                         |
+| `variants`              | AssetVariant | Original and cached generated variants                               |
+| `createdAt`             | RFC 3339 UTC | Date asset was stored                                                |
+| `modifiedAt`            | RFC 3339 UTC | Date asset was last modified (ignores variant generation)            |
+
+#### AssetVariant
+
+| Field Name          | Type           | Description                                                                     |
+| ------------------- | -------------- | ------------------------------------------------------------------------------- |
+| `isOriginalVariant` | Boolean        | Whether the variant is the original variant. Only one is `true`                 |
+| `storeBucket`       | String         | The S3 bucket the asset is stored in - defined in path configuration            |
+| `storeKey`          | String         | The key of the asset in the object store                                        |
+| `attributes`        | Attributes     | Extracted attributes of the asset                                               |
+| `transformation`    | Transformation | Normalized original variant transformation - not returned for original variants |
+| `lqip`              | LQIP           | Low-Quality Image Placeholder (LQIP) values if enabled in path configuration    |
+
+##### Attributes
+
+| Field Name       | Type    | Description                                                                                                                                      |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `height`         | Integer | Height of variant                                                                                                                                |
+| `width`          | Integer | Width of variant                                                                                                                                 |
+| `format`         | Format  | Format of variant                                                                                                                                |
+| `pageCount`      | Integer | Number of pages in image; single-page content reports 1                                                                                          |
+| `loop`           | Integer | For multi-paged images, specifies the amount of animated repetitions. Defaults to 0, -1 is continuous looping                                    |
+| `colorSpace`     | String  | `srgb`, `p3`, `adobe_rgb`, `cymk`, `grayscale`, the Description tag of the embedded ICC profile, or `unknown` if unable to determine color space |
+| `pixels`         | Object  | Pixel attributes for `format=pixels`; absent or null for encoded image formats                                                                   |
+| `rotate`         | String  | Clockwise rotation still needed for display: `0`, `90`, `180`, or `270`; never `auto`                                                            |
+| `horizontalFlip` | Boolean | Whether to flip horizontally after applying the remaining rotation                                                                               |
+
+These attributes describe the selected variant's stored bytes. For a source whose EXIF orientation has not been
+applied, `rotate` and `horizontalFlip` describe how to orient it for display. Orientation-normalized output reports
+`"rotate": "0"` and `"horizontalFlip": false`. Avoid applying these operations again if your image decoder already
+honors the source orientation.
+
+###### Pixel attributes
+
+| Field Name | Type   | Description                                               |
+| :--------- | :----- | :-------------------------------------------------------- |
+| `channels` | String | Lowercase channel order, such as `rgb`, `bgra`, or `gray` |
+| `layout`   | String | `interleaved` or `planar`; `gray` reports `interleaved`   |
+| `dataType` | String | `uint8`: one unsigned byte (0–255) per sample             |
+
+These fields also appear under `attributes.pixels` in a pixel variant's `link` response. Use the selected variant's
+width and height to interpret the raw body. Pixel output has no file header containing this information.
+
+Content and download responses carry the same attributes in [HTTP headers](#content-attribute-headers).
+
+##### Transformation
+
+Refer to the [Image Transformation Reference](../../image-transformation-reference.md) for greater detail about available
+image transformations.
+
+| Field Name   | Type       | Description                                      | Allowed Values                              |
+| ------------ | ---------- | ------------------------------------------------ | ------------------------------------------- |
+| `height`     | Integer    | Height of variant in pixels                      | > 0                                         |
+| `width`      | Integer    | Width of variant in pixels                       | > 0                                         |
+| `fit`        | Attributes | Fit                                              | `fit`, `fill`, `stretch`                    |
+| `gravity`    | Gravity    | Gravity                                          | `center`, `entropy`, `attention`            |
+| `format`     | Format     | Format of variant                                | See Format                                  |
+| `rotate`     | Rotate     | Rotation                                         | `0`, `90`, `180`, `270`, `auto`             |
+| `flip`       | Flip       | Whether variant is flipped and across which axis | `none`, `h`, `v`                            |
+| `filter`     | Filter     | Filter                                           | `none`, `black_white`, `grayscale`, `sepia` |
+| `blur`       | Integer    | Blur                                             | 0-150                                       |
+| `quality`    | Integer    | Compression quality (ignored for PNG and pixels) | 1-100                                       |
+| `colorSpace` | ColorSpace | Color space                                      | `grayscale`, `srgb`, `p3`                   |
+| `padding`    | Padding    | Padding                                          |                                             |
+| `metadata`   | Metadata   | Image metadata                                   |                                             |
+
+###### Padding
+
+| Field Name | Type      | Description                               | Allowed Values |
+| ---------- | --------- | ----------------------------------------- | -------------- |
+| `amount`   | Integer   | Amount of padding in pixels               | >= 0           |
+| `color`    | Integer[] | Color pf padding in [R, G, B, A] integers |                |
+
+###### Metadata
+
+| Field Name | Type | Description                                 | Allowed Values        |
+| ---------- | ---- | ------------------------------------------- | --------------------- |
+| `strip`    | List | Which metadata was removed from the variant | `exif`, `xmp`, `iptc` |
+
+## Fetching Asset Entry Information
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/entries
+```
+
+### Example
+
+Fetch up to 20 entries. The client accepts only positive limits; HTTP's `limit=-1` has no client equivalent.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entries?limit=20'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).fetchEntries(20).valueOrThrow()
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).fetchEntries(20).valueOrThrow();
+```
+
+</TabItem>
+</Tabs>
+
+#### Limit
+
+Supply the `limit` query parameter once. Its allowed values depend on the return format:
+
+| Return format | Default | Allowed values |
+| --- | --- | --- |
+| `entries` | `20` | `1` through `2147483647`, or `-1` for all matching entries at the exact path |
+| `info`, `link`, `content`, `download`, `redirect` | `1` | `1` |
+
+To fetch all matching entries over HTTP:
+
+```http
+GET /assets/users/123/profile-picture/-/entries?limit=-1
+```
+
+Blank, malformed, overflowing, zero, below-`-1`, or repeated limit values return `400 Bad Request`. A limit other than
+`1` also returns 400 for a singular representation. Konifer applies a default only when you omit the parameter.
+
+The Kotlin and Java `fetchEntries(limit)` methods accept positive integer limits. For deletion, use
+[the DELETE limit rules](delete-assets.mdx#limit): `limit=-1` selects exact-path bulk deletion, and entry or recursive
+selectors require you to omit the limit.
+
+### Response
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+{
+  "entries": [
+    {
+      "class": "image",
+      "alt": "The alt text for an image",
+      "entryId": 1049,
+      "labels": {
+        "label-key": "label-value",
+        "phone": "Android"
+      },
+      "tags": ["cold", "verified"],
+      "source": "url",
+      "externalSourceAddress": "https://yoururl.com/image.jpeg",
+      "sourceUrl": "https://yoururl.com/image.jpeg",
+      "variants": [
+        {
+          "isOriginalVariant": true,
+          "storeBucket": "assets",
+          "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
+          "attributes": {
+            "height": 100,
+            "width": 200,
+            "format": "jpg",
+            "colorSpace": "srgb",
+            "pageCount": 1,
+            "rotate": "0",
+            "horizontalFlip": false
+          },
+          "lqip": {
+            "blurhash": "BASE64",
+            "thumbhash": "BASE64"
+          }
+        },
+        {
+          "isOriginalVariant": false,
+          "storeBucket": "assets",
+          "storeKey": "64fffa7e-85d2-42db-a081-354c91ec7ef9.webp",
+          "attributes": {
+            "height": 2560,
+            "width": 1752,
+            "format": "webp",
+            "pageCount": 1,
+            "loop": 0,
+            "colorSpace": "srgb",
+            "rotate": "0",
+            "horizontalFlip": false
+          },
+          "transformation": {
+            "width": 2560,
+            "height": 1752,
+            "fit": "fit",
+            "gravity": "center",
+            "format": "webp",
+            "rotate": "90",
+            "flip": "none",
+            "filter": "none",
+            "blur": 0,
+            "quality": 80,
+            "padding": {
+              "amount": 0,
+              "color": []
+            },
+            "metadata": {
+              "strip": ["exif", "xmp", "iptc"]
+            },
+            "colorSpace": "srgb"
+          },
+          "lqip": {}
+        }
+      ],
+      "createdAt": "2025-11-12T01:20:55Z",
+      "modifiedAt": "2025-11-12T01:20:55Z"
+    }
+  ]
+}
+```
+
+## Fetching Content
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/content
+```
+
+### Example: original content
+
+These examples buffer the original image before saving it locally.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/content'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path).originalVariant().fetchContent().valueOrThrow().bytes
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path).originalVariant().fetchContent().valueOrThrow().getBytes();
+```
+
+</TabItem>
+</Tabs>
+
+### Client content results
+
+`fetchContent()` returns `KoniferResult<AssetContent>`. Read the buffered body from `bytes` and the decoded response
+metadata from `attributes`, `alt`, and `lqip`. The [attribute headers](#content-attribute-headers) describe the bytes
+from that request, including dimensions, pixel layout, and remaining display orientation.
+
+The metadata fields can be null. `attributes` is null if the server sends no attribute headers; a partial set or
+invalid value returns `KoniferResult.Failure.InvalidResponse`. `alt` is null if its header is absent, and `lqip` is null
+if neither placeholder header is present. [Redirect delivery](#fetching-redirect-redirect) leaves all metadata null.
+
+#### Streaming content
+
+Use `fetchAndWriteContentTo()` for larger bodies. It returns `KoniferResult<AssetContentMetadata>` after the transfer,
+with the same metadata fields as `AssetContent`.
+
+In Kotlin, supply a `ByteWriteChannel` and consume it concurrently to handle backpressure. The client flushes and
+closes the write side on success, or terminates it on failure or cancellation. In Java, supply an `OutputStream`;
+you control flushing and closing. Transfer failures can leave partial bytes in either destination.
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+try (var output = Files.newOutputStream(Path.of("profile-picture.png"))) {
+  var metadata = client.assets(path)
+    .originalVariant()
+    .fetchAndWriteContentTo(output)
+    .valueOrThrow();
+  System.out.println(metadata.getAttributes());
+}
+```
+
+### Example: WebP thumbnail
+
+Request a 256×256 thumbnail, cropping around the most important part of the image.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture.webp \
+  'http://localhost:8080/assets/user/123/profile-picture/-/content?width=256&height=256&format=webp&fit=fill&gravity=attention'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+val transformation = requestedTransformation {
+  width = 256
+  height = 256
+  format = ImageFormat.WEBP
+  fit = Fit.FILL
+  gravity = Gravity.ATTENTION
+}
+client.assets(path)
+  .variant(transformation)
+  .fetchContent()
+  .valueOrThrow().bytes
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+var transformation = new RequestedTransformation.Builder()
+  .width(256)
+  .height(256)
+  .format(ImageFormat.WEBP)
+  .fit(Fit.FILL)
+  .gravity(Gravity.ATTENTION)
+  .build();
+client.assets(path)
+  .variant(transformation)
+  .fetchContent()
+  .valueOrThrow().getBytes();
+```
+
+</TabItem>
+</Tabs>
+
+### Example: raw pixels
+
+Fetch a 224×224 BGR buffer in planar layout for an image-processing input. This produces 150,528 unsigned 8-bit samples.
+The curl example uses entry `0`; replace it with the `entryId` returned by your upload. Read attributes from the
+content response headers, or from the client's `AssetContent`, to interpret the bytes from the same request.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+# Save dimensions and pixel attributes alongside the buffer:
+curl --fail-with-body \
+  --dump-header profile-picture.headers \
+  --output profile-picture.bin \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content?format=pixels&width=224&height=224&fit=fill&color-space=srgb&pixel-channels=BGR&pixel-layout=planar'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+import io.konifer.client.assets.fetch.requestedTransformation
+import io.konifer.common.image.Fit
+import io.konifer.common.image.ImageFormat
+import io.konifer.common.image.TransformableColorSpace
+import io.konifer.common.image.pixel.PixelLayout
+
+val transformation = requestedTransformation {
+  width = 224
+  height = 224
+  fit = Fit.FILL
+  format = ImageFormat.PIXELS
+  colorSpace = TransformableColorSpace.SRGB
+  pixelChannels = "BGR"
+  pixelLayout = PixelLayout.PLANAR
+}
+val variant = client.assets(path).entry(entryId).variant(transformation)
+val content = variant.fetchContent().valueOrThrow()
+val attributes = requireNotNull(content.attributes)
+val pixels = content.bytes
+val channels = requireNotNull(attributes.pixels).channels
+val channelCount = if (channels == "gray") 1 else channels.length
+check(pixels.size.toLong() == attributes.width.toLong() * attributes.height * channelCount)
+
+// Kotlin bytes are signed; interpret each sample as an unsigned value.
+val firstSample = pixels[0].toInt() and 0xff
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+import io.konifer.client.assets.fetch.RequestedTransformation;
+import io.konifer.common.image.Fit;
+import io.konifer.common.image.ImageFormat;
+import io.konifer.common.image.TransformableColorSpace;
+import io.konifer.common.image.pixel.PixelLayout;
+
+var transformation = new RequestedTransformation.Builder()
+  .width(224)
+  .height(224)
+  .fit(Fit.FILL)
+  .format(ImageFormat.PIXELS)
+  .colorSpace(TransformableColorSpace.SRGB)
+  .pixelChannels("BGR")
+  .pixelLayout(PixelLayout.PLANAR)
+  .build();
+var variant = client.assets(path).entry(entryId).variant(transformation);
+var content = variant.fetchContent().valueOrThrow();
+var attributes = java.util.Objects.requireNonNull(content.getAttributes());
+var pixels = content.getBytes();
+var channels = attributes.getPixels().getChannels();
+int channelCount = channels.equals("gray") ? 1 : channels.length();
+long expectedBytes = (long) attributes.getWidth() * attributes.getHeight() * channelCount;
+if (pixels.length != expectedBytes) {
+  throw new IllegalStateException("Unexpected pixel buffer length");
+}
+int firstSample = Byte.toUnsignedInt(pixels[0]);
+```
+
+</TabItem>
+</Tabs>
+
+The content response includes the following attribute headers:
+
+```http
+K-Attr-Width: 224
+K-Attr-Height: 224
+K-Attr-Format: pixels
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
+K-Attr-Pixels-Channels: bgr
+K-Attr-Pixels-Layout: planar
+K-Attr-Pixels-Data-Type: uint8
+```
+
+Content responses use `Content-Type: application/octet-stream`. The body contains pixel bytes without a header; the download
+selector uses a `.bin` filename. `fetchContent()` buffers the whole response and returns `AssetContent`.
+For larger buffers, use `fetchAndWriteContentTo()` with a Kotlin `ByteWriteChannel` or a Java `OutputStream`;
+its result contains `AssetContentMetadata` after the transfer.
+
+See [Raw Pixel Output](../../image-transformation-reference.md#raw-pixel-output) for channel validation, color space,
+alpha handling, and grayscale behavior.
+
+### Example: a specific entry
+
+Use the `entryId` returned by an upload to fetch that entry even after a newer image is stored at the same path.
+Replace `0` in the curl URL with that entry ID.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture-entry.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/entry/0/content'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .entry(entryId)
+  .originalVariant()
+  .fetchContent()
+  .valueOrThrow().bytes
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .entry(entryId)
+  .originalVariant()
+  .fetchContent()
+  .valueOrThrow().getBytes();
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```http
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 45123
+Etag: 123456
+K-Alt: "Your defined alt, if any"
+K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
+K-LQIP-Blurhash: "BASE64 Blurhash, if enabled"
+K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
+K-Attr-Width: 200
+K-Attr-Height: 100
+K-Attr-Format: jpg
+K-Attr-Rotate: 0
+K-Attr-Horizontal-Flip: false
+K-Attr-Color-Space: srgb
+K-Attr-Page-Count: 1
+
+<image bytes>
+```
+
+:::note
+Etag is only returned for Content and Download return formats
+:::
+
+### Content attribute headers
+
+Successful `content` and `download` responses include the selected variant's attributes in `K-Attr-*` headers.
+These describe the body you receive, including requested transformations, on both cache hits and generated variants.
+The body remains image or raw pixel bytes; it does not include a JSON envelope.
+
+| Header                    | Attribute         | Value                                                            | Presence          |
+| :------------------------ | :---------------- | :--------------------------------------------------------------- | :---------------- |
+| `K-Attr-Width`            | `width`           | Width of the returned image buffer, in pixels                    | Always            |
+| `K-Attr-Height`           | `height`          | Height of the returned image buffer, in pixels                   | Always            |
+| `K-Attr-Format`           | `format`          | Format identifier, such as `jpg`, `webp`, or `pixels`            | Always            |
+| `K-Attr-Rotate`           | `rotate`          | Remaining clockwise display rotation: `0`, `90`, `180`, or `270` | Always            |
+| `K-Attr-Horizontal-Flip`  | `horizontalFlip`  | `true` or `false`; apply after the remaining rotation            | Always            |
+| `K-Attr-Color-Space`      | `colorSpace`      | Color-space name, such as `srgb`, `p3`, or `grayscale`           | Always            |
+| `K-Attr-Page-Count`       | `pageCount`       | Number of pages or frames; 1 for single-page content             | When available    |
+| `K-Attr-Loop`             | `loop`            | Animation loop value                                             | When applicable   |
+| `K-Attr-Pixels-Channels`  | `pixels.channels` | Lowercase channel order, such as `rgb`, `bgra`, or `gray`        | Pixel output only |
+| `K-Attr-Pixels-Layout`    | `pixels.layout`   | `interleaved` or `planar`                                        | Pixel output only |
+| `K-Attr-Pixels-Data-Type` | `pixels.dataType` | `uint8`                                                          | Pixel output only |
+
+Optional attributes have no header when they are absent. HTTP header names are case-insensitive. The existing
+`K-Alt`, `K-LQIP-Blurhash`, and `K-LQIP-Thumbhash` headers still carry asset metadata when present.
+
+`K-Attr-Rotate` and `K-Attr-Horizontal-Flip` describe the orientation still needed for display. They do not repeat
+the requested `rotate` and `flip` parameters. For output whose orientation Konifer has normalized, such as a `rotate=auto`
+variant, they are `0` and `false`. Width and height describe the returned buffer before any remaining display rotation.
+
+The same attributes appear in JSON `link` and asset-information responses. Redirect destinations such as object
+storage do not receive these Konifer response headers. The client leaves metadata null in `FOLLOW_REDIRECT` mode;
+use `THROUGH_KONIFER` to receive metadata with content. See [Client content results](#client-content-results) for
+return types and streaming behavior.
+
+## Fetching Content Download
+
+Same behavior as Content, including [attribute headers](#content-attribute-headers), with the addition of a
+`Content-Disposition: attachment` response header.
+
+### Request
+
+```http
+GET /assets/users/123/profile-picture/-/download
+```
+
+### Example
+
+The curl request uses `/download`, which adds an attachment header. The clients save bytes from `/content`;
+they do not expose a separate `/download` operation. These examples buffer the image in memory.
+
+<Tabs groupId="konifer-example-language" defaultValue="curl">
+<TabItem value="curl" label="curl">
+
+```bash
+curl --fail-with-body \
+  --output profile-picture-download.png \
+  'http://localhost:8080/assets/user/123/profile-picture/-/download'
+```
+
+</TabItem>
+<TabItem value="kotlin" label="Kotlin (suspending)">
+
+```kotlin
+client.assets(path)
+  .originalVariant()
+  .fetchContent()
+  .valueOrThrow().bytes
+```
+
+</TabItem>
+<TabItem value="java" label="Java (blocking)">
+
+```java
+client.assets(path)
+  .originalVariant()
+  .fetchContent()
+  .valueOrThrow().getBytes();
+```
+
+</TabItem>
+</Tabs>
+
+### Response
+
+```http
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 45123
+Etag: 123456
+K-Alt: "Your defined alt, if any"
+K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
+K-LQIP-Blurhash: "BASE64 Blurhash, if enabled"
+K-LQIP-Thumbhash: "BASE64 Thumbhash, if enabled"
+Content-Disposition: attachment; filename*=UTF-8''profile-picture.jpeg
+```
+
+## Error codes
+
+API failures return JSON with a stable `code` and an optional `message`. See
+[Error Responses](../errors.md) for the codes, HTTP statuses, and client compatibility behavior.

@@ -20,11 +20,11 @@ result.
 For example, these two requests generate the same variant:
 
 ```http
-GET /assets/users/123/profile-picture?f=h&r=180
+GET /assets/users/123/profile-picture?flip=h&rotate=180
 ```
 
 ```http
-GET /assets/users/123/profile-picture?f=v
+GET /assets/users/123/profile-picture?flip=v
 ```
 
 The first requests a variant that is horizontally flipped and rotated 180 degrees. The second requests a vertically
@@ -33,6 +33,10 @@ cached variant.
 
 This normalization reduces unnecessary storage and avoids repeated work for transformations that are different in form
 but equivalent in output.
+
+For [pixel variants](../pixels.md), channel order and layout form part of the normalized request. RGB and BGR output
+use separate cached variants, as do interleaved and planar color buffers. Grayscale output normalizes to interleaved
+layout, so requesting `gray` with either layout reuses the same variant when the other transformations match.
 
 ## Cache Misses
 

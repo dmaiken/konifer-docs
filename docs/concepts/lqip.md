@@ -51,7 +51,7 @@ application would decode the hashes into placeholders, then replace them with th
 The following request returns a link response containing the variant's attributes and LQIPs:
 
 ```http
-GET /assets/documentation/lqip/cow/-/link?format=webp&w=480
+GET /assets/documentation/lqip/cow/-/link?format=webp&width=480
 ```
 
 This excerpt contains the actual hashes used above:

@@ -5,106 +5,81 @@ title: Deleting Assets
 sidebar_label: "Deleting"
 ---
 
-Assets can be deleted using the same path selectors used for fetching. You can delete single assets by ID, multiple
-assets by order/limit, or entire path trees recursively.
+Choose an entry ID to delete one asset, `limit=-1` to delete all entries at an exact path, or `recursive` to delete
+a path and its descendants. Each DELETE request requires one of these selections.
 
 ## Delete Behavior
 
-When you issue a delete request:
-
-1. **Metadata:** The database record is removed immediately. The asset is no longer discoverable or queryable via the
-   API.
-2. **Content:** The binary content (in S3/Filesystem) is scheduled for asynchronous removal. It is usually physically
-   deleted within a few minutes. If content fails to be removed from the object store, it will be retried until it is
-   removed.
+Konifer removes the asset's metadata and variant references during the request, so you can no longer fetch the asset
+through the API. It schedules object-store content for removal and retries failed cleanup.
 
 :::warning
-Deleting an asset is unrecoverable. There is no way to reverse deletes, and there is no soft-delete mechanism!
+Deletion is permanent. Konifer has no soft-delete or restore operation.
 :::
 
 ### Idempotency
 
-The Delete API is idempotent. If you request the deletion of an asset that does not exist (or has already been deleted),
-the API returns a `204 No Content`.
+A valid DELETE request returns `204 No Content`, including when no entries match. You can repeat an entry-specific
+request after a lost response without deleting another entry at that path. Konifer does not reuse a deleted entry ID.
 
-## Deleting a specific asset
-
-To delete an asset explicitly, use the `entry` selector. This is the safest way to delete an asset since the reference
-is absolute.
-
-```http
-DELETE /assets/users/123/-/entry/0
-```
+Bulk deletion evaluates matching entries when you send each request. A repeated bulk request can delete new matching
+uploads that arrived after the first request. To keep a fixed selection, fetch entry IDs once and delete those IDs.
 
 ## Selectors
 
-Similar to fetching, specifying the `order` plus an optional limit (defaulting to 1) results in the top asset(s)
-in that ordering being deleted.
+| Selection                    | Request                                       |
+|:-----------------------------|:----------------------------------------------|
+| One entry                    | `DELETE /assets/users/123/profile/-/entry/42` |
+| All entries at an exact path | `DELETE /assets/users/123/profile?limit=-1`   |
+| A path and its descendants   | `DELETE /assets/users/123/-/recursive`        |
 
-```http
-DELETE /assets/users/123/profile/-/modified
-```
+Use the `entryId` from an upload or fetch response for an entry-specific request. Exact-path deletion leaves
+descendant paths intact. Recursive deletion at `/users/123` includes `/users/123`, `/users/123/profile`, and
+`/users/123/profile/footer`, for example.
 
-This results in the single most-recently modified asset being deleted.
-
-:::caution
-Race condition risk on paths with high write volume, using relative selectors (like `modified`) can result in
-deleting data you did not intend to (e.g., a new file arrives milliseconds before your request). Use with care.
-:::
-
-```http
-DELETE /assets/users/123/profile/-/entry/0
-```
-
-This deletes the asset at `/users/123/profile` with `entryId` of 0.
+Konifer returns `400 Bad Request` for a DELETE without a selection, or with an ordering selector such as `new` or
+`modified`.
 
 ## Limit
 
-Selectors can be combined with limit to delete multiple assets. Limit defaults to 1.
+For DELETE, `limit=-1` selects all matching entries at the exact path. There is no default deletion limit. Konifer
+rejects positive DELETE limits and any supplied limit alongside an `entry` or `recursive` selector.
 
-To delete the five most recently created assets at a path (second line showing the omission of the default ordering
-selector, `new`):
+Supply `limit` once. Blank, malformed, overflowing, zero, or below-`-1` values return `400 Bad Request`. See the
+[Delete API reference](../../reference/api/assets/delete-assets.mdx#limit) for the request rules.
+
+### Delete a bounded selection
+
+To delete up to five of the newest entries, first list them:
 
 ```http
-DELETE /assets/users/123/profile/-/new?limit=5
-DELETE /assets/users/123/profile?limit=5
+GET /assets/users/123/profile/-/new/entries?limit=5
 ```
+
+Then delete each `entryId` from the response's `entries` array:
+
+```http
+DELETE /assets/users/123/profile/-/entry/42
+DELETE /assets/users/123/profile/-/entry/41
+```
+
+Use the returned IDs in place of the example IDs. Fetch the list once and retain it if you need to retry deletion.
+These are separate requests: a failure can leave some entries deleted and others present. See the
+[curl and client examples](../../reference/api/assets/delete-assets.mdx#example-delete-the-most-recently-modified-entries).
 
 ## Labels
 
-Selectors can be combined with labels and selectors to identify the asset to delete.
-
-To delete the five most recently created assets that have the label `phone=iphone`:
-
-```http
-DELETE /assets/users/123/profile/-/new?limit=5&phone=iphone
-DELETE /assets/users/123/profile?limit=5&phone=iphone
-```
-
-## Bulk & recursive deletion
-
-Konifer supports powerful bulk-delete operations for cleaning up entire user directories or projects.
-
-### Delete all assets in the path
-
-By setting the limit query parameter to `-1`, all assets are deleted within the path.
+Use labels to filter exact-path or recursive bulk deletion. For example, delete entries with `phone=iphone` at the
+exact path:
 
 ```http
-DELETE /assets/users/123/profile?limit=-1
+DELETE /assets/users/123/profile?limit=-1&label:phone=iphone
 ```
 
-### Deleting Recursively
-
-By using the `recursive` selector, you can delete all assets in a path as well as all sub-paths.
-
-:::tip
-A common use-case of a recursive delete is if your paths are user-scoped, and that user is being deleted from your
-platform.
-:::
+To include matching entries at descendant paths:
 
 ```http
-DELETE /assets/users/123/-/recursive
+DELETE /assets/users/123/-/recursive?label:phone=iphone
 ```
 
-This deletes assets at `/user/123/profile`, `user/123/profile/footer`, and `user/123/background`, and any asset
-underneath `/user/123/`.
+For a bounded selection with labels, filter the initial `entries` fetch and delete the returned IDs.

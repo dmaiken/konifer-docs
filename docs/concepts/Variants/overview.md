@@ -34,7 +34,7 @@ same asset; the thumbnail is a generated variant.
   <figure className="doc-image">
     <img src="/image-transformations/resizing/cow-thumbnail-128.webp" alt="Square WebP thumbnail cropped from the cow photo"
       width="128" height="128" loading="lazy" decoding="async" />
-    <figcaption>Generated variant · WebP · 128×128 pixels · w=128&amp;h=128&amp;fit=fill</figcaption>
+    <figcaption>Generated variant · WebP · 128×128 pixels · width=128&amp;height=128&amp;fit=fill</figcaption>
   </figure>
 </div>
 
@@ -69,14 +69,14 @@ Eager variants are defined in your path configuration. The following configurati
 ```hocon
 variant-profiles {
   small {
-    h = 50
-    w = 50
+    height = 50
+    width = 50
     fit = fill
     format = png
   }
   medium {
-    h = 100
-    w = 100
+    height = 100
+    width = 100
     fit = fill
     format = png
   }
@@ -96,7 +96,8 @@ paths {
 
 ### On-demand Variant Generation
 
-A Fetch Asset request with transformation parameters such as `w`, `h`, or `g` generates a variant from the original
+A Fetch Asset request with transformation parameters such as `width`, `height`, or `gravity` generates a variant
+from the original
 variant. Konifer caches the result in the configured object store. See [Variant Caching](caching.md) for details.
 
 ## On-demand Variant Generation Modes
@@ -105,8 +106,8 @@ By default, clients can request any supported on-demand transformation. Set
 `transform.on-demand-variant.mode` in path configuration to restrict this behavior.
 
 - **`enabled`** (default): Clients can supply a profile or individual transformation parameters.
-- **`profile_only`**: Clients can supply only `profile`, limiting transformations to configured
-  [variant profiles](variant-profiles.md).
+- **`profile_only`**: Clients must name a [variant profile](variant-profiles.md) for transformed content. Explicit
+  parameters must resolve to that profile's transformation. Profiles that omit `format` allow format negotiation.
 - **`disabled`**: Clients cannot request arbitrary on-demand variants. A request for a configured eager variant can
   still generate that variant when its eager task has not completed.
 

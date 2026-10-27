@@ -21,6 +21,7 @@ Pimcore
 konifer.conf
 EXIF
 RGBA
+CMYK
 RDBMS
 Etags
 HMAC
@@ -28,3 +29,5 @@ grayscale
 IPTC
 hostnames
 tmpfs
+pretrained
+Lanczos

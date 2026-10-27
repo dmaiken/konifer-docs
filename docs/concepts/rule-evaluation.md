@@ -133,7 +133,7 @@ External downloads and multipart uploads also use their respective `source` size
 Up to 10 definitions can be evaluated in one request, with up to 100 prompts in each definition. Konifer embeds the
 image once and evaluates all supplied definitions against that embedding.
 
-See the [Rule Evaluation API reference](../reference/rule-evaluation-api/evaluate-rules.mdx) for request and response
+See the [Rule Evaluation API reference](../reference/api/rule-evaluation.mdx) for request and response
 formats.
 
 ## Enabling the API
@@ -157,3 +157,8 @@ configuration.
 Rule evaluation performs model inference and can consume significant CPU and memory. Enable and expose this endpoint
 only when clients using it are trusted or separately protected by your deployment.
 :::
+
+## Handling errors
+
+Use the response `code` to distinguish request validation and source retrieval failures.
+See [Error Responses](../reference/api/errors.md) for the codes and HTTP statuses.

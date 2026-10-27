@@ -34,6 +34,10 @@ curl --fail \
   'http://localhost:8080/health/ready'
 ```
 
+Open [Swagger UI](http://localhost:8080/api/docs) to explore the running server's asset API. The generated OpenAPI
+specification is available at `http://localhost:8080/api/docs/openapi.json`. See the
+[OpenAPI reference](../reference/api/openapi.md).
+
 :::note
 Use Docker to run Konifer with its required libvips configuration. We do not provide standalone JARs or binary releases.
 :::
@@ -88,8 +92,8 @@ upload a replacement. Your entry ID may differ if you have uploaded to this path
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:46:42.879461495",
-  "modifiedAt": "2026-10-15T01:46:42.906062144"
+  "createdAt": "2026-10-15T01:46:42.879461495Z",
+  "modifiedAt": "2026-10-15T01:46:42.906062144Z"
 }
 ```
 
@@ -106,10 +110,10 @@ http://localhost:8080/assets/users/123/profile-picture/-/content
 ## 4. Request a WebP thumbnail
 
 Open this URL in your browser to create a 256×256 WebP thumbnail. Use `fit=fill` to fill the square without stretching
-the image, and `g=attention` to choose which area to keep when cropping:
+the image, and `gravity=attention` to choose which area to keep when cropping:
 
 ```http
-http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&w=256&h=256&fit=fill&g=attention
+http://localhost:8080/assets/users/123/profile-picture/-/content?format=webp&width=256&height=256&fit=fill&gravity=attention
 ```
 
 <div className="doc-images">
@@ -216,8 +220,8 @@ formats; it omits the other response fields:
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:46:42.879461495",
-  "modifiedAt": "2026-10-15T01:46:42.906062144"
+  "createdAt": "2026-10-15T01:46:42.879461495Z",
+  "modifiedAt": "2026-10-15T01:46:42.906062144Z"
 }
 ```
 
@@ -272,8 +276,8 @@ The response now includes `"entryId": 1`. You have two entries at the same path,
       "lqip": {}
     }
   ],
-  "createdAt": "2026-10-15T01:53:32.95613658",
-  "modifiedAt": "2026-10-15T01:53:32.958626453"
+  "createdAt": "2026-10-15T01:53:32.95613658Z",
+  "modifiedAt": "2026-10-15T01:53:32.958626453Z"
 }
 ```
 
@@ -355,8 +359,8 @@ This excerpt shows the two entry IDs. Expand the full response to inspect each e
           "lqip": {}
         }
       ],
-      "createdAt": "2026-10-15T01:53:32.95613658",
-      "modifiedAt": "2026-10-15T01:53:32.958626453"
+      "createdAt": "2026-10-15T01:53:32.95613658Z",
+      "modifiedAt": "2026-10-15T01:53:32.958626453Z"
     },
     {
       "class": "image",
@@ -414,14 +418,32 @@ This excerpt shows the two entry IDs. Expand the full response to inspect each e
           "lqip": {}
         }
       ],
-      "createdAt": "2026-10-15T01:46:42.879461495",
-      "modifiedAt": "2026-10-15T01:46:42.906062144"
+      "createdAt": "2026-10-15T01:46:42.879461495Z",
+      "modifiedAt": "2026-10-15T01:46:42.906062144Z"
     }
   ]
 }
 ```
 
 </details>
+
+## Optional: fetch raw pixels
+
+For image-processing code, request a 224×224 RGB buffer in planar layout:
+
+```bash
+curl --fail-with-body \
+  --dump-header profile-picture.headers \
+  --output profile-picture.bin \
+  --url 'http://localhost:8080/assets/users/123/profile-picture/-/content?format=pixels&width=224&height=224&fit=fill&color-space=srgb&pixel-channels=RGB&pixel-layout=planar'
+```
+
+Konifer returns 150,528 unsigned 8-bit samples as `application/octet-stream`. This buffer contains the red plane,
+then the green plane, then the blue plane. It has no image header. The saved `profile-picture.headers` contains the
+dimensions, channel order, layout, and data type in `K-Attr-*` HTTP headers from the same response.
+
+See [Raw Pixels](../concepts/pixels.md) for channel order, grayscale, and preprocessing, and the
+[Fetch Assets reference](../reference/api/assets/fetch-assets.mdx#example-raw-pixels) for client examples.
 
 ## 9. Stop Konifer
 
@@ -440,3 +462,6 @@ delivery behavior, continue to [Configure Konifer](configure-konifer.md).
 
 For a production-ready PostgreSQL and S3-compatible deployment, see
 [Deploying Konifer](../operate/deployment.md).
+
+To feed raw pixels to a Python inference worker through named variant profiles, follow
+[Prepare Pixels for Inference](../guides/pixels-for-inference.md).
