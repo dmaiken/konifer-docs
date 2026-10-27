@@ -22,20 +22,20 @@ Konifer omits `message` when it has no explanation. The field also accepts JSON 
 
 ## Codes
 
-| Code                         | HTTP status   | Meaning                                                                                                               |
-|------------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------|
-| `INVALID_REQUEST`            | 400           | Invalid request structure, JSON, metadata, rule definitions, limits, multipart parts, or missing/conflicting sources. |
-| `INVALID_PATH`               | 400           | Invalid asset path, entry ID, or selectors.                                                                           |
-| `INVALID_TRANSFORMATION`     | 400           | Invalid transformation parameter, combination, limit, or unknown variant profile.                                     |
-| `TRANSFORMATION_NOT_ALLOWED` | 400           | Transformation conflicts with configured restrictions or the selected profile.                                        |
-| `ASSET_REJECTED`             | 400           | Upload rules rejected the image.                                                                                      |
-| `ASSET_TOO_LARGE`            | 400, 413, 422 | An asset or request body exceeds its size limit.                                                                      |
-| `INVALID_SOURCE`             | 422           | Invalid external source reference or response.                                                                        |
-| `SOURCE_UNAVAILABLE`         | 502, 504      | External source retrieval failed (502) or timed out (504).                                                            |
-| `FORBIDDEN`                  | 403           | Missing/invalid signature, disallowed image format, or forbidden external source.                                     |
-| `NOT_FOUND`                  | 404           | No matching asset or API route; includes a disabled Rule Evaluation API.                                              |
-| `UNSUPPORTED_MEDIA_TYPE`     | 415           | Request content type must be `application/json` or `multipart/form-data`.                                             |
-| `INTERNAL_ERROR`             | 500           | Unexpected server failure. The message is `Internal server error`.                                                    |
+| Code                         | HTTP status   | Meaning                                                                                                                                                |
+|------------------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `INVALID_REQUEST`            | 400           | Invalid request structure, JSON, metadata, rule definitions, limits, multipart parts, missing/conflicting sources, or unknown DELETE query parameters. |
+| `INVALID_PATH`               | 400           | Invalid asset path, entry ID, or selectors.                                                                                                            |
+| `INVALID_TRANSFORMATION`     | 400           | Invalid transformation parameter, combination, limit, or unknown variant profile.                                                                      |
+| `TRANSFORMATION_NOT_ALLOWED` | 400           | Transformation conflicts with configured restrictions or the selected profile.                                                                         |
+| `ASSET_REJECTED`             | 400           | Upload rules rejected the image.                                                                                                                       |
+| `ASSET_TOO_LARGE`            | 400, 413, 422 | An asset or request body exceeds its size limit.                                                                                                       |
+| `INVALID_SOURCE`             | 422           | Invalid external source reference or response.                                                                                                         |
+| `SOURCE_UNAVAILABLE`         | 502, 504      | External source retrieval failed (502) or timed out (504).                                                                                             |
+| `FORBIDDEN`                  | 403           | Missing/invalid signature, disallowed image format, or forbidden external source.                                                                      |
+| `NOT_FOUND`                  | 404           | No matching asset or API route; includes a disabled Rule Evaluation API.                                                                               |
+| `UNSUPPORTED_MEDIA_TYPE`     | 415           | Request content type must be `application/json` or `multipart/form-data`.                                                                              |
+| `INTERNAL_ERROR`             | 500           | Unexpected server failure. The message is `Internal server error`.                                                                                     |
 
 Size errors retain their existing HTTP statuses: 413 for the request body limit, 422 for remotely retrieved
 assets, and 400 for asset-data limits enforced within upload processing.

@@ -29,6 +29,9 @@ Select one of these operations:
 A DELETE without one of these selections returns `400 Bad Request`. Ordering selectors and positive DELETE limits
 also return 400.
 
+Only `limit` and query parameters prefixed with `label:` are accepted. Unknown parameters return
+`400 Bad Request` with code `INVALID_REQUEST` before any assets are deleted.
+
 ### Delete Specific Asset
 
 Use the `entryId` returned by an upload or fetch response. Omit `limit`, including `limit=1`.
