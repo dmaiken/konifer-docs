@@ -34,7 +34,7 @@ same asset; the thumbnail is a generated variant.
   <figure className="doc-image">
     <img src="/image-transformations/resizing/cow-thumbnail-128.webp" alt="Square WebP thumbnail cropped from the cow photo"
       width="128" height="128" loading="lazy" decoding="async" />
-    <figcaption>Generated variant · WebP · 128×128 pixels · width=128&amp;h=128&amp;fit=fill</figcaption>
+    <figcaption>Generated variant · WebP · 128×128 pixels · width=128&amp;height=128&amp;fit=fill</figcaption>
   </figure>
 </div>
 

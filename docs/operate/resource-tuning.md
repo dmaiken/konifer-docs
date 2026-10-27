@@ -53,7 +53,7 @@ Use disk storage when temporary files may exceed the memory available for `tmpfs
 ## Variant Workers
 
 Konifer limits concurrent image transformations with a bounded worker pool. Requests wait in queues when all workers
-are busy. The default worker count is `available CPU cores * 2`. Override it in `konifer.conf`:
+are busy. The default worker count is the number of processors available to the JVM. Override it in `konifer.conf`:
 
 ```hocon
 variant-generation {
@@ -65,12 +65,14 @@ variant-generation {
 
 Konifer prioritizes synchronous tasks, including on-demand variants and upload preprocessing, over background eager
 variant generation. If a client requests a missing or queued eager variant, Konifer schedules a high-priority on-demand
-task and discards the corresponding eager task.
+task. The eager task remains queued, so both tasks can perform transformation work. Konifer cancels a duplicate upload
+when it detects an existing variant record.
 
-The scheduler assigns 80% of contested worker capacity to synchronous tasks and 20% to asynchronous tasks by default.
-Weighting applies only when both queues contain work; otherwise, workers process the non-empty queue.
+When both queues contain work, each worker has an 80% chance of selecting a synchronous task and a 20% chance of
+selecting a background task by default. These probabilities govern task selection, not CPU time or reserved worker
+capacity. If only one queue contains work, workers process that queue.
 
-Set the synchronous share with `synchronous-priority`. The asynchronous share is the remainder:
+Set the synchronous selection percentage with `synchronous-priority`. The background percentage is the remainder:
 
 ```hocon
 variant-generation {

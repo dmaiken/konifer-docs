@@ -25,23 +25,17 @@ request after a lost response without deleting another entry at that path. Konif
 Bulk deletion evaluates matching entries when you send each request. A repeated bulk request can delete new matching
 uploads that arrived after the first request. To keep a fixed selection, fetch entry IDs once and delete those IDs.
 
-## Deleting a specific asset
-
-Use the `entryId` from an upload or fetch response to identify the asset within its path:
-
-```http
-DELETE /assets/users/123/profile/-/entry/42
-```
-
-Omit `limit` for an entry-specific request.
-
 ## Selectors
 
-| Selection | Request |
-| --- | --- |
-| One entry | `DELETE /assets/users/123/profile/-/entry/42` |
-| All entries at an exact path | `DELETE /assets/users/123/profile?limit=-1` |
-| A path and its descendants | `DELETE /assets/users/123/-/recursive` |
+| Selection                    | Request                                       |
+|:-----------------------------|:----------------------------------------------|
+| One entry                    | `DELETE /assets/users/123/profile/-/entry/42` |
+| All entries at an exact path | `DELETE /assets/users/123/profile?limit=-1`   |
+| A path and its descendants   | `DELETE /assets/users/123/-/recursive`        |
+
+Use the `entryId` from an upload or fetch response for an entry-specific request. Exact-path deletion leaves
+descendant paths intact. Recursive deletion at `/users/123` includes `/users/123`, `/users/123/profile`, and
+`/users/123/profile/footer`, for example.
 
 Konifer returns `400 Bad Request` for a DELETE without a selection, or with an ordering selector such as `new` or
 `modified`.
@@ -89,24 +83,3 @@ DELETE /assets/users/123/-/recursive?label:phone=iphone
 ```
 
 For a bounded selection with labels, filter the initial `entries` fetch and delete the returned IDs.
-
-## Bulk & recursive deletion
-
-### Delete all assets in the path
-
-Supply `limit=-1` without a selector to delete entries at the exact path. This leaves descendant paths intact:
-
-```http
-DELETE /assets/users/123/profile?limit=-1
-```
-
-### Deleting Recursively
-
-Use the `recursive` selector without a limit to delete entries at a path and its descendants:
-
-```http
-DELETE /assets/users/123/-/recursive
-```
-
-This deletes entries at `/users/123`, `/users/123/profile`, and `/users/123/profile/footer`, for example. Use it to remove
-a user's assets when deleting their account.

@@ -142,7 +142,7 @@ Content-Type: application/json
 K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fetched
 
 {
-  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpeg&height=100&width=200",
+  "url": "https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200",
   "lqip": {
     "blurhash": "BASE64",
     "thumbhash": "BASE64"
@@ -244,7 +244,7 @@ Returns a **`Temporary Redirect 307`**:
 
 ```http
 HTTP/1.1 307
-Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpeg&height=100&width=200
+Location: https://mydomain.com/assets/users/123/profile-picture/-/entry/0/content?format=jpg&height=100&width=200
 ```
 
 The `Location` value is resolved with the same path-level
@@ -307,18 +307,23 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
     "label-key": "label-value",
     "phone": "Android"
   },
-  "tags": [ "cold", "verified" ],
+  "tags": ["cold", "verified"],
   "source": "url",
+  "externalSourceAddress": "https://yoururl.com/image.jpeg",
   "sourceUrl": "https://yoururl.com/image.jpeg",
   "variants": [
     {
       "isOriginalVariant": true,
       "storeBucket": "assets",
       "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
-      "imageAttributes": {
+      "attributes": {
         "height": 100,
         "width": 200,
-        "mimeType": "image/jpeg"
+        "format": "jpg",
+        "colorSpace": "srgb",
+        "pageCount": 1,
+        "rotate": "0",
+        "horizontalFlip": false
       },
       "lqip": {
         "blurhash": "BASE64",
@@ -335,7 +340,9 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
         "format": "webp",
         "pageCount": 1,
         "loop": 0,
-        "colorSpace": "srgb"
+        "colorSpace": "srgb",
+        "rotate": "0",
+        "horizontalFlip": false
       },
       "transformation": {
         "width": 2560,
@@ -343,7 +350,7 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
         "fit": "fit",
         "gravity": "center",
         "format": "webp",
-        "rotate": "ninety",
+        "rotate": "90",
         "flip": "none",
         "filter": "none",
         "blur": 0,
@@ -353,30 +360,31 @@ K-Cache-Status: "hit" or "miss" depending on whether variant was generated or fe
           "color": []
         },
         "metadata": {
-          "strip": [
-            "exif", "xmp", "iptc"
-          ],
-        }
+          "strip": ["exif", "xmp", "iptc"]
+        },
+        "colorSpace": "srgb"
       },
       "lqip": {}
     }
   ],
-  "createdAt": "2025-11-12T01:20:55Z"
+  "createdAt": "2025-11-12T01:20:55Z",
+  "modifiedAt": "2025-11-12T01:20:55Z"
 }
 ```
 
-| Field Name   | Type         | Description                                                          |
-| ------------ | ------------ | -------------------------------------------------------------------- |
-| `class`      | String       | The type of the asset, currently always `image`                      |
-| `alt`        | String       | The supplied alt text of your asset                                  |
-| `entryId`    | Long         | System-generated unique identifier of asset within path              |
-| `labels`     | Object       | Supplied key-value pairs associated with the asset                   |
-| `tags`       | Array        | Supplied attributes associated with the asset                        |
-| `source`     | String       | Either `url` or `upload` depending on how you provided asset content |
-| `sourceUrl`  | String       | If URL source was used, then this is the supplied URL                |
-| `variants`   | AssetVariant | Will only contain the original variant - the one supplied            |
-| `createdAt`  | RFC 3339 UTC | Date asset was stored                                                |
-| `modifiedAt` | RFC 3339 UTC | Date asset was last modified (ignores variant generation)            |
+| Field Name              | Type         | Description                                                          |
+|-------------------------|--------------|----------------------------------------------------------------------|
+| `class`                 | String       | The type of the asset, currently always `image`                      |
+| `alt`                   | String       | The supplied alt text of your asset                                  |
+| `entryId`               | Long         | System-generated unique identifier of asset within path              |
+| `labels`                | Object       | Supplied key-value pairs associated with the asset                   |
+| `tags`                  | Array        | Supplied attributes associated with the asset                        |
+| `source`                | String       | `upload`, `url`, or `arn`, according to how you supplied the content |
+| `externalSourceAddress` | String       | Supplied URL or ARN for an external source                           |
+| `sourceUrl`             | String       | Deprecated alias for `externalSourceAddress`                         |
+| `variants`              | AssetVariant | Original and cached generated variants                               |
+| `createdAt`             | RFC 3339 UTC | Date asset was stored                                                |
+| `modifiedAt`            | RFC 3339 UTC | Date asset was last modified (ignores variant generation)            |
 
 #### AssetVariant
 
@@ -529,18 +537,23 @@ Content-Type: application/json
         "label-key": "label-value",
         "phone": "Android"
       },
-      "tags": [ "cold", "verified" ],
+      "tags": ["cold", "verified"],
       "source": "url",
+      "externalSourceAddress": "https://yoururl.com/image.jpeg",
       "sourceUrl": "https://yoururl.com/image.jpeg",
       "variants": [
         {
           "isOriginalVariant": true,
           "storeBucket": "assets",
           "storeKey": "d905170f-defd-47e4-b606-d01993ba7b42",
-          "imageAttributes": {
+          "attributes": {
             "height": 100,
             "width": 200,
-            "mimeType": "image/jpeg"
+            "format": "jpg",
+            "colorSpace": "srgb",
+            "pageCount": 1,
+            "rotate": "0",
+            "horizontalFlip": false
           },
           "lqip": {
             "blurhash": "BASE64",
@@ -557,7 +570,9 @@ Content-Type: application/json
             "format": "webp",
             "pageCount": 1,
             "loop": 0,
-            "colorSpace": "srgb"
+            "colorSpace": "srgb",
+            "rotate": "0",
+            "horizontalFlip": false
           },
           "transformation": {
             "width": 2560,
@@ -565,7 +580,7 @@ Content-Type: application/json
             "fit": "fit",
             "gravity": "center",
             "format": "webp",
-            "rotate": "ninety",
+            "rotate": "90",
             "flip": "none",
             "filter": "none",
             "blur": 0,
@@ -575,15 +590,15 @@ Content-Type: application/json
               "color": []
             },
             "metadata": {
-              "strip": [
-                "exif", "xmp", "iptc"
-              ],
-            }
+              "strip": ["exif", "xmp", "iptc"]
+            },
+            "colorSpace": "srgb"
           },
           "lqip": {}
         }
       ],
-      "createdAt": "2025-11-12T01:20:55Z"
+      "createdAt": "2025-11-12T01:20:55Z",
+      "modifiedAt": "2025-11-12T01:20:55Z"
     }
   ]
 }
