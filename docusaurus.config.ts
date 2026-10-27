@@ -46,9 +46,9 @@ async function fetchLatestKoniferVersion(): Promise<string> {
     throw new Error('The latest Konifer release did not contain a tag name.');
   }
 
-  const match = /^v?(\d+\.\d+\.\d+)$/.exec(release.tag_name);
+  const match = /^v?((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?)$/.exec(release.tag_name);
   if (!match) {
-    throw new Error(`The latest Konifer release tag is not a stable semantic version: ${release.tag_name}`);
+    throw new Error(`The latest Konifer release tag is not a stable or prerelease semantic version: ${release.tag_name}`);
   }
 
   // Konifer's Git tags include "v", while its container tags do not.
