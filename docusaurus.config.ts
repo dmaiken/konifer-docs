@@ -92,7 +92,7 @@ async function fetchLatestKoniferClientVersion(): Promise<string> {
 
 const buildConfig = (koniferVersion: string, koniferClientVersion: string): Config => ({
   title: 'Konifer',
-  tagline: 'One image source for humans and machines',
+  tagline: "The self-hosted image backend your application doesn't have to build",
   favicon: 'img/favicon.png',
   trailingSlash: false,
 

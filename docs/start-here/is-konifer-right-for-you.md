@@ -1,145 +1,78 @@
 ---
 title: Who should use Konifer?
 sidebar_position: 2
-description: Decide whether shared image storage and preprocessing for applications and vision pipelines fit your needs.
+description: Evaluate Konifer for your application's image lifecycle, addressing choices, and self-hosted deployment.
 ---
 
-Konifer is a strong fit for teams that want one image source for their applications and processing pipelines, with
-storage, reusable transformations, and delivery in infrastructure they control.
+Konifer is a self-hosted image backend for application and platform teams. Handle uploads, validation, storage,
+transformations, and deletion without building and maintaining those workflows yourself. Use your storage and CDN,
+and choose image paths that fit your application.
+
+## Work you can hand to Konifer
+
+* **Uploads and validation:** accept images and enforce size, dimension, pixel count, and format limits in one place.
+* **Storage and replacement:** keep originals, metadata, collections, and upload history. Replace an image without
+  changing its application URL.
+* **Transformations and caching:** define reusable profiles, generate variants after upload or on demand, and reuse
+  cached results without building a separate thumbnail workflow.
+* **Policies and cleanup:** give avatars, product galleries, and tenant branding different rules. Delete images beneath
+  a resource's path through one request.
+
+Share these capabilities across applications while keeping image handling code out of individual services.
+
+## Choose how you address images
+
+Use resource paths, image IDs, or a combination in the same deployment:
 
 ```text
 /assets/users/123/profile-picture
-/assets/products/sku-123/hero
-/assets/claims/456/evidence
-/assets/tenants/acme/branding/logo
+/assets/products/sku-123/gallery
+/assets/{imageId}
+/assets/users/123/images/{imageId}
 ```
 
-If your application can construct paths like these from its own data, it can use Konifer without storing a separate
-image identifier for every ordinary request.
+With a resource path, construct an image URL from the resource ID without storing a separate image reference.
+Replace `{imageId}` with your own identifier when you prefer independent image references.
 
-## Konifer is a good fit when…
+Group related images under parent paths to apply shared storage and processing policies and delete them together.
+Each upload gets a Konifer `entryId` within its path, so you can retrieve a particular item or previous version.
 
-### The same images serve people and processing pipelines
+See [Assets](../concepts/Assets/overview.md) and [Path configuration](../concepts/path-configuration.md) for details.
 
-Product photos can serve a storefront and a classification worker. Inspection photos can support a reviewer and an
-analysis pipeline. Konifer lets each consumer request its own representation of the same stored image: an encoded
-display format or a raw pixel buffer with the dimensions, channel order, and layout its processing code needs.
-
-Define named profiles to share preprocessing across services, cache the resulting variants, and use `entryId` to select
-the same source version for both consumers. Your processing code handles model-specific scaling, normalization, and
-tensor construction. See [Raw Pixels](../concepts/pixels.md) for the output contract.
-
-### Images belong to identifiable application resources
-
-Konifer works best when images naturally belong to users, organizations, products, posts, documents, cases, or other
-domain objects.
-
-Your application can derive an image path from identifiers it already stores:
-
-```kotlin
-val path = "/assets/tenants/$tenantId/products/$sku/hero"
-```
-
-A path can resolve to the newest image, hold a collection, or preserve previous entries. Konifer assigns each stored
-image an `entryId`, so a caller can still address a particular item or version when necessary.
-
-### You want Konifer to manage the image lifecycle
-
-A stateless image proxy is enough when you already have a source image URL and only need to resize or convert it.
-Konifer is useful when your application also needs capabilities such as:
-
-* Original-image storage
-* Replaceable images, collections, or history at a stable path
-* On-demand and eagerly generated variants
-* Named transformation profiles
-* Image information, labels, and tags
-* Content, link, redirect, download, and information responses
-
-Konifer brings these parts together behind one API instead of leaving each application to implement its own upload,
-storage, transformation, and replacement workflow.
-
-### Different images need different policies
-
-One application often contains several image categories:
-
-```text
-/public/avatars/**
-/marketplace/listings/**
-/claims/**/evidence
-/tenants/*/branding/**
-```
-
-Konifer can apply different storage, validation, preprocessing, transformation, caching, redirect, and
-low-quality-placeholder behavior by path. Broader rules can be shared while more specific paths override them.
-
-This is especially useful when several applications or teams should follow the same media conventions without
-duplicating the policy in every caller.
-
-### You want to run the image pipeline in your infrastructure
-
-Konifer gives you control over where images are processed and stored, how they are delivered, and how the service
-integrates with your network, object storage, and CDN.
-
-A persistent deployment uses PostgreSQL and S3-compatible or filesystem storage. If your team already runs application
-services and data stores, Konifer fits that familiar operating model. If avoiding service ownership is the priority, a
-managed image platform will likely be a better fit.
-
-## Konifer may not be the right fit when…
-
-### You primarily want a managed platform
-
-Choose a hosted image service when you want the provider to own the service infrastructure, scaling, operational
-tooling, and support. Konifer is intended for teams that value control over their image pipeline and are comfortable
-running it alongside their other backend services.
-
-### You only need stateless transformation
-
-If another system owns images at stable URLs and you only need resizing, cropping, or format conversion, a focused
-transformation proxy may be a simpler architectural match.
-
-Open-source projects designed for this model include [imgproxy](https://docs.imgproxy.net/)
-and [imagor](https://docs.imagor.net/).
-
-### Media has an independent identity
-
-A traditional asset-ID model may work better when assets are reused across many unrelated resources, move frequently
-between classifications, or are primarily found through search and collections rather than through application paths.
-
-Konifer supports individual entries, labels, tags, and metadata. Its path model is most useful when your application
-can derive image addresses from its own resources. Consider whether that model and shared preprocessing fit your
-consumers before choosing how to organize the images.
-
-### You need a visual media library
-
-Konifer is API-first. It is not a digital asset management or editorial product with asset browsing, approval workflows,
-rights management, and creative collaboration tools. A DAM, a CMS media library, or a custom interface may be more
-suitable for those users.
-
-For these use cases,
-consider [ResourceSpace](https://www.resourcespace.com/), [Strapi](https://docs.strapi.io/cms/features/media-library),
-or [Pimcore](https://pimcore.com/en/products/digital-asset-management).
-
-## Common use cases
-
-Konifer is domain-neutral, but its model maps naturally to:
+## Common uses
 
 * User avatars, organization logos, and tenant branding
-* Product images, marketplace listings, and galleries
-* CMS images and other user-uploaded content
-* Receipts, inspection photos, claim evidence, and supporting documents
-* Versioned or generated artwork such as cards, passes, tickets, and report covers
-* Shared image infrastructure used by several internal services
-* Display images and pixel inputs for classification, search, or inspection pipelines
+* Product photos, marketplace galleries, and CMS images
+* Receipts, inspection photos, and claim evidence
+* Shared image infrastructure for several applications or services
 
-These are examples rather than built-in modes. The common feature is that the application already knows what each image
-belongs to.
+For vision pipelines, request display images and raw pixel buffers from the same stored source. Your worker handles
+tensor construction and model-specific scaling and normalization. See [Pixels for inference](../guides/pixels-for-inference.md).
 
-## Next steps
+## Deployment and product boundaries
 
-Continue to [Getting started](getting-started.md) to upload one image and request both display and pixel variants.
+### You operate the service
 
-Read [Assets](../concepts/Assets/overview.md) for a deeper explanation of paths, entries, selectors, and stable versus
-specific references.
+Run Konifer with PostgreSQL and S3-compatible storage or a persistent filesystem. Image processing and background
+variant generation run inside Konifer, without a separate message broker or worker deployment.
 
-To explore how different parts of an image hierarchy can inherit different behavior,
-see [Path configuration](../concepts/path-configuration.md).
+Add replicas behind a load balancer using shared PostgreSQL and image storage. Filesystem deployments need a shared
+persistent mount accessible to all replicas.
+
+Your team manages backups, upgrades, and capacity, and supplies application authentication and authorization. You
+choose your storage and CDN. See [Deployment](../operate/deployment.md) for setup and operating requirements.
+
+### You supply the user interface
+
+Konifer provides an HTTP API for your application or custom administration interface. For a ready-made media library
+with editorial approvals, rights management, and creative collaboration, evaluate a DAM or CMS.
+
+### Consider what your existing pipeline handles
+
+If another system manages your originals and their lifecycle, compare whether you need a transformation proxy or
+want Konifer to manage storage, variants, replacement, and deletion together.
+
+## Try it
+
+Follow the [10-minute quickstart](getting-started.md) to upload an image, request a WebP thumbnail, and replace the
+original while keeping the same application URL.

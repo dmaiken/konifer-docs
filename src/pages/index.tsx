@@ -31,34 +31,38 @@ const responsibilities = [
   {
     number: "01",
     title: "Upload",
-    body: "Upload images as multipart requests or fetch them from domains you allow.",
+    body: "Accept image files or import them from URLs and S3 object ARNs through one API.",
   },
   {
     number: "02",
     title: "Validate",
-    body: "Set limits on file size, dimensions, and pixel count. Restrict content types or add content-classification rules.",
+    body: "Enforce upload size, format, and pixel limits without repeating validation in each caller.",
   },
   {
     number: "03",
     title: "Store",
-    body: "Store originals and generated variants with metadata and a history of uploads at each path.",
+    body: "Keep originals, metadata, and upload history together in your storage.",
   },
   {
     number: "04",
-    title: "Update",
-    body: "Upload a replacement at the same path and retrieve earlier entries by ID. Edit metadata without uploading another image.",
+    title: "Transform",
+    body: "Generate and cache variants after upload or on demand, without a separate thumbnail workflow.",
   },
   {
     number: "05",
-    title: "Delete",
-    body: "Delete a single entry, the images at a path, or a path and its children.",
+    title: "Replace and delete",
+    body: "Replace an image at the same URL, retrieve previous entries, or delete related images in one request.",
   },
 ];
 
 const infrastructure = [
   {
+    label: "Processing",
+    value: "Konifer, including background variant workers",
+  },
+  {
     label: "Image files",
-    value: "S3-compatible object storage or a filesystem",
+    value: "S3-compatible storage or a persistent filesystem",
   },
   {
     label: "Asset records",
@@ -66,7 +70,7 @@ const infrastructure = [
   },
   {
     label: "Delivery",
-    value: "Display images or raw pixels with attributes, plus links and CDN delivery",
+    value: "Your CDN, object-store redirects, or image content from the API",
   },
 ];
 
@@ -74,31 +78,38 @@ function ApiExample(): ReactNode {
   return (
     <div
       className={styles.apiExample}
-      aria-label="One stored image served as a display variant and a raw pixel variant"
+      aria-label="Upload, transform, replace, and delete images through the asset API"
     >
-      <div className={styles.codeLabel}>One source, two consumers</div>
+      <div className={styles.codeLabel}>One API for the image lifecycle</div>
       <pre>
         <code>
           <span className={styles.codeComment}>
-            # Store an image
+            # Upload a profile picture
           </span>
           {"\n"}
           <span className={styles.codeVerb}>POST</span>{" "}
-          /assets/photos/123
+          /assets/users/123/profile-picture
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Serve a WebP image to your application
+            # Request a cached WebP thumbnail
           </span>
           {"\n"}
           <span className={styles.codeVerb}>GET</span>{" "}
-          /assets/photos/123/-/entry/0/content?profile=display
+          /assets/users/123/profile-picture/-/content?width=256&format=webp
           {"\n\n"}
           <span className={styles.codeComment}>
-            # Serve pixels from the same entry to a worker
+            # Replace the picture at the same path
           </span>
           {"\n"}
-          <span className={styles.codeVerb}>GET</span>{" "}
-          /assets/photos/123/-/entry/0/content?profile=vision
+          <span className={styles.codeVerb}>POST</span>{" "}
+          /assets/users/123/profile-picture
+          {"\n\n"}
+          <span className={styles.codeComment}>
+            # Delete this user&apos;s images
+          </span>
+          {"\n"}
+          <span className={styles.codeVerb}>DELETE</span>{" "}
+          /assets/users/123/-/recursive
         </code>
       </pre>
     </div>
@@ -132,24 +143,26 @@ function HoconCodeBlock({ code }: { code: string }): ReactNode {
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="Images for humans and machines"
-      description="Store images once and serve display formats or raw pixel buffers through one self-hosted API. Share image storage and preprocessing across applications and vision pipelines."
+      title="Self-hosted image backend"
+      description="Spend less time building image infrastructure. Upload, validate, store, transform, and delete images through one self-hosted API, using your storage and CDN."
     >
       <main className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <Heading as="h1">One image source for humans and machines.</Heading>
+            <Heading as="h1">
+              {"The self-hosted image backend your application doesn't have to build."}
+            </Heading>
             <p className={styles.heroLead}>
-              Store images once and serve display formats or raw pixel buffers
-              through one self-hosted API. Define reusable transformations for
-              your application and vision pipelines.
+              Upload, validate, store, transform, and delete images through one
+              API. Spend less time maintaining image workflows, using your
+              storage and CDN.
             </p>
             <div className={styles.heroActions}>
               <Link
                 className={clsx("button button--primary", styles.primaryButton)}
                 to="/docs/start-here/getting-started"
               >
-                Get started
+                Try the 10-minute quickstart
               </Link>
               <Link className={styles.textLink} to="/docs">
                 Read the overview <span aria-hidden="true">→</span>
@@ -159,137 +172,24 @@ export default function Home(): ReactNode {
           <ApiExample />
         </section>
 
-        <section className={clsx(styles.section, styles.pathSection)}>
-          <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Shared preprocessing</span>
-            <Heading as="h2">Prepare each image for its next consumer.</Heading>
-            <p>
-              A product photo can appear in your storefront and feed a
-              classification or search pipeline. Keep the source in Konifer
-              and request the representation each consumer needs.
-            </p>
-            <dl className={styles.infrastructureList}>
-              <div>
-                <dt>For people</dt>
-                <dd>A 256 × 256 WebP image for display.</dd>
-              </div>
-              <div>
-                <dt>For machines</dt>
-                <dd>A 224 × 224 RGB pixel buffer with one plane per channel.</dd>
-              </div>
-            </dl>
-            <p>
-              Use named profiles to choose dimensions, orientation, color space,
-              channels, and layout. Konifer caches generated variants for reuse
-              and returns pixel attributes with the content. Pin requests to an
-              entry ID when both consumers need the same source version.
-            </p>
-            <div className={styles.infrastructureLinks}>
-              <Link className={styles.textLink} to="/docs/concepts/concepts-pixels">
-                Explore raw pixels <span aria-hidden="true">→</span>
-              </Link>
-              <Link
-                className={styles.textLink}
-                to="/docs/concepts/Variants/concepts-variant-profiles"
-              >
-                Define profiles <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-          <div className={styles.codeColumn}>
-            <div className={styles.codeLabel}>Profiles used above · konifer.conf</div>
-            <HoconCodeBlock
-              code={`variant-profiles {
-  display {
-    width = 256
-    height = 256
-    fit = fill
-    rotate = auto
-    format = webp
-  }
-
-  vision {
-    width = 224
-    height = 224
-    fit = fill
-    rotate = auto
-    color-space = srgb
-    format = pixels
-    pixel-channels = RGB
-    pixel-layout = planar
-  }
-}`}
-            />
-          </div>
-        </section>
-
-        <section className={clsx(styles.section, styles.pathSection)}>
-          <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Image paths</span>
-            <Heading as="h2">Organize images around your application.</Heading>
-            <p>
-              Choose paths that match your application, such as a user&apos;s
-              profile picture or a listing&apos;s gallery. You can use an{" "}
-              <code>imageId</code> as the path if you prefer.
-            </p>
-            <div className={styles.pathExamples}>
-              <code>/assets/users/123/profile-picture</code>
-              <code>/assets/listings/ca-90210/gallery</code>
-              <code>/assets/claims/456/evidence</code>
-              <code>/assets/358e0754-0c12-4541-891a-3e135c3b49c5</code>
-            </div>
-            <p>
-              Configure storage, validation, preprocessing, and delivery by path.
-              Set shared defaults on a parent path and override individual
-              settings on more specific paths. In this example, you cap user
-              uploads at 20 MB and 15 megapixels, then prepare display and vision
-              variants for profile pictures in a dedicated bucket.
-            </p>
-            <Link
-              className={styles.textLink}
-              to="/docs/concepts/concepts-path-configuration"
-            >
-              Read about path configuration <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className={styles.codeColumn}>
-            <div className={styles.codeLabel}>konifer.conf</div>
-            <HoconCodeBlock
-              code={`paths {
-  "/users/**" {
-    limits {
-      max-bytes = 20MB
-      max-pixels = 15MP
-    }
-  }
-
-  "/users/*/profile-picture" {
-    bucket = "profile-pictures"
-    transform {
-      eager-variants = [display, vision]
-    }
-  }
-}`}
-            />
-          </div>
-        </section>
-
         <section className={clsx(styles.section, styles.lifecycleSection)}>
           <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Asset operations</span>
-            <Heading as="h2">
-              Manage images from upload to deletion.
-            </Heading>
+            <span className={styles.sectionLabel}>Image lifecycle</span>
+            <Heading as="h2">Less image infrastructure to build and maintain.</Heading>
             <p>
-              Use the asset API to manage uploads and their metadata. You can
-              keep earlier profile pictures after a replacement, retrieve a
-              specific entry, or delete a user&apos;s images in one request.
+              Image uploads grow into validation rules, thumbnail workers,
+              replacement history, and cleanup jobs. Configure those workflows
+              in Konifer and share them across your applications.
+            </p>
+            <p>
+              Use one API for avatars, product galleries, and tenant branding,
+              with storage and processing policies for each image category.
             </p>
             <Link
               className={styles.textLink}
-              to="/docs/concepts/Assets/concepts-assets"
+              to="/docs/start-here/is-konifer-right-for-you"
             >
-              Explore the asset model <span aria-hidden="true">→</span>
+              See where Konifer fits <span aria-hidden="true">→</span>
             </Link>
           </div>
           <ol className={styles.responsibilityList}>
@@ -305,28 +205,89 @@ export default function Home(): ReactNode {
           </ol>
         </section>
 
+        <section className={clsx(styles.section, styles.pathSection)}>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Image paths</span>
+            <Heading as="h2">Choose image paths that fit your application.</Heading>
+            <p>
+              Address a profile picture by user, a gallery by product, or an
+              individual image by ID. Use resource paths, image IDs, or both.
+            </p>
+            <div className={styles.pathExamples}>
+              <code>/assets/users/123/profile-picture</code>
+              <code>/assets/products/sku-123/gallery</code>
+              <code>/assets/{"{imageId}"}</code>
+              <code>/assets/users/123/images/{"{imageId}"}</code>
+            </div>
+            <p>
+              Group related images to apply policies and delete them together.
+              Keep upload and transformation rules in configuration instead of
+              repeating them in each caller. This example limits user images to
+              15 megapixels and generates profile thumbnails in a dedicated bucket.
+            </p>
+            <Link
+              className={styles.textLink}
+              to="/docs/concepts/concepts-path-configuration"
+            >
+              Read about path configuration <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <div className={styles.codeColumn}>
+            <div className={styles.codeLabel}>konifer.conf</div>
+            <HoconCodeBlock
+              code={`variant-profiles {
+  thumbnail {
+    width = 256
+    height = 256
+    fit = fill
+    rotate = auto
+    format = webp
+  }
+}
+
+paths {
+  "/users/**" {
+    limits {
+      max-pixels = 15MP
+    }
+  }
+
+  "/users/*/profile-picture" {
+    object-store {
+      bucket = "profile-pictures"
+    }
+    transform {
+      eager-variants = [thumbnail]
+    }
+  }
+}`}
+            />
+          </div>
+        </section>
+
         <section className={clsx(styles.section, styles.infrastructureSection)}>
           <div className={styles.sectionCopy}>
-            <span className={styles.sectionLabel}>Storage and delivery</span>
+            <span className={styles.sectionLabel}>Deployment</span>
             <Heading as="h2">
-              Choose your storage and CDN.
+              One service alongside your database and image storage.
             </Heading>
             <p>
-              Store image files on a filesystem or in S3-compatible object
-              storage, and keep asset records in PostgreSQL.
+              Run Konifer with PostgreSQL and S3-compatible storage or a
+              persistent filesystem. Image processing and background variant
+              workers run inside Konifer, without a separate message broker or
+              worker deployment.
             </p>
             <p>
-              Serve display images through your CDN, redirect requests to object
-              storage, or return content and its attributes from the API for
-              processing workers. Configure delivery for each path to suit your
-              application.
+              Add replicas behind a load balancer using shared PostgreSQL and
+              image storage. Your team manages backups, upgrades, and capacity,
+              and supplies application authentication and authorization.
             </p>
             <div className={styles.infrastructureLinks}>
               <Link
                 className={styles.textLink}
-                to="/docs/reference/reference-variant-storage"
+                to="/docs/operate/deployment"
               >
-                Storage configuration <span aria-hidden="true">→</span>
+                Deployment guide <span aria-hidden="true">→</span>
               </Link>
               <Link
                 className={styles.textLink}
@@ -346,14 +307,46 @@ export default function Home(): ReactNode {
           </dl>
         </section>
 
+        <section className={clsx(styles.section, styles.pathSection)}>
+          <div className={styles.sectionCopy}>
+            <span className={styles.sectionLabel}>Vision pipelines</span>
+            <Heading as="h2">Reuse images and preprocessing across consumers.</Heading>
+            <p>
+              Serve display images and raw pixel buffers from the same stored
+              source. Define reusable transformation profiles for your application
+              and vision workers, and share cached results across requests.
+            </p>
+            <p>
+              Your workers handle tensor construction and model-specific scaling
+              and normalization.
+            </p>
+            <Link
+              className={styles.textLink}
+              to="/docs/guides/guides-pixels-for-inference"
+            >
+              Follow the inference guide <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <dl className={styles.infrastructureList}>
+            <div>
+              <dt>Application</dt>
+              <dd>A WebP thumbnail for a storefront or reviewer.</dd>
+            </div>
+            <div>
+              <dt>Vision worker</dt>
+              <dd>A resized pixel buffer for classification, search, or inspection.</dd>
+            </div>
+          </dl>
+        </section>
+
         <section className={styles.finalCta}>
           <div>
             <span className={styles.sectionLabel}>Try Konifer</span>
-            <Heading as="h2">Run Konifer in one container.</Heading>
+            <Heading as="h2">Try the image lifecycle in 10 minutes.</Heading>
             <p>
-              Upload one image and request a WebP thumbnail and a raw pixel
-              buffer. Try the API with in-memory storage, then add PostgreSQL
-              and persistent image storage for deployment.
+              Upload an image, generate a thumbnail, and replace the original
+              without changing its application URL. Try it with in-memory
+              storage; uploaded images disappear when the container stops.
             </p>
           </div>
           <div className={styles.startPanel}>
