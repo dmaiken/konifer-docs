@@ -41,7 +41,7 @@
     "@usebruno/cli": "4.3.0",
     "blurhash": "2.0.5",
     "cspell": "10.4.1",
-    "markdownlint-cli2": "0.24.0",
+    "markdownlint-cli2": "0.24.1",
     "pngjs": "7.0.0",
     "prettier": "3.9.10",
     "thumbhash": "0.1.1",
